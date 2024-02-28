@@ -1,6 +1,7 @@
 from entitas.user.resources import *
 from entitas.echo.resources import *
 from entitas.material.resources import *
+from entitas.instructur.resources import *
 
 def core_routes(api):
     api.add_route("/api/echo", EchoResource())
@@ -8,6 +9,7 @@ def core_routes(api):
     api.add_route("/api/test_error", TesstErrorResource())
     api.add_route("/api/test_env", TestEnvResource())
     api.add_route("/api/user/login", UserLoginResource())
+    api.add_route("/api/user/register", UserSignupResource())
     api.add_route("/api/user/refresh_token", UserRefreshTokenResource())
     api.add_route("/api/user/password", UserUpdatePasswordWithResource())
     api.add_route("/api/user/profile", UserUpdateProfileWithIdResource())
@@ -17,5 +19,7 @@ def core_routes(api):
     api.add_route("/api/user/activation/{token}", UserActivationResource())
     api.add_route("/api/admin/material", MaterialResource())
     api.add_route("/api/admin/material/{material_id}", MaterialWithIdResource())
+    api.add_route("/api/admin/instructur", InstructurResource)
+    api.add_route("/api/admin/instructur/{instructur_id", InstructurWithIdResource)
 
 

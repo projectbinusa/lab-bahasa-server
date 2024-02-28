@@ -1,9 +1,28 @@
 from datetime import date, datetime
 from pony.orm import *
-from entitas.user.models import User
 from entitas.material.models import *
+from entitas.absent.models import *
+from entitas.assignment.models import *
+from entitas.assignment_user.models import *
+from entitas.certificate.models import *
+from entitas.comment.models import *
+from entitas.instructur.models import *
+from entitas.notification.models import *
+from entitas.pathway.models import *
+from entitas.pathway_user.models import *
+from entitas.payhway_training.models import *
+from entitas.room.models import *
+from entitas.room_user.models import *
+from entitas.schedule.models import *
+from entitas.schedule_instructur.models import *
+from entitas.schedule_user.models import *
+from entitas.training.models import *
+from entitas.training_user.models import *
+from entitas.user.models import *
+from entitas.training_material.models import *
 from util.db_util import db2
 from config.config import DOMAIN_FILE_URL
+
 
 # start User
 class UserDB(db2.Entity):
@@ -46,6 +65,8 @@ class UserDB(db2.Entity):
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
+
+
 # end User
 
 # start Material
@@ -69,16 +90,18 @@ class MaterialDB(db2.Entity):
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
+
+
 # end Material
 
 # start Pathway
-class PathwayDB(db2.entity):
+class PathwayDB(db2.Entity):
     _table_ = "pathway"
     id = PrimaryKey(int, auto=True)
-    name = Optional(str, nulllabel=True)
-    description = Optional(str, nulllabel=True)
-    created_date = Optional(datetime, nulllabel=True)
-    updated_date = Optional(datetime, nulllabel=True)
+    name = Optional(str, nullable=True)
+    description = Optional(str, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
         item = Pathway()
@@ -88,19 +111,21 @@ class PathwayDB(db2.entity):
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
+
+
 # end Pathway
 
 # start Absent
-class AbsentDB(db2.entity):
+class AbsentDB(db2.Entity):
     _table_ = "absent"
-    id= PrimaryKey(int, auto=True)
-    training_id= Optional(int, nullable=True)
-    absent_date= Optional(datetime, nullable=True)
-    user_id= Optional(str, nullable=True)
-    status= Optional(str, nullable=True)
-    description= Optional(str, nullable=True)
-    created_date= Optional(datetime, nullable=True)
-    updated_date= Optional(datetime, nullable=True)
+    id = PrimaryKey(int, auto=True)
+    training_id = Optional(int, nullable=True)
+    absent_date = Optional(datetime, nullable=True)
+    user_id = Optional(str, nullable=True)
+    status = Optional(str, nullable=True)
+    description = Optional(str, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
         item = Absent()
@@ -113,19 +138,21 @@ class AbsentDB(db2.entity):
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
+
+
 # end Absent
 
-class AssignmentDB(db2.entity):
+class AssignmentDB(db2.Entity):
     _table_ = "assignment"
-    id= PrimaryKey (int, auto=True)
-    scheduler_id= Optional(int, nullable=True)
-    training_id= Optional(int, nullable=True)
-    instructur_id= Optional(int, nullable=True)
-    name= Optional(str, nullable=True)
-    description= Optional(str, nullable=True)
-    max_date= Optional(datetime, nullable=True)
-    created_date= Optional(datetime, nullable=True)
-    updated_date= Optional(datetime, nullable=True)
+    id = PrimaryKey(int, auto=True)
+    scheduler_id = Optional(int, nullable=True)
+    training_id = Optional(int, nullable=True)
+    instructur_id = Optional(int, nullable=True)
+    name = Optional(str, nullable=True)
+    description = Optional(str, nullable=True)
+    max_date = Optional(datetime, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
         item = Assignment
@@ -139,7 +166,8 @@ class AssignmentDB(db2.entity):
         item.created_date = self.created_date
         item.updated_date = self.updated_date
 
-class Assignment_UserDB(db2.entity):
+
+class Assignment_UserDB(db2.Entity):
     _table_ = "assignment_user"
     id = PrimaryKey(int, auto=True)
     assignment_id = Optional(int, nullable=True)
@@ -167,7 +195,8 @@ class Assignment_UserDB(db2.entity):
         item.created_date = self.created_date
         item.updated_date = self.updated_date
 
-class CertificateDB(db2.entity):
+
+class CertificateDB(db2.Entity):
     _table_ = "certificate"
     id = PrimaryKey(int, auto=True)
     scheduler_id = Optional(int, nullable=True)
@@ -197,14 +226,15 @@ class CertificateDB(db2.entity):
         item.created_date = self.created_date
         item.updated_date = self.updated_date
 
-class CommentDB(db2.entity):
-    _tale_ = "comment"
+
+class CommentDB(db2.Entity):
+    _table_ = "comment"
     id = PrimaryKey(int, auto=True)
     comment_for_id = Optional(int, nullable=True)
     is_deleted = Optional(int, nullable=True)
     message = Optional(str, nullable=True)
-    room_id = Optional(id, nullable=True)
-    room_meet = Optional(str, nullable=True)
+    room_id = Optional(int, nullable=True)
+    room_name = Optional(str, nullable=True)
     status = Optional(str, nullable=True)
     user_avatar_url = Optional(str, nullable=True)
     user_id = Optional(int, nullable=True)
@@ -227,7 +257,8 @@ class CommentDB(db2.entity):
         item.created_date = self.created_date
         item.updated_date = self.updated_date
 
-class InstructurDB(db2.entity):
+
+class InstructurDB(db2.Entity):
     _table_ = "instructur"
     id = PrimaryKey(int, auto=True)
     name = Optional(str, nullable=True)
@@ -253,7 +284,8 @@ class InstructurDB(db2.entity):
         item.created_date = self.created_date
         item.updated_date = self.updated_date
 
-class Notification(db2.entity):
+
+class Notification(db2.Entity):
     id = PrimaryKey(int, auto=True)
     fcm_token = Optional(str, nullable=True)
     email = Optional(str, nullable=True)
@@ -276,13 +308,14 @@ class Notification(db2.entity):
         item.created_date = self.created_date
         item.updated_date = self.updated_date
 
-class PathwayTrainingDB(db2.entity):
+
+class PathwayTrainingDB(db2.Entity):
     _table_ = "pathway_training"
     id = PrimaryKey(int, auto=True)
     pathway_id = Optional(int, nullable=True)
     training_id = Optional(int, nullable=True)
     created_date = Optional(datetime, nullable=True)
-    update_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
         item = Pathway_Training
@@ -290,15 +323,16 @@ class PathwayTrainingDB(db2.entity):
         item.pathway_id = self.pathway_id
         item.training_id = self.training_id
         item.created_date = self.created_date
-        item.update_date = self.update_date
+        item.updated_date = self.updated_date
 
-class PathwayUserDB(db2.entity):
+
+class PathwayUserDB(db2.Entity):
     _table_ = "pathway_user"
     id = PrimaryKey(int, auto=True)
     pathway_id = Optional(int, nullable=True)
     user_id = Optional(int, nullable=True)
     created_date = Optional(datetime, nullable=True)
-    update_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
         item = Pathway_Training
@@ -306,15 +340,16 @@ class PathwayUserDB(db2.entity):
         item.pathway_id = self.pathway_id
         item.user_id = self.user_id
         item.created_date = self.created_date
-        item.update_date = self.update_date
+        item.updated_date = self.updated_date
 
-class RoomDB(db2.entity):
+
+class RoomDB(db2.Entity):
     _table_ = "room"
     id = PrimaryKey(int, auto=True)
     name = Optional(str, nullable=True)
     avatar_url = Optional(str, nullable=True)
     is_removed = Optional(int, nullable=True)
-    last_commment = Optional(str, nullable=True)
+    last_comment = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -324,16 +359,17 @@ class RoomDB(db2.entity):
         item.name = self.name
         item.avatar_url = self.avatar_url
         item.is_removed = self.is_removed
-        item.last_commment = self.last_commment
+        item.last_comment = self.last_comment
         item.created_date = self.created_date
         item.updated_date = self.updated_date
 
-class RoomUSerDB(db2.entity):
+
+class RoomUSerDB(db2.Entity):
     _table_ = "room_user"
     id = PrimaryKey(int, auto=True)
     room_id = Optional(int, nullable=True)
     user_id = Optional(int, nullable=True)
-    last_comment_user = Optional(str, nullable=True)
+    last_comment_user_id = Optional(str, nullable=True)
     last_comment_text = Optional(str, nullable=True)
     last_comment_date = Optional(datetime, nullable=True)
     avatar_url = Optional(str, nullable=True)
@@ -345,14 +381,15 @@ class RoomUSerDB(db2.entity):
         item.id = self.id
         item.user_id = self.user_id
         item.room_id = self.room_id
-        item.last_comment_user = self.last_comment_user
+        item.last_comment_user_id = self.last_comment_user_id
         item.last_comment_text = self.last_comment_text
         item.last_comment_date = self.last_comment_date
         item.avatar_url = self.avatar_url
         item.created_date = self.created_date
         item.updated_date = self.updated_date
 
-class ScheduleDB(db2.entity):
+
+class ScheduleDB(db2.Entity):
     _table_ = "schedule"
     id = PrimaryKey(int, auto=True)
     training_id = Optional(int, nullable=True)
@@ -374,10 +411,11 @@ class ScheduleDB(db2.entity):
         item.created_date = self.created_date
         item.updated_date = self.updated_date
 
-class ScheduleInstructurDB(db2.entity):
-    _table_ = "schedule_instructur"
+
+class SchedulerInstructurDB(db2.Entity):
+    _table_ = "scheduler_instructur"
     id = PrimaryKey(int, auto=True)
-    schedule_id = Optional(int, nullable=True)
+    scheduler_id = Optional(int, nullable=True)
     instructur_id = Optional(int, nullable=True)
     instructur_name = Optional(str, nullable=True)
     is_deteted = Optional(int, nullable=True)
@@ -387,17 +425,18 @@ class ScheduleInstructurDB(db2.entity):
     def to_model(self):
         item = Schedule_instuctur
         item.id = self.id
-        item.schedule_id = self.schedule_id
+        item.scheduler_id = self.scheduler_id
         item.instructur_id = self.instructur_id
         item.instructur_name = self.instructur_name
         item.is_deteted = self.is_deteted
         item.created_date = self.created_date
         item.updated_date = self.updated_date
 
-class ScheduleUserDB(db2.entity):
-    _table_ = "schedule_user"
+
+class SchedulerUserDB(db2.Entity):
+    _table_ = "scheduler_user"
     id = PrimaryKey(int, auto=True)
-    schedule_id = Optional(int, nullable=True)
+    scheduler_id = Optional(int, nullable=True)
     user_id = Optional(int, nullable=True)
     user_name = Optional(str, nullable=True)
     is_deteted = Optional(int, nullable=True)
@@ -407,14 +446,15 @@ class ScheduleUserDB(db2.entity):
     def to_model(self):
         item = Schedule_User
         item.id = self.id
-        item.schedule_id = self.schedule_id
+        item.scheduler_id = self.scheduler_id
         item.user_id = self.user_id
         item.user_name = self.user_name
         item.is_deteted = self.is_deteted
         item.created_date = self.created_date
         item.updated_date = self.updated_date
 
-class TrainingDB(db2.entity):
+
+class TrainingDB(db2.Entity):
     _table_ = "training"
     id = PrimaryKey(int, auto=True)
     name = Optional(str, nullable=True)
@@ -430,9 +470,10 @@ class TrainingDB(db2.entity):
         item.created_date = self.created_date
         item.updated_date = self.updated_date
 
-class TrainingMaterialDB(db2.entity):
+
+class TrainingMaterialDB(db2.Entity):
     _table_ = "training_material"
-    id = PrimaryKey(int, auto =True)
+    id = PrimaryKey(int, auto=True)
     training_id = Optional(int, nullable=True)
     material_id = Optional(int, nullable=True)
     is_user_access = Optional(int, nullable=True)
@@ -448,9 +489,10 @@ class TrainingMaterialDB(db2.entity):
         item.created_date = self.created_date
         item.updated_date = self.updated_date
 
-class TrainingUserDB(db2.entity):
+
+class TrainingUserDB(db2.Entity):
     _table_ = "training_user"
-    id = PrimaryKey(int, auto =True)
+    id = PrimaryKey(int, auto=True)
     training_id = Optional(int, nullable=True)
     user_id = Optional(int, nullable=True)
     is_active = Optional(int, nullable=True)
@@ -465,6 +507,7 @@ class TrainingUserDB(db2.entity):
         item.is_active = self.is_active
         item.created_date = self.created_date
         item.updated_date = self.updated_date
+
 
 if db2.schema is None:
     db2.generate_mapping(create_tables=False)

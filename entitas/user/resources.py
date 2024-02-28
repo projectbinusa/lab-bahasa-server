@@ -74,24 +74,27 @@ class UserLoginResource:
 class UserSignupResource:
     auth = {"auth_disabled": True}
 
-    
-    def on_post(self, req, resp):
-        base_response = BaseResponse()
-        body = req.media
-        base_response.data = services.signup_user_db(json_object=body)
-        if base_response.data["token"] == "":
-            base_response.status = falcon.HTTP_403
-            base_response.code = 403
-            base_response.message = "forbiden"
-            if base_response.data["message"] != "":
-                base_response.message = base_response.data["message"]
-        else:
-            base_response.status = falcon.HTTP_200
-            base_response.code = 200
-            base_response.message = "success"
+    class UserSignupResource:
+        auth = {"auth_disabled": True}
 
-        resp.media = base_response.toJSON()
-        resp.status = base_response.status
+        def on_post(self, req, resp):
+            base_response = BaseResponse()
+            body = req.media
+            base_response.data = services.signup_user_db(json_object=body)
+
+            if "token" not in base_response.data or base_response.data["token"] == "":
+                base_response.status = falcon.HTTP_403
+                base_response.code = 403
+                base_response.message = "forbidden"
+                if "message" in base_response.data and base_response.data["message"] != "":
+                    base_response.message = base_response.data["message"]
+            else:
+                base_response.status = falcon.HTTP_200
+                base_response.code = 200
+                base_response.message = "success"
+
+            resp.media = base_response.toJSON()
+            resp.status = base_response.status
 
 
 class UserUpdatePasswordWithResource:
@@ -200,35 +203,4 @@ class UserRefreshTokenResource:
     def on_post(self, req, resp):
         resouce_response_api(resp=resp, data=services.refresh_token_authorization(authorization=req.headers['AUTH-TGH'] if 'AUTH-TGH' in req.headers else ''))
 
-class UserMemberResource:
-    def on_get(self, req, resp):
-        page = int(req.get_param("page", required=False, default=1))
-        limit = int(req.get_param("limit", required=False, default=9))
-        filters = generate_filters_resource(req=req, params_int=['organization_id'], params_string=['unique_id', 'name', 'address', 'email'])
-        filter_param = req.get_param("filter", required=False, default='')
-        if filter_param != '':
-            filters.append({"field": 'name', "value": filter_param})
-        data, pagination = services.get_user_member_with_pagination(
-            page=page, limit=limit, filters=filters
-        )
-        resouce_response_api(resp=resp, data=data, pagination=pagination)
-
-    def on_post(self, req, resp):
-        json_object = req.media
-        # json_object['customer_id'] = req.context["user"]["id"]
-        from entitas.customer.services import signup_customer_member
-        resouce_response_api(resp=resp, data=signup_customer_member(json_object=json_object))
-
-
-class UserMemberWithIdResource:
-    def on_get(self, req, resp, member_id: int):
-        resouce_response_api(resp=resp, data=services.find_user_member_by_id(member_id=int(member_id)))
-
-    def on_delete(self, req, resp, member_id: int):
-        resouce_response_api(resp=resp, data=services.delete_user_member_by_id(member_id=int(member_id)))
-
-    def on_put(self, req, resp, member_id: int):
-        body = req.media
-        body["member_id"] = int(member_id)
-        resouce_response_api(resp=resp, data=services.update_user_member(json_object=body))
 

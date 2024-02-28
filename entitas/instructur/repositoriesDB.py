@@ -1,13 +1,12 @@
 from pony.orm import *
-
-from database.schema import MaterialDB
+from database.schema import InstructurDB
 
 
 @db_session
 def get_all(to_model=False):
     result = []
     try:
-        for item in select(s for s in MaterialDB):
+        for item in select(s for s in InstructurDB):
             if to_model:
                 result.append(item.to_model())
             else:
@@ -17,19 +16,17 @@ def get_all(to_model=False):
         print("error MaterialDB getAll: ", e)
     return result
 
-
 @db_session
 def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
     result = []
     total_record = 0
     try:
-        data_in_db = select(s for s in MaterialDB).order_by(desc(MaterialDB.id))
+        data_id_db = select(s for s in InstructurDB).order_by(desc(InstructurDB.id))
         for item in filters:
             if item["field"] == "id":
-                data_in_db = data_in_db.filter(id=item["value"])
+                data_in_db = data_id_db.filter(id=item["value"])
             elif item["field"] == "name":
-                data_in_db = data_in_db.filter(lambda d: d.name == item["value"])
-
+                data_in_db = data_id_db.filter(lambda d: d.name == item["value"])
 
         total_record = data_in_db.count()
         if limit > 0:
@@ -43,66 +40,68 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
                 result.append(item.to_model().to_response())
 
     except Exception as e:
-        print("error MaterialDB getAllWithPagination: ", e)
+        print("error instructur getAllWithPagination: ", e)
     return result, {
         "total": total_record,
         "page": page,
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
 
-
 @db_session
 def find_by_id(id=None):
-    data_in_db = select(s for s in MaterialDB if s.id == id)
+    data_in_db = select(s for s in InstructurDB if s.id == id)
     if data_in_db.first() is None:
         return None
     return data_in_db.first().to_model()
 
-
 @db_session
 def update(json_object={}, to_model=False):
     try:
-        updated_material = MaterialDB[json_object["id"]]
-        updated_material.name = json_object["name"]
-        updated_material.user_id = json_object["user_id"]
-        updated_material.filename = json_object["filename"]
-        updated_material.description = json_object["description"]
-        updated_material.url_file = json_object["url_file"]
+        updated_instructur = InstructurDB[json_object["id"]]
+        updated_instructur.name = json_object["name"]
+        updated_instructur.email = json_object["email"]
+        updated_instructur.address = json_object["address"]
+        updated_instructur.birth_date = json_object["birth_date"]
+        updated_instructur.birth_place = json_object["birth_place"]
+        updated_instructur.avatar_url = json_object["avatar_url"]
+        updated_instructur.is_faciliator = json_object["is_faciliator"]
         commit()
         if to_model:
-            return updated_material.to_model()
+            return updated_instructur.to_model()
         else:
-            return updated_material.to_model().to_response()
+            return updated_instructur.to_model().to_response()
+
     except Exception as e:
-        print("error Material update: ", e)
+        print("error Intstuctur update:", e)
         return None
 
 @db_session
 def delete_by_id(id=None):
     try:
-        MaterialDB[id].delete()
+        InstructurDB[id].delete()
         commit()
         return True
     except Exception as e:
-        print("error Material deleteById: ", e)
+        print("error Traininf deletedById: ", e)
     return
-
 
 @db_session
 def insert(json_object={}, to_model=False):
     try:
-        new_material = MaterialDB(
+        new_instructur = InstructurDB(
             name=json_object["name"],
-            user_id=json_object["user_id"],
-            filename=json_object["filename"],
-            description=json_object["description"],
-            url_file=json_object["url_file"]
+            email=json_object["email"],
+            address=json_object["address"],
+            birth_date=json_object["birth_date"],
+            birth_place=json_object["birth_place"],
+            avatar_url=json_object["avatar_url"],
+            is_faciliator=json_object["is_faciliator"],
         )
         commit()
         if to_model:
-            return new_material.to_model()
+            return new_instructur.to_model()
         else:
-            return new_material.to_model().to_response()
+            return new_instructur.to_model().to_response()
     except Exception as e:
-        print("error Material insert: ", e)
+        print("error Training insert: ", e)
         return None
