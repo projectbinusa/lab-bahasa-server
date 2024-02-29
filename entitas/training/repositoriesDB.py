@@ -46,3 +46,52 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
         "page": page,
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
+
+@db_session
+def find_by_id(id=None):
+    data_in_db = select(s for s in TrainingDB if s.id == id)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
+
+@db_session
+def update(json_object={}, to_model=False):
+    try:
+        updated_training = TrainingDB[json_object["id"]]
+        updated_training.name = json_object["name"]
+        updated_training.description = json_object["description"]
+        commit()
+        if to_model:
+            return updated_training.to_model()
+        else:
+            return updated_training.to_model().to_response()
+    except Exception as e:
+        print("error Training updated: ", e)
+        return None
+
+@db_session
+def delete_by_id(id=None):
+    try:
+        TrainingDB[id].delete()
+        commit()
+        return True
+    except Exception as e:
+        print("erorr Training deleteById: ", e)
+    return
+
+@db_session
+def insert(json_object={}, to_model=False):
+    try:
+        new_training = TrainingDB(
+            name=json_object["name"],
+            description=json_object["description"]
+        )
+        commit()
+        if to_model:
+            return new_training.to_model()
+        else:
+            return new_training.to_model().to_response()
+
+    except Exception as e:
+        print("error Training insert: ", e)
+    return None

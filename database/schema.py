@@ -165,6 +165,7 @@ class AssignmentDB(db2.Entity):
         item.max_date = self.max_date
         item.created_date = self.created_date
         item.updated_date = self.updated_date
+        return item
 
 
 class Assignment_UserDB(db2.Entity):
@@ -194,6 +195,7 @@ class Assignment_UserDB(db2.Entity):
         item.comment = self.comment
         item.created_date = self.created_date
         item.updated_date = self.updated_date
+        return item
 
 
 class CertificateDB(db2.Entity):
@@ -225,6 +227,7 @@ class CertificateDB(db2.Entity):
         item.mark = self.mark
         item.created_date = self.created_date
         item.updated_date = self.updated_date
+        return item
 
 
 class CommentDB(db2.Entity):
@@ -256,6 +259,7 @@ class CommentDB(db2.Entity):
         item.user_name = self.user_name
         item.created_date = self.created_date
         item.updated_date = self.updated_date
+        return item
 
 
 class InstructurDB(db2.Entity):
@@ -283,9 +287,10 @@ class InstructurDB(db2.Entity):
         item.is_facilitator = self.is_facilitator
         item.created_date = self.created_date
         item.updated_date = self.updated_date
+        return item
 
 
-class Notification(db2.Entity):
+class NotificationDB(db2.Entity):
     id = PrimaryKey(int, auto=True)
     fcm_token = Optional(str, nullable=True)
     email = Optional(str, nullable=True)
@@ -307,6 +312,7 @@ class Notification(db2.Entity):
         item.status_id = self.status_id
         item.created_date = self.created_date
         item.updated_date = self.updated_date
+        return item
 
 
 class PathwayTrainingDB(db2.Entity):
@@ -324,6 +330,7 @@ class PathwayTrainingDB(db2.Entity):
         item.training_id = self.training_id
         item.created_date = self.created_date
         item.updated_date = self.updated_date
+        return item
 
 
 class PathwayUserDB(db2.Entity):
@@ -341,6 +348,7 @@ class PathwayUserDB(db2.Entity):
         item.user_id = self.user_id
         item.created_date = self.created_date
         item.updated_date = self.updated_date
+        return item
 
 
 class RoomDB(db2.Entity):
@@ -362,9 +370,10 @@ class RoomDB(db2.Entity):
         item.last_comment = self.last_comment
         item.created_date = self.created_date
         item.updated_date = self.updated_date
+        return item
 
 
-class RoomUSerDB(db2.Entity):
+class RoomUserDB(db2.Entity):
     _table_ = "room_user"
     id = PrimaryKey(int, auto=True)
     room_id = Optional(int, nullable=True)
@@ -387,7 +396,7 @@ class RoomUSerDB(db2.Entity):
         item.avatar_url = self.avatar_url
         item.created_date = self.created_date
         item.updated_date = self.updated_date
-
+        return item
 
 class ScheduleDB(db2.Entity):
     _table_ = "schedule"
@@ -410,6 +419,7 @@ class ScheduleDB(db2.Entity):
         item.start_date = self.start_date
         item.created_date = self.created_date
         item.updated_date = self.updated_date
+        return item
 
 
 class SchedulerInstructurDB(db2.Entity):
@@ -431,6 +441,7 @@ class SchedulerInstructurDB(db2.Entity):
         item.is_deteted = self.is_deteted
         item.created_date = self.created_date
         item.updated_date = self.updated_date
+        return item
 
 
 class SchedulerUserDB(db2.Entity):
@@ -452,6 +463,7 @@ class SchedulerUserDB(db2.Entity):
         item.is_deteted = self.is_deteted
         item.created_date = self.created_date
         item.updated_date = self.updated_date
+        return item
 
 
 class TrainingDB(db2.Entity):
@@ -461,6 +473,7 @@ class TrainingDB(db2.Entity):
     description = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
+    schedules = Set("ScheduleDB")
 
     def to_model(self):
         item = Training
@@ -469,6 +482,7 @@ class TrainingDB(db2.Entity):
         item.description = self.description
         item.created_date = self.created_date
         item.updated_date = self.updated_date
+        return item
 
 
 class TrainingMaterialDB(db2.Entity):
@@ -488,6 +502,7 @@ class TrainingMaterialDB(db2.Entity):
         item.is_user_access = self.is_user_access
         item.created_date = self.created_date
         item.updated_date = self.updated_date
+        return item
 
 
 class TrainingUserDB(db2.Entity):
@@ -507,6 +522,7 @@ class TrainingUserDB(db2.Entity):
         item.is_active = self.is_active
         item.created_date = self.created_date
         item.updated_date = self.updated_date
+        return item
 
 
 if db2.schema is None:
