@@ -86,8 +86,6 @@ def signup_user_db(json_object={}):
     if "email" not in json_object:
         return {"status": "error", "message": EMAIL_MUST_FILL, "data": None}
 
-    if "hp" not in json_object:
-        json_object["hp"] = ""
     if "active" not in json_object:
         json_object["active"] = False
 

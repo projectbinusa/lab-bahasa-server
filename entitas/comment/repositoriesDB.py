@@ -1,6 +1,6 @@
 from pony.orm import *
 
-from database.schema import CommentDB
+from database.schema import CommentDB, UserDB, RoomDB
 
 
 @db_session
@@ -100,12 +100,12 @@ def insert(json_object={}, to_model=False):
             comment_for_id=json_object["comment_for_id"],
             is_deleted=json_object["is_deleted"],
             message=json_object["message"],
-            room_id=json_object["room_id"],
-            room_name=json_object["room_name"],
+            room_id=RoomDB[json_object["room_id"]],
+            room_name=RoomDB[json_object["room_name"]],
             status=json_object["status"],
             user_avatar_url=json_object["user_avatar_url"],
-            user_id=json_object["user_id"],
-            user_name=json_object["user_name"],
+            user_id=UserDB[json_object["user_id"]],
+            user_name=UserDB[json_object["user_name"]],
         )
         commit()
         if to_model:

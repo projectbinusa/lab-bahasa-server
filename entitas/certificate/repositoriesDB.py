@@ -1,6 +1,6 @@
 from pony.orm import *
 
-from database.schema import CertificateDB
+from database.schema import CertificateDB, InstructurDB, TrainingDB
 
 
 @db_session
@@ -96,9 +96,9 @@ def insert(json_object={}, to_model=False):
     try:
         new_certificate = CertificateDB(
             sceduler_id=json_object["sceduler_id"],
-            training_id=json_object["training_id"],
-            instructur_id=json_object["instructur_id"],
-            instructur_name=json_object["instructur_name"],
+            training_id=TrainingDB[json_object["training_id"]],
+            instructur_id=InstructurDB[json_object["instructur_id"]],
+            instructur_name=InstructurDB[json_object["instructur_name"]],
             name=json_object["name"],
             url_file=json_object["url_file"],
             publish_date=json_object["publish_date"],

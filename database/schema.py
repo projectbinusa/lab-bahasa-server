@@ -291,6 +291,7 @@ class InstructurDB(db2.Entity):
 
 
 class NotificationDB(db2.Entity):
+    _table_ = "notification"
     id = PrimaryKey(int, auto=True)
     fcm_token = Optional(str, nullable=True)
     email = Optional(str, nullable=True)
@@ -473,7 +474,6 @@ class TrainingDB(db2.Entity):
     description = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
-    schedules = Set("ScheduleDB")
 
     def to_model(self):
         item = Training

@@ -1,6 +1,6 @@
 from pony.orm import *
 
-from database.schema import AssignmentDB
+from database.schema import AssignmentDB, TrainingDB, InstructurDB
 
 
 @db_session
