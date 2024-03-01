@@ -23,4 +23,3 @@ def insert_absent_db(json_object={}):
 
 def delete_absent_by_id(id=0):
     return repositoriesDB.delete_by_id(id=id)
-

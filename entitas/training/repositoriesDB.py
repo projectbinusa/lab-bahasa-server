@@ -2,9 +2,10 @@ from pony.orm import *
 
 from database.schema import TrainingDB
 
+
 @db_session
 def get_all(to_model=False):
-    result= []
+    result = []
     try:
         for item in select(s for s in TrainingDB):
             if to_model:
@@ -16,9 +17,10 @@ def get_all(to_model=False):
         print("error TrainingDB getAll: ", e)
     return result
 
+
 @db_session
 def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
-    result= []
+    result = []
     total_record = 0
     try:
         data_in_db = select(s for s in TrainingDB).order_by(desc(TrainingDB.id))
@@ -26,7 +28,7 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
             if item["filed"] == "id":
                 data_in_db = data_in_db.filter(id=item["value"])
             elif item["filed"] == "name":
-                data_in_db = data_in_db.filters(lambda  d: d.name == item["value"])
+                data_in_db = data_in_db.filters(lambda d: d.name == item["value"])
 
         total_record = data_in_db.count()
         if limit > 0:
@@ -47,12 +49,14 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
 
+
 @db_session
 def find_by_id(id=None):
     data_in_db = select(s for s in TrainingDB if s.id == id)
     if data_in_db.first() is None:
         return None
     return data_in_db.first().to_model()
+
 
 @db_session
 def update(json_object={}, to_model=False):
@@ -69,6 +73,7 @@ def update(json_object={}, to_model=False):
         print("error Training updated: ", e)
         return None
 
+
 @db_session
 def delete_by_id(id=None):
     try:
@@ -78,6 +83,7 @@ def delete_by_id(id=None):
     except Exception as e:
         print("erorr Training deleteById: ", e)
     return
+
 
 @db_session
 def insert(json_object={}, to_model=False):

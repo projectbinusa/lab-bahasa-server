@@ -1,4 +1,5 @@
-from entitas.services import repositoriesDB
+from entitas.room import repositoriesDB
+
 
 def get_services_db_with_pagination(page=1, limit=9, filters=[], to_model=False):
     return repositoriesDB.get_all_with_pagination(

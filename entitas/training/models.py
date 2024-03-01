@@ -1,11 +1,11 @@
 class Training:
     def __init__(
             self,
-            id= 0,
-            name= '',
-            description= '',
-            created_date= None,
-            updated_date= None,
+            id=0,
+            name='',
+            description='',
+            created_date=None,
+            updated_date=None,
     ):
         self.id = id
         self.name = name

@@ -10,7 +10,7 @@ from entitas.instructur.models import *
 from entitas.notification.models import *
 from entitas.pathway.models import *
 from entitas.pathway_user.models import *
-from entitas.payhway_training.models import *
+from entitas.pathway_training.models import *
 from entitas.room.models import *
 from entitas.room_user.models import *
 from entitas.schedule.models import *
