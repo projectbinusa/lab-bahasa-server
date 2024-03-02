@@ -3,8 +3,11 @@ class Absent:
             self,
             id= 0,
             training_id= 0,
+            training_name= '',
+            schedule_id= 0,
             absent_date= '',
             user_id= 0,
+            user_name= '',
             status= 0,
             description= '',
             created_date= None,
@@ -12,8 +15,11 @@ class Absent:
     ):
         self.id= id
         self.training_id= training_id
+        self.training_name= training_name
+        self.schedule_id= schedule_id
         self.absent_date= absent_date
         self.user_id= user_id
+        self.user_name= user_name
         self.status= status
         self.description= description
         self.created_date= created_date
@@ -23,8 +29,11 @@ class Absent:
         return {
             "id": self.id,
             "training_id": self.training_id,
+            "training_name": self.training_name,
+            "schedule_id": self.schedule_id,
             "absent_date": self.absent_date,
             "user_id": self.user_id,
+            "user_name": self.user_name,
             "status": self.status,
             "description": self.description,
             "created_date": str(self.created_date) if self.created_date is not None else None,
@@ -35,8 +44,11 @@ class Absent:
         return {
             "id": self.id,
             "training_id": self.training_id,
+            "training_name": self.training_name,
+            "schedule_id": self.schedule_id,
             "absent_date": self.absent_date,
             "user_id": self.user_id,
+            "user_name": self.user_name,
             "status": self.status,
             "description": self.description,
             "created_date": str(self.created_date) if self.created_date is not None else None,

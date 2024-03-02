@@ -6,6 +6,7 @@ class Schedule:
             link='',
             is_online=0,
             location='',
+            active='',
             start_date='',
             created_date=None,
             updated_date=None,
@@ -15,6 +16,7 @@ class Schedule:
         self.link = link
         self.is_online = is_online
         self.location = location
+        self.active = active
         self.start_date = start_date
         self.created_date = created_date
         self.updated_date = updated_date
@@ -26,6 +28,7 @@ class Schedule:
             "link": self.link,
             "is_online": self.is_online,
             "location": self.location,
+            "active": self.active,
             "start_date": self.start_date,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
@@ -38,6 +41,7 @@ class Schedule:
             "link": self.link,
             "is_online": self.is_online,
             "location": self.location,
+            "active": self.active,
             "start_date": self.start_date,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,

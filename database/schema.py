@@ -100,6 +100,7 @@ class PathwayDB(db2.Entity):
     id = PrimaryKey(int, auto=True)
     name = Optional(str, nullable=True)
     description = Optional(str, nullable=True)
+    deleted = Optional(bool, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -108,6 +109,7 @@ class PathwayDB(db2.Entity):
         item.id = self.id
         item.name = self.name
         item.description = self.description
+        item.deleted = self.deleted
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
@@ -120,8 +122,11 @@ class AbsentDB(db2.Entity):
     _table_ = "absent"
     id = PrimaryKey(int, auto=True)
     training_id = Optional(int, nullable=True)
+    training_name = Optional(str, nullable=True)
+    schedule_id = Optional(int, nullable=True)
     absent_date = Optional(datetime, nullable=True)
     user_id = Optional(str, nullable=True)
+    user_name = Optional(str, nullable=True)
     status = Optional(str, nullable=True)
     description = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
@@ -131,8 +136,11 @@ class AbsentDB(db2.Entity):
         item = Absent()
         item.id = self.id
         item.training_id = self.training_id
+        item.training_name = self.training_name
+        item.schedule_id = self.schedule_id
         item.absent_date = self.absent_date
         item.user_id = self.user_id
+        item.user_name = self.user_name
         item.status = self.status
         item.description = self.description
         item.created_date = self.created_date
@@ -338,6 +346,7 @@ class PathwayUserDB(db2.Entity):
     _table_ = "pathway_user"
     id = PrimaryKey(int, auto=True)
     pathway_id = Optional(int, nullable=True)
+    pathway_name = Optional(str, nullable=True)
     user_id = Optional(int, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
@@ -346,6 +355,7 @@ class PathwayUserDB(db2.Entity):
         item = Pathway_Training
         item.id = self.id
         item.pathway_id = self.pathway_id
+        item.pathway_name = self.pathway_name
         item.user_id = self.user_id
         item.created_date = self.created_date
         item.updated_date = self.updated_date
@@ -406,6 +416,7 @@ class ScheduleDB(db2.Entity):
     link = Optional(str, nullable=True)
     is_online = Optional(int, nullable=True)
     location = Optional(str, nullable=True)
+    active = Optional(int, nullable=True)
     start_date = Optional(datetime, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
@@ -417,11 +428,11 @@ class ScheduleDB(db2.Entity):
         item.link = self.link
         item.is_online = self.is_online
         item.location = self.location
+        item.active = self.active
         item.start_date = self.start_date
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
-
 
 class SchedulerInstructurDB(db2.Entity):
     _table_ = "scheduler_instructur"

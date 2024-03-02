@@ -63,6 +63,7 @@ def update(json_object={}, to_model={}):
         updated_training_material = TrainingMaterialDB[json_object["id"]]
         updated_training_material.training_id = json_object = ["training_id"]
         updated_training_material.material_id = json_object = ["material_id"]
+        updated_training_material.material_name = json_object = ["material_name"]
         updated_training_material.is_user_active = json_object = ["is_user_active"]
         commit()
         if to_model:
@@ -89,9 +90,10 @@ def delete_by_id(id=None):
 def insert(json_object={}, to_model=False):
     try:
         new_training_material = TrainingMaterialDB(
-            training_id = json_object["training_id"],
-            material_id = json_object["material_id"],
-            is_user_active = json_object["is_user_active"],
+            training_id=json_object["training_id"],
+            material_id=json_object["material_id"],
+            material_name=json_object["material_name"],
+            is_user_active=json_object["is_user_active"],
         )
         commit()
         if to_model:

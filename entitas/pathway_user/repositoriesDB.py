@@ -64,6 +64,7 @@ def update(json_object={}, to_model=False):
     try:
         updated_pathway_user = PathwayUserDB[json_object["id"]]
         updated_pathway_user.pathway_id = json_object["pathway_id"]
+        updated_pathway_user.pathway_name = json_object["pathway_name"]
         updated_pathway_user.user_id = json_object["user_id"]
         commit()
         if to_model:
@@ -90,6 +91,7 @@ def insert(json_object={}, to_model=False):
     try:
         new_pathway_user = PathwayUserDB(
             pathway_id=json_object["pathway_id"],
+            pathway_name=json_object["pathway_name"],
             user_id=json_object["user_id"],
         )
         commit()

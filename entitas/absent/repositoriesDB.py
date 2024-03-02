@@ -57,8 +57,11 @@ def update(json_object={}, to_model=[]):
     try:
         updated_absent = AbsentDB[json_object["id"]]
         updated_absent.training_id = json_object["training_id"]
+        updated_absent.training_name = json_object["training_name"]
+        updated_absent.schedule_id = json_object["schedule_id"]
         updated_absent.absent_date = json_object["absent_date"]
         updated_absent.user_id = json_object["user_id"]
+        updated_absent.user_name = json_object["user_name"]
         updated_absent.status = json_object["status"]
         updated_absent.description = json_object["description"]
         commit()
@@ -86,9 +89,12 @@ def insert(json_object={}, to_model=[]):
     try:
         new_absent = AbsentDB(
             training_id = json_object["training_id"],
+            training_name = json_object["training_name"],
+            schedule_id = json_object["schedule_id"],
             absent_date = json_object["absent_date"],
             status = json_object["status"],
             user_id = json_object["user_id"],
+            user_name = json_object["user_name"],
             description = json_object["description"],
         )
         commit()

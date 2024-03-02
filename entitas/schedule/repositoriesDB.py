@@ -62,6 +62,7 @@ def update(json_obejct={}, to_model=False):
         updated_schedule.is_online = json_obejct["is_online"]
         updated_schedule.link = json_obejct["link"]
         updated_schedule.location = json_obejct["location"]
+        updated_schedule.active = json_obejct["active"]
         updated_schedule.start_date = json_obejct["start_date"]
         commit()
         if to_model:
@@ -93,6 +94,7 @@ def insert(json_object={}, to_model=False):
             link = json_object["link"],
             is_online = json_object["is_online"],
             location = json_object["location"],
+            active = json_object["active"],
             start_date = json_object["start_date"],
         )
         commit()

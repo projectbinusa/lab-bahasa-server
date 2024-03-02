@@ -4,6 +4,7 @@ class Training_Material:
             id= 0,
             training_id= 0,
             material_id= 0,
+            material_name= 0,
             is_user_access= 0,
             created_date=None,
             updated_date=None
@@ -11,6 +12,7 @@ class Training_Material:
         self.id = id,
         self.training_id = training_id
         self.material_id = material_id
+        self.material_name = material_name
         self.is_user_access = is_user_access
         self.created_date = created_date
         self.updated_date = updated_date
@@ -20,6 +22,7 @@ class Training_Material:
             "id": self.id,
             "training_id": self.training_id,
             "material_id": self.material_id,
+            "material_name": self.material_name,
             "is_user_access": self.is_user_access,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
@@ -30,6 +33,7 @@ class Training_Material:
             "id": self.id,
             "training_id": self.training_id,
             "material_id": self.material_id,
+            "material_name": self.material_name,
             "is_user_access": self.is_user_access,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
