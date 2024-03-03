@@ -121,5 +121,8 @@ def update_lat_lon_citie():
 
 def raise_error(msg="", param_name=""):
     import falcon
-
     raise falcon.HTTPBadRequest(description=msg)
+
+def raise_forbidden(msg=''):
+    import falcon
+    raise falcon.HTTPForbidden(title=msg)

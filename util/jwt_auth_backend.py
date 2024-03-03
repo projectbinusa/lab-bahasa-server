@@ -180,7 +180,7 @@ class JWTAuthBackend(AuthBackend):
         from entitas.user.services import find_user_db_by_token
 
         # Decodes the jwt token into a payload
-        auth_header = req.get_header('auth-adv')
+        auth_header = req.get_header('auth-event')
         # if auth_header is None:
             # auth_header = req.get_header('Authorization')
         token = self.parse_auth_token_from_request(auth_header=auth_header)

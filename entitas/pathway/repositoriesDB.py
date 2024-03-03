@@ -20,8 +20,8 @@ def get_all(to_model=False):
 
 @db_session
 def get_all_with_pagination(page=0, limit=9, filters=[], to_model=False):
-    result = [],
-    total_record = 0,
+    result = []
+    total_record = 0
     try:
         data_in_db = select(s for s in PathwayDB).order_by(desc(PathwayDB.id))
         for item in filters:
@@ -32,9 +32,7 @@ def get_all_with_pagination(page=0, limit=9, filters=[], to_model=False):
 
         total_record = data_in_db.count()
         if limit > 0:
-            data_in_db = data_in_db.page(pagenume=page, pageSize=limit)
-        else:
-            data_in_db = data_in_db
+            data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
         for item in data_in_db:
             if to_model:
                 result.append(item.to_model())
@@ -89,6 +87,7 @@ def insert(json_object={}, to_model=False):
         new_pathway = PathwayDB(
             name=json_object["name"],
             description=json_object["description"],
+            deleted=False
         )
         commit()
         if to_model:

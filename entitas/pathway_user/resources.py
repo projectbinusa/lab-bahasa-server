@@ -4,7 +4,7 @@ from util.entitas_util import generate_filters_resource, resouce_response_api
 
 class PathwayUserResource:
     def on_get(self, req, resp):
-        filters = generate_filters_resource(req=req, params_int=['id'], params_string=['name'])
+        filters = generate_filters_resource(req=req, params_int=['id','pathway_id','user_id'], params_string=['pathway_name'])
         page = int(req.get_param("page", required=False, default=1))
         limit = int(req.get_param("limit", required=False, default=9))
         data, pagination = services.get_pathway_user_db_with_pagination(
@@ -27,3 +27,21 @@ class PathwayUserWithIdResource:
 
     def on_delete(self, req, resp, pathway_user_id: int):
         resouce_response_api(resp=resp, data=services.delete_pathway_user_by_id(id=int(pathway_user_id)))
+
+class UserPathwayUserResource:
+    def on_get(self, req, resp):
+        filters = generate_filters_resource(req=req, params_int=['id','pathway_id'], params_string=['pathway_name'])
+        filters.append({
+            'field': 'user_id',
+            'value': req.context['user']['id']
+        })
+        page = int(req.get_param("page", required=False, default=1))
+        limit = int(req.get_param("limit", required=False, default=9))
+        data, pagination = services.get_pathway_user_db_with_pagination(
+            page=page, limit=limit, filters=filters
+        )
+        resouce_response_api(resp=resp, data=data, pagination=pagination)
+
+    def on_put(self, req, resp):
+        #todo update oleh user
+        resouce_response_api(resp=resp, data=services.insert_pathway_user_db(json_object=req.media))

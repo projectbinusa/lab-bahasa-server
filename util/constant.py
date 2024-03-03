@@ -1,5 +1,6 @@
 SUCCESS = "success"
 EMAIL_MUST_FILL = "Email tidak boleh kosong"
+PASSWORD_MUST_FILL = "Password tidak boleh kosong"
 HP_MUST_FILL = "Hp tidak boleh kosong"
 MESSAGE_INVALID_REQUEST_FORMAT = "request tidak valid. Error {0}, {1}"
 MESSAGE_SUCCESS = "success"

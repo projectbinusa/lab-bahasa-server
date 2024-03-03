@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from pony.orm import *
 
 from database.schema import UserDB
-from util.constant import SUCCESS
+from util.other_util import  raise_error
 from util.other_util import encrypt_string
 
 
@@ -166,16 +166,32 @@ def insert(json_object={}, to_model=False):
         )
         commit()
         if to_model:
-            return new_user.to_model(), SUCCESS
+            return new_user.to_model()
         else:
-            return new_user.to_model().to_response(), SUCCESS
+            return new_user.to_model().to_response()
     except Exception as e:
         return None, "error UserDB insert: " + str(e)
+
+@db_session
+def signup(json_object={}):
+    UserDB(
+        address=json_object["address"],
+        name=json_object["name"],
+        hp=json_object["hp"],
+        birth_date=json_object["birth_date"],
+        birth_place=json_object["birth_place"],
+        email=json_object["email"],
+        active=1,
+        password=encrypt_string(json_object["new_password"]),
+        token=str(uuid.uuid4())
+    )
+    commit()
+    return True
 
 
 @db_session
 def post_login(json_object={}):
-    try:
+    # try:
         print('encrypt_string(json_object["password"]) ------>',encrypt_string(json_object["password"]))
         if json_object["email"] not in ["", "-"]:
             account_db = UserDB.get(
@@ -192,9 +208,9 @@ def post_login(json_object={}):
             commit()
             return account_db.to_model()
 
-    except Exception as e:
-        print("error UserDB post_login: ", e)
-    return None
+    # except Exception as e:
+    #     print("error UserDB post_login: ", e)
+    # return None
 
 
 @db_session
@@ -215,8 +231,6 @@ def find_by_token(token="", to_model=False):
 
 @db_session
 def update_profile(json_object=None, to_model=False):
-    if json_object is None:
-        return None, "object is None"
     try:
         updated_user = UserDB[json_object["id"]]
         if "name" in json_object:
@@ -238,7 +252,7 @@ def update_profile(json_object=None, to_model=False):
             return updated_user.to_model().to_response_profile()
     except Exception as e:
         print("error UserDB update_profile: " + str(e))
-        return None
+        return
 
 
 @db_session
@@ -368,8 +382,7 @@ def find_by_email(email="", to_model=False):
         return
     if to_model:
         return data_in_db.first().to_model()
-    else:
-        return data_in_db.first().to_model().to_response()
+    return data_in_db.first().to_model().to_response()
 
 @db_session
 def is_email_has_user(email=""):

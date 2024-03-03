@@ -13,7 +13,23 @@ class AbsentResource:
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 
     def on_post(self, req, resp):
-        resouce_response_api(resp=resp, data=services.insert_absent_db(json_object=req.media))
+        body = req.media
+        body['user_id'] = req.context['user']['id']
+        resouce_response_api(resp=resp, data=services.insert_absent_db(json_object=body))
+
+class AdminAbsentResource:
+    def on_get(self, req, resp):
+        filters = generate_filters_resource(req=req, params_int=['id', 'training_id', 'schedule_id'], params_string=['user_name', 'training_name'])
+        page = int(req.get_param("page", required=False, default=1))
+        limit = int(req.get_param("limit", required=False, default=9))
+        data, pagination = services.get_absent_db_with_pagination(
+            page=page, limit=limit, filters=filters
+        )
+        resouce_response_api(resp=resp, data=data, pagination=pagination)
+
+    def on_post(self, req, resp):
+        body = req.media
+        resouce_response_api(resp=resp, data=services.insert_absent_db(json_object=body))
 
 
 class AbsentWithIdResource:

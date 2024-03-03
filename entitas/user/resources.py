@@ -45,56 +45,20 @@ class UserWithIdResource:
 
 class UserLoginResource:
     auth = {"auth_disabled": True}
-
-    
     def on_post(self, req, resp):
-        base_response = BaseResponse()
         body = req.media
         domain = ""
         if "ORIGIN" in req.headers:
             domain = req.headers["ORIGIN"]
-        base_response.data, base_response.message = services.login_db(
+        resouce_response_api(resp=resp, data=services.login_db(
             json_object=body, domain=domain
-        )
-        if base_response.data is None or base_response.data["token"] == "":
-            base_response.status = falcon.HTTP_403
-            base_response.code = 403
-            base_response.message = base_response.message
-            base_response.data = {}
-        else:
-            base_response.status = falcon.HTTP_200
-            base_response.data["origin"] = domain
-            base_response.code = 200
-            base_response.message = "success"
-
-        resp.media = base_response.toJSON()
-        resp.status = base_response.status
+        ), pagination={})
 
 
 class UserSignupResource:
     auth = {"auth_disabled": True}
-
-    class UserSignupResource:
-        auth = {"auth_disabled": True}
-
-        def on_post(self, req, resp):
-            base_response = BaseResponse()
-            body = req.media
-            base_response.data = services.signup_user_db(json_object=body)
-
-            if "token" not in base_response.data or base_response.data["token"] == "":
-                base_response.status = falcon.HTTP_403
-                base_response.code = 403
-                base_response.message = "forbidden"
-                if "message" in base_response.data and base_response.data["message"] != "":
-                    base_response.message = base_response.data["message"]
-            else:
-                base_response.status = falcon.HTTP_200
-                base_response.code = 200
-                base_response.message = "success"
-
-            resp.media = base_response.toJSON()
-            resp.status = base_response.status
+    def on_post(self, req, resp):
+        resouce_response_api(resp=resp, data=services.signup_user_db(json_object=req.media))
 
 
 class UserUpdatePasswordWithResource:
@@ -110,17 +74,28 @@ class UserUpdatePasswordWithResource:
 class UserUpdateProfileWithIdResource:
     def on_put(self, req, resp):
         body = req.media
-        body["user"] = req.context["user"]
-        body["id"] = body["user"]["id"]
+        body["id"] = req.context["user"]["id"]
         resouce_response_api(resp=resp, data=services.update_profile_id_user_db(
             json_object=body
         ))
 
     def on_get(self, req, resp):
         resouce_response_api(resp=resp, data=services.get_profile_id_user_db(
-            json_object={"user": req.context["user"]}
+            json_object={"id": req.context["user"]["id"]}
         ))
 
+class AdminUserUpdateProfileWithIdResource:
+    def on_put(self, req, resp, user_id: int):
+        body = req.media
+        body["id"] = int(user_id)
+        resouce_response_api(resp=resp, data=services.update_profile_id_user_db(
+            json_object=body
+        ))
+
+    def on_get(self, req, resp, user_id: int):
+        resouce_response_api(resp=resp, data=services.get_profile_id_user_db(
+            json_object={"id": int(user_id)}
+        ))
 
 class UserLogoutWithIdResource:
     
@@ -201,6 +176,6 @@ class UserUpdateProfileWithIdResourceAdmin:
 class UserRefreshTokenResource:
     # auth = {"auth_disabled": True}
     def on_post(self, req, resp):
-        resouce_response_api(resp=resp, data=services.refresh_token_authorization(authorization=req.headers['AUTH-TGH'] if 'AUTH-TGH' in req.headers else ''))
+        resouce_response_api(resp=resp, data=services.refresh_token_authorization(authorization=req.headers['AUTH-EVENT'] if 'AUTH-EVENT' in req.headers else ''))
 
 

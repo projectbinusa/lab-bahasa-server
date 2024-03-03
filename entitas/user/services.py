@@ -3,10 +3,10 @@ import uuid
 import falcon
 
 from entitas.user import repositoriesDB
-from util.constant import EMAIL_MUST_FILL, SUCCESS
+from util.constant import EMAIL_MUST_FILL, PASSWORD_MUST_FILL
 from util.entitas_util import *
 from util.jwt_util import jwt_encode, check_valid_email
-from util.other_util import encrypt_string, get_random_string, raise_error
+from util.other_util import encrypt_string, get_random_string, raise_error, raise_forbidden
 import datetime
 from config.config import TYPE_TOKEN_USER
 
@@ -84,31 +84,21 @@ def insert_user_db(json_object={}, to_model=False):
 
 def signup_user_db(json_object={}):
     if "email" not in json_object:
-        return {"status": "error", "message": EMAIL_MUST_FILL, "data": None}
-
-    if "active" not in json_object:
-        json_object["active"] = False
-
-    json_object["token"] = str(uuid.uuid4())
+        raise_error(str=EMAIL_MUST_FILL)
     if "password" not in json_object:
-        json_object["password"] = get_random_string(5)
+        raise_error(str=PASSWORD_MUST_FILL)
     if not check_valid_email(email=json_object["email"]):
-        return {"status": "error", "message": "Email tidak valid", "data": None}
+        raise_error(msg='Email tidak valid')
+    json_object["role"] = 'user'
+    json_object["token"] = str(uuid.uuid4())
 
     existing_account = repositoriesDB.find_by_email(email=json_object["email"], to_model=True)
 
     if existing_account is not None:
-        # return {"status": "error", "message": "Email sudah terdaftar", "data": None}
-        return{}
+        raise_error(msg='Email sudah terdaftar')
 
     json_object["new_password"] = json_object["password"]
-    account_info, status = repositoriesDB.insert(json_object=json_object, to_model=True)
-
-    if status != SUCCESS or account_info is None:
-        return {}
-
-    return {"status": "success", "message": "Pendaftaran berhasil",
-            "data": jwt_encode(account_info.to_response_login(), TYPE_TOKEN_USER)}
+    return repositoriesDB.signup(json_object=json_object)
 
 
 def delete_user_by_id(id=0):
@@ -120,15 +110,15 @@ def login_db(json_object={}, domain=""):
 
     account_info = repositoriesDB.post_login(json_object=json_object)
     if account_info is None:
-        return None, "Email atau password tidak sesuai"
+        raise_forbidden('Email atau password tidak sesuai')
 
     if account_info.active == 0:
-        return None, "Email belum di aktivasi"
+        raise_error("Email belum di aktivasi")
     domain_result = ""
 
     account = account_info.to_response_login()
     account["domain"] = domain_result
-    return jwt_encode(account, TYPE_TOKEN_USER), "success"
+    return jwt_encode(account, TYPE_TOKEN_USER)
 
 
 def find_user_db_by_token(token="", to_model=False):
@@ -136,7 +126,9 @@ def find_user_db_by_token(token="", to_model=False):
 
 
 def update_profile_id_user_db(json_object={}):
-    account = find_user_db_by_id(id=json_object["user"]["id"], to_model=True)
+    if json_object is None:
+        raise_error('payload data is empty')
+    account = find_user_db_by_id(id=json_object["id"], to_model=True)
     if account is None:
         raise_error(msg="akun tidak ditemukan")
     return repositoriesDB.update_profile(json_object=json_object, to_model=False)
@@ -154,10 +146,10 @@ def logout_user_db(json_object={}):
 
 
 def get_profile_id_user_db(json_object={}):
-    account = repositoriesDB.find_by_id(id=json_object["user"]["id"])
+    account = repositoriesDB.find_by_id(id=json_object["id"])
     if account is None:
-        return None, ""
-    return account.to_response_profile(), "success"
+        return
+    return account.to_response_profile()
 
 
 def get_profile_id_user_db_admin(id=0):

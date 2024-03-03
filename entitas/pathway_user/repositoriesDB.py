@@ -27,8 +27,12 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
         for item in filters:
             if item["field"] == "id":
                 data_in_db = data_in_db.filter(id=item["value"])
-            elif item["field"] == "name":
-                data_in_db = data_in_db.filter(lambda d: d.name == item["value"])
+            elif item["field"] == "pathway_id":
+                data_in_db = data_in_db.filter(pathway_id=item["value"])
+            elif item["field"] == "user_id":
+                data_in_db = data_in_db.filter(user_id=item["value"])
+            elif item["field"] == "pathway_name":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.pathway_name)
 
 
         total_record = data_in_db.count()
@@ -93,6 +97,7 @@ def insert(json_object={}, to_model=False):
             pathway_id=json_object["pathway_id"],
             pathway_name=json_object["pathway_name"],
             user_id=json_object["user_id"],
+            user_name=json_object['user_name']
         )
         commit()
         if to_model:

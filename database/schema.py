@@ -1,25 +1,25 @@
 from datetime import date, datetime
 from pony.orm import *
-from entitas.material.models import *
-from entitas.absent.models import *
-from entitas.assignment.models import *
-from entitas.assignment_user.models import *
-from entitas.certificate.models import *
-from entitas.comment.models import *
-from entitas.instructur.models import *
-from entitas.notification.models import *
-from entitas.pathway.models import *
-from entitas.pathway_user.models import *
-from entitas.pathway_training.models import *
-from entitas.room.models import *
-from entitas.room_user.models import *
-from entitas.schedule.models import *
-from entitas.schedule_instructur.models import *
-from entitas.schedule_user.models import *
-from entitas.training.models import *
-from entitas.training_user.models import *
-from entitas.user.models import *
-from entitas.training_material.models import *
+from entitas.material.models import Material
+from entitas.absent.models import Absent
+from entitas.assignment.models import Assignment
+from entitas.assignment_user.models import Assignment_User
+from entitas.certificate.models import Certificate
+from entitas.comment.models import Comment
+from entitas.instructur.models import Instructur
+from entitas.notification.models import Notification
+from entitas.pathway.models import Pathway
+from entitas.pathway_user.models import Pathway_User
+from entitas.pathway_training.models import Pathway_Training
+from entitas.room.models import Room
+from entitas.room_user.models import Room_User
+from entitas.schedule.models import Schedule
+from entitas.schedule_instructur.models import Schedule_instuctur
+from entitas.schedule_user.models import Schedule_User
+from entitas.training.models import Training
+from entitas.training_user.models import Training_user
+from entitas.user.models import User
+from entitas.training_material.models import Training_Material
 from util.db_util import db2
 from config.config import DOMAIN_FILE_URL
 
@@ -35,7 +35,7 @@ class UserDB(db2.Entity):
     password = Optional(str, nullable=True)
     token = Optional(str, nullable=True)
     last_login = Optional(datetime, nullable=True)
-    birth_date = Optional(datetime, nullable=True)
+    birth_date = Optional(date, nullable=True)
     birth_place = Optional(str, nullable=True)
     firebase_token = Optional(str, nullable=True)
     ws_id = Optional(str, nullable=True)
@@ -125,9 +125,9 @@ class AbsentDB(db2.Entity):
     training_name = Optional(str, nullable=True)
     schedule_id = Optional(int, nullable=True)
     absent_date = Optional(datetime, nullable=True)
-    user_id = Optional(str, nullable=True)
+    user_id = Optional(int, nullable=True)
     user_name = Optional(str, nullable=True)
-    status = Optional(str, nullable=True)
+    status = Optional(int, nullable=True)
     description = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
@@ -163,7 +163,7 @@ class AssignmentDB(db2.Entity):
     updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
-        item = Assignment
+        item = Assignment()
         item.id = self.id
         scheduler_id = self.scheduler_id
         training_id = self.training_id
@@ -191,7 +191,7 @@ class Assignment_UserDB(db2.Entity):
     updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
-        item = Assignment_User
+        item = Assignment_User()
         item.id = self.id
         item.assignment_id = self.assignment_id
         item.user_id = self.user_id
@@ -222,7 +222,7 @@ class CertificateDB(db2.Entity):
     updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
-        item = Certificate
+        item = Certificate()
         item.id = self.id
         item.scheduler_id = self.scheduler_id
         item.training_id = self.training_id
@@ -254,7 +254,7 @@ class CommentDB(db2.Entity):
     updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
-        item = Comment
+        item = Comment()
         item.id = self.id
         item.comment_for_id = self.comment_for_id
         item.is_deleted = self.is_deleted
@@ -284,7 +284,7 @@ class InstructurDB(db2.Entity):
     updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
-        item = Instructur
+        item = Instructur()
         item.id = self.id
         item.name = self.name
         item.email = self.email
@@ -311,7 +311,7 @@ class NotificationDB(db2.Entity):
     updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
-        item = Notification
+        item = Notification()
         item.id = self.id
         item.fcm_token = self.fcm_token
         item.email = self.email
@@ -329,14 +329,18 @@ class PathwayTrainingDB(db2.Entity):
     id = PrimaryKey(int, auto=True)
     pathway_id = Optional(int, nullable=True)
     training_id = Optional(int, nullable=True)
+    training_name = Optional(str, nullable=True)
+    urut = Optional(int, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
-        item = Pathway_Training
+        item = Pathway_Training()
         item.id = self.id
         item.pathway_id = self.pathway_id
         item.training_id = self.training_id
+        item.training_name = self.training_name
+        item.urut = self.urut
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
@@ -348,15 +352,17 @@ class PathwayUserDB(db2.Entity):
     pathway_id = Optional(int, nullable=True)
     pathway_name = Optional(str, nullable=True)
     user_id = Optional(int, nullable=True)
+    user_name = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
-        item = Pathway_Training
+        item = Pathway_Training()
         item.id = self.id
         item.pathway_id = self.pathway_id
         item.pathway_name = self.pathway_name
         item.user_id = self.user_id
+        item.user_name = self.user_name
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
@@ -373,7 +379,7 @@ class RoomDB(db2.Entity):
     updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
-        item = Room
+        item = Room()
         item.id = self.id
         item.name = self.name
         item.avatar_url = self.avatar_url
@@ -397,7 +403,7 @@ class RoomUserDB(db2.Entity):
     updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
-        item = Room_User
+        item = Room_User()
         item.id = self.id
         item.user_id = self.user_id
         item.room_id = self.room_id
@@ -412,7 +418,9 @@ class RoomUserDB(db2.Entity):
 class ScheduleDB(db2.Entity):
     _table_ = "schedule"
     id = PrimaryKey(int, auto=True)
+    name = Optional(str, nullable=True)
     training_id = Optional(int, nullable=True)
+    training_name = Optional(str, nullable=True)
     link = Optional(str, nullable=True)
     is_online = Optional(int, nullable=True)
     location = Optional(str, nullable=True)
@@ -422,9 +430,11 @@ class ScheduleDB(db2.Entity):
     updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
-        item = Schedule
+        item = Schedule()
         item.id = self.id
+        item.name = self.name
         item.training_id = self.training_id
+        item.training_name = self.training_name
         item.link = self.link
         item.is_online = self.is_online
         item.location = self.location
@@ -445,7 +455,7 @@ class SchedulerInstructurDB(db2.Entity):
     updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
-        item = Schedule_instuctur
+        item = Schedule_instuctur()
         item.id = self.id
         item.scheduler_id = self.scheduler_id
         item.instructur_id = self.instructur_id
@@ -467,7 +477,7 @@ class SchedulerUserDB(db2.Entity):
     updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
-        item = Schedule_User
+        item = Schedule_User()
         item.id = self.id
         item.scheduler_id = self.scheduler_id
         item.user_id = self.user_id
@@ -487,7 +497,7 @@ class TrainingDB(db2.Entity):
     updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
-        item = Training
+        item = Training()
         item.id = self.id
         item.name = self.name
         item.description = self.description
@@ -506,7 +516,7 @@ class TrainingMaterialDB(db2.Entity):
     updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
-        item = Training_Material
+        item = Training_Material()
         item.id = self.id
         item.training_id = self.training_id
         item.material_id = self.material_id
@@ -526,7 +536,7 @@ class TrainingUserDB(db2.Entity):
     updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
-        item = Training_user
+        item = Training_user()
         item.id = self.id
         item.training_id = self.training_id
         item.user_id = self.user_id

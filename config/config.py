@@ -12,3 +12,4 @@ secret_jwt = os.environ["secret_jwt"]
 driverDB = os.environ["driverDB"]
 TYPE_TOKEN_USER = 'user'
 DOMAIN_FILE_URL = 'http://file-event.lynk2.co'
+SALT_SORTER = 'rahasiademak'

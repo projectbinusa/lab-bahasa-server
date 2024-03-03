@@ -54,16 +54,15 @@ def find_by_id(id=None):
     return data_in_db.first().to_model()
 
 @db_session
-def update(json_obejct={}, to_model=False):
+def update(json_object={}, to_model=False):
     try:
-        updated_schedule = ScheduleDB[json_obejct["id"]]
-        updated_schedule.name = json_obejct["name"]
-        updated_schedule.training_id = json_obejct["training_id"]
-        updated_schedule.is_online = json_obejct["is_online"]
-        updated_schedule.link = json_obejct["link"]
-        updated_schedule.location = json_obejct["location"]
-        updated_schedule.active = json_obejct["active"]
-        updated_schedule.start_date = json_obejct["start_date"]
+        updated_schedule = ScheduleDB[json_object["id"]]
+        updated_schedule.name = json_object["name"]
+        updated_schedule.training_id = json_object["training_id"]
+        updated_schedule.is_online = json_object["is_online"]
+        updated_schedule.location = json_object["location"]
+        updated_schedule.active = json_object["active"]
+        updated_schedule.start_date = json_object["start_date"]
         commit()
         if to_model:
             return updated_schedule.to_model()
@@ -73,6 +72,18 @@ def update(json_obejct={}, to_model=False):
     except Exception as e:
         print("error Schedule update: ", e)
     return None
+
+@db_session
+def update_link(id=0, link=''):
+    try:
+        updated_schedule = ScheduleDB[id]
+        updated_schedule.link = link
+        commit()
+        return True
+
+    except Exception as e:
+        print("error Schedule update_link: ", e)
+    return
 
 @db_session
 def delete_by_id(id=None):
@@ -87,15 +98,16 @@ def delete_by_id(id=None):
 @db_session
 def insert(json_object={}, to_model=False):
     try:
-        training = TrainingDB[json_object["training_id"]]
+        # training = TrainingDB[json_object["training_id"]]
         new_schedule = ScheduleDB(
             name = json_object["name"],
-            training_id = training,
-            link = json_object["link"],
+            training_id = json_object["training_id"],
+            training_name=json_object["training_name"],
+            # link = json_object["link"],
             is_online = json_object["is_online"],
             location = json_object["location"],
             active = json_object["active"],
-            start_date = json_object["start_date"],
+            start_date = json_object["start_date"]
         )
         commit()
         if to_model:

@@ -44,14 +44,14 @@ class User:
             "email": self.email,
             "password": self.password,
             "address": self.address,
-            "birth_date": self.birth_date,
+            "birth_date": str(self.birth_date) if self.birth_date is not None else None,
             "role": self.role,
             "birth_place": self.birth_place,
             "picture": self.picture,
             "firebase_token": self.firebase_token,
             "ws_id": self.ws_id,
             "activate": self.activate,
-            "last_login": self.last_login,
+            "last_login": str(self.last_login) if self.last_login is not None else None,
             "token": self.token,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
@@ -63,7 +63,7 @@ class User:
             "email": self.email,
             "password": self.password,
             "role": self.role,
-            "last_login": self.last_login,
+            "last_login": str(self.last_login) if self.last_login is not None else None,
             "token": self.token,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
@@ -76,12 +76,12 @@ class User:
             "email": self.email,
             "password": self.password,
             "address": self.address,
-            "birth_date": self.birth_date,
+            "birth_date": str(self.birth_date) if self.birth_date is not None else None,
             "role": self.role,
             "birth_place": self.birth_place,
             "picture": self.picture,
             "activate": self.activate,
-            "last_login": self.last_login,
+            "last_login": str(self.last_login) if self.last_login is not None else None,
             "hp": self.hp,
         }
 
@@ -92,12 +92,12 @@ class User:
             "email": self.email,
             "password": self.password,
             "address": self.address,
-            "birth_date": self.birth_date,
+            "birth_date": str(self.birth_date) if self.birth_date is not None else None,
             "role": self.role,
             "birth_place": self.birth_place,
             "picture": self.picture,
             "activate": self.activate,
-            "last_login": self.last_login,
+            "last_login": str(self.last_login) if self.last_login is not None else None,
             "hp": self.hp,
             "token": self.token,
             "created_date": str(self.created_date) if self.created_date is not None else None,
@@ -108,8 +108,9 @@ class User:
         return {"email": self.email}
 
     def to_response_simple(self):
+        print('hl aas')
         return {
-            "name": self.name,
-            "email": self.email,
-            "picture": "",
+            "name": 'self.name',
+            "email": 'self.email',
+            "picture": ""
         }

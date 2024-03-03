@@ -23,8 +23,14 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False ):
         for item in filters:
             if item["field"] == "id":
                 data_in_db = data_in_db.filter(id=item["value"])
-            elif item["field"] == "name":
-                data_in_db = data_in_db.filter(lambda d: d.name == item["value"])
+            elif item["field"] == "user_name":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.user_name)
+            elif item["field"] == "training_name":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.training_name)
+            elif item["field"] == "schedule_id":
+                data_in_db = data_in_db.filter(schedule_id=item["value"])
+            elif item["field"] == "training_id":
+                data_in_db = data_in_db.filter(training_id=item["value"])
 
         total_record = data_in_db.count()
         if limit > 0:

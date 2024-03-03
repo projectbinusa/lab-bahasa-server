@@ -33,13 +33,11 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
         total_record = data_in_db.count()
         if limit > 0:
             data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
-        else:
-            data_in_db = data_in_db
         for item in data_in_db:
             if to_model:
                 result.append(item.to_model())
             else:
-                result.append(item.to_model().to_response)
+                result.append(item.to_model().to_response())
 
     except Exception as e:
         print("error TrainingDB getAllWithPagination ", e)
@@ -95,8 +93,8 @@ def insert(json_object={}, to_model=False):
         commit()
         if to_model:
             return new_training.to_model()
-        else:
-            return new_training.to_model().to_response()
+        print('fdsss',new_training.to_model().to_response())
+        return new_training.to_model().to_response()
 
     except Exception as e:
         print("error Training insert: ", e)
