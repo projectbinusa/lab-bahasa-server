@@ -29,7 +29,6 @@ def get_all(to_model=False, filters=[]):
         print("error UserDB getAll: ", e)
     return result
 
-
 @db_session
 def get_all_with_pagination(
     page=1,
@@ -37,6 +36,7 @@ def get_all_with_pagination(
     to_model=False,
     filters=[],
     to_response="to_response",
+    name=None,
 ):
     result = []
     total_record = 0
@@ -51,6 +51,8 @@ def get_all_with_pagination(
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.hp)
             if item["field"] == "role":
                 data_in_db = data_in_db.filter(role=item["value"])
+        if name:
+            data_in_db = data_in_db.filter(lambda d: d.name == name)
         total_record = count(data_in_db)
         if limit != 0:
             data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
@@ -69,6 +71,7 @@ def get_all_with_pagination(
         "page": page,
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
+
 
 
 @db_session
