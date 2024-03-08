@@ -61,7 +61,6 @@ class User:
         return {
             "id": self.id,
             "email": self.email,
-            "password": self.password,
             "role": self.role,
             "last_login": str(self.last_login) if self.last_login is not None else None,
             "token": self.token,
