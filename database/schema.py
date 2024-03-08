@@ -75,6 +75,7 @@ class MaterialDB(db2.Entity):
     id = PrimaryKey(int, auto=True)
     name = Optional(str, nullable=True)
     user_id = Optional(int, nullable=True)
+    name = Optional(str, nullable=True)
     filename = Optional(str, nullable=True)
     description = Optional(str, nullable=True)
     url_file = Optional(str, nullable=True)
@@ -86,6 +87,7 @@ class MaterialDB(db2.Entity):
         item.id = self.id
         item.name = self.name
         item.user_id = self.user_id
+        item.name = self.name
         item.filename = self.filename
         item.description = self.description
         item.url_file = self.url_file

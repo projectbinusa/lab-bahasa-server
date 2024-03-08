@@ -11,9 +11,13 @@ class MaterialResource:
             page=page, limit=limit, filters=filters
         )
         resouce_response_api(resp=resp, data=data, pagination=pagination)
-
     def on_post(self, req, resp):
-        resouce_response_api(resp=resp, data=services.insert_material_db(json_object=req.media))
+        file = req.get_param("file")
+        body = {}
+        body['name'] = req.get_param("name")
+        body['description'] = req.get_param("description")
+        body["user_id"] = req.context["user"]["id"]
+        resouce_response_api(resp=resp, data=services.insert_material_db(json_object=body, file=file))
 
 
 class MaterialWithIdResource:
