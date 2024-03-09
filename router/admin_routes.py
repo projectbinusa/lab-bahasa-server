@@ -22,6 +22,7 @@ from entitas.instructur.resources import *
 
 def admin_routes(api):
     api.add_route("/api/admin/user", UserSignupResource())
+    api.add_route("/api/admin/user/getAll", UserResource())
     api.add_route("/api/admin/user/{user_id}/profile", AdminUserUpdateProfileWithIdResource())
     api.add_route("/api/admin/material", MaterialResource())
     api.add_route("/api/admin/material/{material_id}", MaterialWithIdResource())
@@ -46,3 +47,5 @@ def admin_routes(api):
     api.add_route("/api/admin/training_material/{training_material_id}", TrainingMaterialWithIdResource())
     api.add_route("/api/admin/training_material", TrainingMaterialResource())
     api.add_route("/api/admin/absent", AdminAbsentResource())
+    api.add_route("/api/admin/training/{training_id}/material", MaterialResource())
+    api.add_route("/api/admin/training/{training_id}/material/{material_id}", MaterialWithIdResource())

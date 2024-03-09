@@ -73,6 +73,7 @@ class UserDB(db2.Entity):
 class MaterialDB(db2.Entity):
     _table_ = "material"
     id = PrimaryKey(int, auto=True)
+    name = Optional(str, nullable=True)
     user_id = Optional(int, nullable=True)
     name = Optional(str, nullable=True)
     filename = Optional(str, nullable=True)
@@ -84,6 +85,7 @@ class MaterialDB(db2.Entity):
     def to_model(self):
         item = Material()
         item.id = self.id
+        item.name = self.name
         item.user_id = self.user_id
         item.name = self.name
         item.filename = self.filename

@@ -26,9 +26,9 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
         data_in_db = select(s for s in PathwayTrainingDB).order_by(PathwayTrainingDB.urut)
         for item in filters:
             if item["field"] == "id":
-                data_in_db = data_in_db.filter(id=item["value"])
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
             elif item["field"] == "name":
-                data_in_db = data_in_db.filter(lambda d: d.name == item["value"])
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
             elif item["field"] == "pathway_id":
                 data_in_db = data_in_db.filter(pathway_id=item["value"])
 

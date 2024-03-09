@@ -2,7 +2,6 @@ from pony.orm import *
 
 from database.schema import TrainingDB
 
-
 @db_session
 def get_all(to_model=False):
     result = []
@@ -26,9 +25,11 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
         data_in_db = select(s for s in TrainingDB).order_by(desc(TrainingDB.id))
         for item in filters:
             if item["filed"] == "id":
-                data_in_db = data_in_db.filter(id=item["value"])
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
             elif item["filed"] == "name":
-                data_in_db = data_in_db.filters(lambda d: d.name == item["value"])
+                data_in_db = data_in_db.filters(lambda d: item["value"] in d.name)
+            elif item["filed"] == "description":
+                data_in_db = data_in_db.filters(lambda d: item["value"] in d.description)
 
         total_record = data_in_db.count()
         if limit > 0:

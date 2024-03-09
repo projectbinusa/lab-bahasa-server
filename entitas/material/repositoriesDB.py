@@ -26,11 +26,15 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
         data_in_db = select(s for s in MaterialDB).order_by(desc(MaterialDB.id))
         for item in filters:
             if item["field"] == "id":
-                data_in_db = data_in_db.filter(id=item["value"])
-            elif item["field"] == "name":
-                data_in_db = data_in_db.filter(lambda d: d.name == item["value"])
-
-
+                data_in_db = data_in_db.filter(lambda d: item['value'] in d.id)
+            if item["field"] == "name":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
+            if item["field"] == "description":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.description)
+            if item["field"] == "filename":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.filename)
+            if item["field"] == "url_file":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.url_file)
         total_record = data_in_db.count()
         if limit > 0:
             data_in_db = data_in_db.page(pagenum=page, pagesize=limit)

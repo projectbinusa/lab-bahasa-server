@@ -25,9 +25,9 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
         data_in_db = select(s for s in SchedulerUserDB).order_by(desc(SchedulerUserDB.id))
         for item in filters:
             if item["field"] == "id":
-                data_in_db = data_in_db.filter(id=item["value"])
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
             elif item["field"] == "name":
-                data_in_db = data_in_db.filter(lambda d: d.name == item["value"])
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
 
         total_record = data_in_db.count()
         if limit > 0:
