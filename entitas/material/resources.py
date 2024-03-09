@@ -25,9 +25,12 @@ class MaterialWithIdResource:
         resouce_response_api(resp=resp, data=services.find_material_db_by_id(id=int(material_id)))
 
     def on_put(self, req, resp, material_id: int):
-        body = req.media
-        body["id"] = int(material_id)
-        resouce_response_api(resp=resp, data=services.update_material_db(json_object=body))
+        file = req.get_param("file")
+        body = {}
+        body['name'] = req.get_param("name")
+        body['description'] = req.get_param("description")
+        body["user_id"] = req.context["user"]["id"]
+        resouce_response_api(resp=resp, data=services.update_material_db(json_object=body, file=file))
 
     def on_delete(self, req, resp, material_id: int):
         resouce_response_api(resp=resp, data=services.delete_material_by_id(id=int(material_id)))
