@@ -26,9 +26,9 @@ def get_all_with_pagination(page=0, limit=9, filters=[], to_model=False):
         data_in_db = select(s for s in PathwayDB).order_by(desc(PathwayDB.id))
         for item in filters:
             if item["field"] == "id":
-                data_in_db = data_in_db.filer(id=item["value"])
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
             elif item["field"] == "name":
-                data_in_db = data_in_db.filters(lambda d: d.name == ["value"])
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
 
         total_record = data_in_db.count()
         if limit > 0:

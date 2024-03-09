@@ -72,8 +72,6 @@ def get_all_with_pagination(
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
 
-
-
 @db_session
 def find_by_id(id=None):
     data_in_db = select(s for s in UserDB if s.id == id)

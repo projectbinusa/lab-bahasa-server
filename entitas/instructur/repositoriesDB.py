@@ -82,7 +82,7 @@ def delete_by_id(id=None):
         commit()
         return True
     except Exception as e:
-        print("error Traininf deletedById: ", e)
+        print("error Instructur deletedById: ", e)
     return
 
 @db_session
