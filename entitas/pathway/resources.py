@@ -7,6 +7,8 @@ class PathwayResource:
         filters = generate_filters_resource(req=req, params_int=['id'], params_string=['name'])
         page = int(req.get_param("page", required=False, default=1))
         limit = int(req.get_param("limit", required=False, default=9))
+        filters.append({'field': 'deleted', 'value': False})
+
         data, pagination = services.get_pathway_db_with_pagination(
             page=page, limit=limit, filters=filters
         )

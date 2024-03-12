@@ -63,7 +63,7 @@ def find_by_id(id=None):
 def update(json_object={}, to_model=False):
     try:
         updated_certificate = CertificateDB[json_object["id"]]
-        updated_certificate.scheduler_id = json_object["scheduler_id"]
+        updated_certificate.schedule_id = json_object["schedule_id"]
         updated_certificate.training_id = json_object["training_id"]
         updated_certificate.instructur_name = json_object["instructur_name"]
         updated_certificate.name = json_object["name"]

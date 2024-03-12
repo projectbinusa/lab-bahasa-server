@@ -43,5 +43,8 @@ class UserPathwayUserResource:
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 
     def on_put(self, req, resp):
-        #todo update oleh user
-        resouce_response_api(resp=resp, data=services.insert_pathway_user_db(json_object=req.media))
+        body = req.media
+        resouce_response_api(resp=resp, data=services.update_pathway_user_by_user(
+            pathway_ids=body['pathway_ids'],
+            user_id=req.context['user']['id'],
+            user_name=req.context['user']['name']))

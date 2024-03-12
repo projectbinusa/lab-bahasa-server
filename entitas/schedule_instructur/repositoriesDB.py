@@ -21,27 +21,27 @@ def get_all(to_model=True):
 def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
     result = []
     total_record = 0
-    try:
-        data_in_db = select(s for s in SchedulerInstructurDB).order_by(desc(SchedulerInstructurDB.id))
-        for item in filters:
-            if item["field"] == "id":
-                data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
-            elif item["field"] == "name":
-                data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
+    # try:
+    data_in_db = select(s for s in SchedulerInstructurDB).order_by(desc(SchedulerInstructurDB.id))
+    for item in filters:
+        if item["field"] == "id":
+            data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
+        elif item["field"] == "instructur_name":
+            data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
+        elif item["field"] == "schedule_id":
+            data_in_db = data_in_db.filter(lambda d: d.schedule_id == item["value"])
 
-        total_record = data_in_db.count()
-        if limit > 0:
-            data_in_db = data_in_db(pagenum=page, pagesize=limit)
+    total_record = data_in_db.count()
+    if limit > 0:
+        data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
+    for item in data_in_db:
+        if to_model:
+            result.append(item.to_model())
         else:
-            data_in_db = data_in_db
-        for item in data_in_db:
-            if to_model:
-                result.append(item.to_model())
-            else:
-                result.append(item.to_model().to_model())
+            result.append(item.to_model().to_response())
 
-    except Exception as e:
-        print("error getAllWithPagination: ", e)
+    # except Exception as e:
+    #     print("error getAllWithPagination: ", e)
     return result, {
         "total": total_record,
         "page": page,
@@ -60,16 +60,16 @@ def find_by_id(id=None):
 @db_session
 def update(json_object={}, to_model={}):
     try:
-        updated_scheduler_instructur = SchedulerInstructurDB[json_object["id"]]
-        updated_scheduler_instructur.scheduler_id = json_object = ["scheduler_id"]
-        updated_scheduler_instructur.instructur_id = json_object = ["instructur_id"]
-        updated_scheduler_instructur.instructur_name = json_object = ["instructur_name"]
-        updated_scheduler_instructur.is_deteted = json_object = ["is_deteted"]
+        updated_schedule_instructur = SchedulerInstructurDB[json_object["id"]]
+        updated_schedule_instructur.schedule_id = json_object = ["schedule_id"]
+        updated_schedule_instructur.instructur_id = json_object = ["instructur_id"]
+        updated_schedule_instructur.instructur_name = json_object = ["instructur_name"]
+        updated_schedule_instructur.is_deteted = json_object = ["is_deteted"]
         commit()
         if to_model:
-            return updated_scheduler_instructur.to_model()
+            return updated_schedule_instructur.to_model()
         else:
-            return updated_scheduler_instructur.to_model().to_response()
+            return updated_schedule_instructur.to_model().to_response()
     except Exception as e:
         print("error Room update: ", e)
     return None
@@ -89,17 +89,17 @@ def delete_by_id(id=None):
 @db_session
 def insert(json_object={}, to_model=False):
     try:
-        new_scheduler_instructur = SchedulerInstructurDB(
-            scheduler_id = json_object["scheduler_id"],
+        new_schedule_instructur = SchedulerInstructurDB(
+            schedule_id = json_object["schedule_id"],
             instructur_id = json_object["instructur_id"],
             instructur_name = json_object["instructur_name"],
             is_deteted = json_object["is_deteted"],
         )
         commit()
         if to_model:
-            return new_scheduler_instructur.to_model()
+            return new_schedule_instructur.to_model()
         else:
-            return new_scheduler_instructur.to_model().to_response()
+            return new_schedule_instructur.to_model().to_response()
     except Exception as e:
         print("error Room insert: ", e)
     return None

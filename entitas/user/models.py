@@ -60,6 +60,7 @@ class User:
     def to_response_login(self):
         return {
             "id": self.id,
+            "name": self.name,
             "email": self.email,
             "role": self.role,
             "last_login": str(self.last_login) if self.last_login is not None else None,

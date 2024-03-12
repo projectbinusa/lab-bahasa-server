@@ -60,16 +60,16 @@ def find_by_id(id=None):
 @db_session
 def update(json_object={}, to_model={}):
     try:
-        updated_scheduler_user = SchedulerUserDB[json_object["id"]]
-        updated_scheduler_user.instructur_id = json_object = ["instructur_id"]
-        updated_scheduler_user.scheduler_id = json_object = ["scheduler_id"]
-        updated_scheduler_user.instructur_name = json_object = ["instructur_name"]
-        updated_scheduler_user.is_deteted = json_object = ["is_deteted"]
+        updated_schedule_user = SchedulerUserDB[json_object["id"]]
+        updated_schedule_user.instructur_id = json_object = ["instructur_id"]
+        updated_schedule_user.schedule_id = json_object = ["schedule_id"]
+        updated_schedule_user.instructur_name = json_object = ["instructur_name"]
+        updated_schedule_user.is_deteted = json_object = ["is_deteted"]
         commit()
         if to_model:
-            return updated_scheduler_user.to_model()
+            return updated_schedule_user.to_model()
         else:
-            return updated_scheduler_user.to_model().to_response()
+            return updated_schedule_user.to_model().to_response()
     except Exception as e:
         print("error Room update: ", e)
     return None
@@ -89,17 +89,17 @@ def delete_by_id(id=None):
 @db_session
 def insert(json_object={}, to_model=False):
     try:
-        new_scheduler_user = SchedulerUserDB(
+        new_schedule_user = SchedulerUserDB(
             instructur_id = json_object["instructur_id"],
-            scheduler_id = json_object["scheduler_id"],
+            schedule_id = json_object["schedule_id"],
             instructur_name = json_object["instructur_name"],
             is_deteted = json_object["is_deteted"],
         )
         commit()
         if to_model:
-            return new_scheduler_user.to_model()
+            return new_schedule_user.to_model()
         else:
-            return new_scheduler_user.to_model().to_response()
+            return new_schedule_user.to_model().to_response()
     except Exception as e:
         print("error Room insert: ", e)
     return None

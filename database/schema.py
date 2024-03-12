@@ -157,7 +157,7 @@ class AbsentDB(db2.Entity):
 class AssignmentDB(db2.Entity):
     _table_ = "assignment"
     id = PrimaryKey(int, auto=True)
-    scheduler_id = Optional(int, nullable=True)
+    schedule_id = Optional(int, nullable=True)
     training_id = Optional(int, nullable=True)
     instructur_id = Optional(int, nullable=True)
     name = Optional(str, nullable=True)
@@ -169,9 +169,9 @@ class AssignmentDB(db2.Entity):
     def to_model(self):
         item = Assignment()
         item.id = self.id
-        scheduler_id = self.scheduler_id
-        training_id = self.training_id
-        instructur_id = self.instructur_id
+        item.schedule_id = self.schedule_id
+        item.training_id = self.training_id
+        item.instructur_id = self.instructur_id
         item.name = self.name
         item.description = self.description
         item.max_date = self.max_date
@@ -213,7 +213,7 @@ class Assignment_UserDB(db2.Entity):
 class CertificateDB(db2.Entity):
     _table_ = "certificate"
     id = PrimaryKey(int, auto=True)
-    scheduler_id = Optional(int, nullable=True)
+    schedule_id = Optional(int, nullable=True)
     training_id = Optional(int, nullable=True)
     instructur_id = Optional(int, nullable=True)
     training_name = Optional(str, nullable=True)
@@ -228,7 +228,7 @@ class CertificateDB(db2.Entity):
     def to_model(self):
         item = Certificate()
         item.id = self.id
-        item.scheduler_id = self.scheduler_id
+        item.schedule_id = self.schedule_id
         item.training_id = self.training_id
         item.instructur_id = self.instructur_id
         item.training_name = self.training_name
@@ -449,9 +449,9 @@ class ScheduleDB(db2.Entity):
         return item
 
 class SchedulerInstructurDB(db2.Entity):
-    _table_ = "scheduler_instructur"
+    _table_ = "schedule_instructur"
     id = PrimaryKey(int, auto=True)
-    scheduler_id = Optional(int, nullable=True)
+    schedule_id = Optional(int, nullable=True)
     instructur_id = Optional(int, nullable=True)
     instructur_name = Optional(str, nullable=True)
     is_deteted = Optional(int, nullable=True)
@@ -461,7 +461,7 @@ class SchedulerInstructurDB(db2.Entity):
     def to_model(self):
         item = Schedule_instuctur()
         item.id = self.id
-        item.scheduler_id = self.scheduler_id
+        item.schedule_id = self.schedule_id
         item.instructur_id = self.instructur_id
         item.instructur_name = self.instructur_name
         item.is_deteted = self.is_deteted
@@ -471,9 +471,9 @@ class SchedulerInstructurDB(db2.Entity):
 
 
 class SchedulerUserDB(db2.Entity):
-    _table_ = "scheduler_user"
+    _table_ = "schedule_user"
     id = PrimaryKey(int, auto=True)
-    scheduler_id = Optional(int, nullable=True)
+    schedule_id = Optional(int, nullable=True)
     user_id = Optional(int, nullable=True)
     user_name = Optional(str, nullable=True)
     is_deteted = Optional(int, nullable=True)
@@ -483,7 +483,7 @@ class SchedulerUserDB(db2.Entity):
     def to_model(self):
         item = Schedule_User()
         item.id = self.id
-        item.scheduler_id = self.scheduler_id
+        item.schedule_id = self.schedule_id
         item.user_id = self.user_id
         item.user_name = self.user_name
         item.is_deteted = self.is_deteted

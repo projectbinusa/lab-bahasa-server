@@ -2,7 +2,7 @@ class Certificate:
     def __init__(
             self,
             id= 0,
-            scheduler_id= 0,
+            schedule_id= 0,
             training_id= 0,
             instructur_id= 0,
             instructur_name= '',
@@ -15,7 +15,7 @@ class Certificate:
             updated_date= None,
     ):
         self.id= id
-        self.scheduler_id= scheduler_id
+        self.schedule_id= schedule_id
         self.training_id= training_id
         self.instructur_id= instructur_id
         self.instructur_name= instructur_name
@@ -30,7 +30,7 @@ class Certificate:
     def to_json(self):
         return {
             "id": self.id,
-            "scheduler_id": self.scheduler_id,
+            "schedule_id": self.schedule_id,
             "training_id": self.training_id,
             "instructur_name": self.instructur_name,
             "name": self.name,
@@ -45,7 +45,7 @@ class Certificate:
     def to_response(self):
         return {
             "id": self.id,
-            "scheduler_id": self.scheduler_id,
+            "schedule_id": self.schedule_id,
             "training_id": self.training_id,
             "instructur_name": self.instructur_name,
             "name": self.name,

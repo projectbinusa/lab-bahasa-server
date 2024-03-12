@@ -107,3 +107,15 @@ def insert(json_object={}, to_model=False):
     except Exception as e:
         print("error Material insert: ", e)
         return None
+
+@db_session
+def get_all_by_user_id(user_id=0):
+    result = []
+    for item in select(s for s in PathwayUserDB if s.user_id == user_id):
+        result.append(item.pathway_id)
+    return result
+
+@db_session
+def delete_by_user_and_pathway(user_id=0, pathway_id=0):
+    delete(s for s in PathwayUserDB if s.user_id == user_id and s.pathway_id == pathway_id)
+    commit()

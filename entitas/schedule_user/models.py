@@ -2,7 +2,7 @@ class Schedule_User:
     def __init__(
             self,
             id= 0,
-            scheduler_id= 0,
+            schedule_id= 0,
             instructur_id= 0,
             instructur_name='',
             is_deteted= 0,
@@ -10,7 +10,7 @@ class Schedule_User:
             updated_date= None
     ):
         self.id= id
-        self.scheduler_id= scheduler_id
+        self.schedule_id= schedule_id
         self.instructur_id= instructur_id
         self.instructur_name= instructur_name
         self.is_deteted= is_deteted
@@ -20,7 +20,7 @@ class Schedule_User:
     def to_json(self):
         return  {
             "id": self.id,
-            "scheduler_id": self.scheduler_id,
+            "schedule_id": self.schedule_id,
             "instructur_id": self.instructur_id,
             "instructur_name": self.instructur_name,
             "is_deteted": self.is_deteted,
@@ -31,7 +31,7 @@ class Schedule_User:
     def to_response(self):
         return  {
             "id": self.id,
-            "scheduler_id": self.scheduler_id,
+            "schedule_id": self.schedule_id,
             "instructur_id": self.instructur_id,
             "instructur_name": self.instructur_name,
             "is_deteted": self.is_deteted,
