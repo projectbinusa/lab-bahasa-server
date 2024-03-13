@@ -59,6 +59,7 @@ def update(json_object={}, to_model=False):
         updated_schedule = ScheduleDB[json_object["id"]]
         updated_schedule.name = json_object["name"]
         updated_schedule.training_id = json_object["training_id"]
+        updated_schedule.training_name = json_object["training_name"]
         updated_schedule.is_online = json_object["is_online"]
         updated_schedule.location = json_object["location"]
         updated_schedule.active = json_object["active"]
