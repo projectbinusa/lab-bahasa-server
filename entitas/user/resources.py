@@ -57,6 +57,15 @@ class UserLoginResource:
 
 class UserSignupResource:
     auth = {"auth_disabled": True}
+
+    def on_get(self, req, resp):
+        page = int(req.get_param("page", required=False, default=1))
+        limit = int(req.get_param("limit", required=False, default=9))
+        filters = generate_filters_resource(req=req, params_string=['name'])
+        data, pagination = services.get_user_db_with_pagination(
+            page=page, limit=limit, filters=filters
+        )
+        resouce_response_api(resp=resp, data=data, pagination=pagination)
     def on_post(self, req, resp):
         resouce_response_api(resp=resp, data=services.signup_user_db(json_object=req.media))
 
