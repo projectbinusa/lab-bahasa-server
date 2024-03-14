@@ -169,9 +169,9 @@ class AssignmentDB(db2.Entity):
     def to_model(self):
         item = Assignment()
         item.id = self.id
-        item.schedule_id = self.schedule_id
-        item.training_id = self.training_id
-        item.instructur_id = self.instructur_id
+        schedule_id = self.schedule_id
+        training_id = self.training_id
+        instructur_id = self.instructur_id
         item.name = self.name
         item.description = self.description
         item.max_date = self.max_date
@@ -280,7 +280,7 @@ class InstructurDB(db2.Entity):
     name = Optional(str, nullable=True)
     email = Optional(str, nullable=True)
     address = Optional(str, nullable=True)
-    birth_date = Optional(datetime, nullable=True)
+    birth_date = Optional(date, nullable=True)
     birth_place = Optional(str, nullable=True)
     avatar_url = Optional(str, nullable=True)
     is_facilitator = Optional(int, nullable=True)
@@ -293,7 +293,7 @@ class InstructurDB(db2.Entity):
         item.name = self.name
         item.email = self.email
         item.address = self.address
-        item.birth_date = self.birth_date
+        item.birth_date = self.birth_date.isoformat() if self.birth_date else None
         item.birth_place = self.birth_place
         item.avatar_url = self.avatar_url
         item.is_facilitator = self.is_facilitator
@@ -448,7 +448,7 @@ class ScheduleDB(db2.Entity):
         item.updated_date = self.updated_date
         return item
 
-class SchedulerInstructurDB(db2.Entity):
+class ScheduleInstructurDB(db2.Entity):
     _table_ = "schedule_instructur"
     id = PrimaryKey(int, auto=True)
     schedule_id = Optional(int, nullable=True)
@@ -470,7 +470,7 @@ class SchedulerInstructurDB(db2.Entity):
         return item
 
 
-class SchedulerUserDB(db2.Entity):
+class ScheduleUserDB(db2.Entity):
     _table_ = "schedule_user"
     id = PrimaryKey(int, auto=True)
     schedule_id = Optional(int, nullable=True)
@@ -552,3 +552,5 @@ class TrainingUserDB(db2.Entity):
 
 if db2.schema is None:
     db2.generate_mapping(create_tables=False)
+
+

@@ -2,7 +2,7 @@ from entitas.schedule_user import services
 from util.entitas_util import generate_filters_resource, resouce_response_api
 
 
-class SchedulerUserResource:
+class ScheduleUserResource:
     def on_get(self, req, resp):
         filters = generate_filters_resource(req=req, params_int=['id'], params_string=['name'])
         page = int(req.get_param("page", required=False, default=1))
@@ -16,7 +16,7 @@ class SchedulerUserResource:
         resouce_response_api(resp=resp, data=services.insert_schedule_user_db(json_object=req.media))
 
 
-class SchedulerUserWithIdResource:
+class ScheduleUserWithIdResource:
     def on_get(self, req, resp, schedule_user_id: int):
         resouce_response_api(resp=resp, data=services.find_schedule_user_db_by_id(id=int(schedule_user_id)))
 

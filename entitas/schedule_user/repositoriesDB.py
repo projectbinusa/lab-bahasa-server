@@ -1,13 +1,13 @@
 from pony.orm import *
 
-from database.schema import SchedulerUserDB
+from database.schema import ScheduleUserDB
 
 
 @db_session
 def get_all(to_model=True):
     result = []
     try:
-        for item in select(s for s in SchedulerUserDB):
+        for item in select(s for s in ScheduleUserDB):
             if to_model:
                 result.append(item.to_model())
             else:
@@ -22,7 +22,7 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
     result = []
     total_record = 0
     try:
-        data_in_db = select(s for s in SchedulerUserDB).order_by(desc(SchedulerUserDB.id))
+        data_in_db = select(s for s in ScheduleUserDB).order_by(desc(ScheduleUserDB.id))
         for item in filters:
             if item["field"] == "id":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
@@ -51,7 +51,7 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
 
 @db_session
 def find_by_id(id=None):
-    data_in_db = select(s for s in SchedulerUserDB if s.id == id)
+    data_in_db = select(s for s in ScheduleUserDB if s.id == id)
     if data_in_db.first() is None:
         return None
     return data_in_db.first().to_model()
@@ -60,7 +60,7 @@ def find_by_id(id=None):
 @db_session
 def update(json_object={}, to_model={}):
     try:
-        updated_schedule_user = SchedulerUserDB[json_object["id"]]
+        updated_schedule_user = ScheduleUserDB[json_object["id"]]
         updated_schedule_user.instructur_id = json_object = ["instructur_id"]
         updated_schedule_user.schedule_id = json_object = ["schedule_id"]
         updated_schedule_user.instructur_name = json_object = ["instructur_name"]
@@ -78,7 +78,7 @@ def update(json_object={}, to_model={}):
 @db_session
 def delete_by_id(id=None):
     try:
-        SchedulerUserDB[id].delete()
+        ScheduleUserDB[id].delete()
         commit()
         return True
     except Exception as e:
@@ -89,7 +89,7 @@ def delete_by_id(id=None):
 @db_session
 def insert(json_object={}, to_model=False):
     try:
-        new_schedule_user = SchedulerUserDB(
+        new_schedule_user = ScheduleUserDB(
             instructur_id = json_object["instructur_id"],
             schedule_id = json_object["schedule_id"],
             instructur_name = json_object["instructur_name"],
