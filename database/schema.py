@@ -516,6 +516,7 @@ class TrainingMaterialDB(db2.Entity):
     training_id = Optional(int, nullable=True)
     material_id = Optional(int, nullable=True)
     is_user_access = Optional(int, nullable=True)
+    material_name = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -524,6 +525,7 @@ class TrainingMaterialDB(db2.Entity):
         item.id = self.id
         item.training_id = self.training_id
         item.material_id = self.material_id
+        item.material_name = self.material_name
         item.is_user_access = self.is_user_access
         item.created_date = self.created_date
         item.updated_date = self.updated_date

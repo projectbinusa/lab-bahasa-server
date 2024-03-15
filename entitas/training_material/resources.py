@@ -27,3 +27,13 @@ class TrainingMaterialWithIdResource:
 
     def on_delete(self, req, resp, training_material_id: int):
         resouce_response_api(resp=resp, data=services.delete_training_material_by_id(id=int(training_material_id)))
+
+class TrainingMaterialWithTrainingIdResource:
+    def on_get(self, req, resp, training_id: int):
+        filters = generate_filters_resource(req=req, params_int=['id'], params_string=['name'])
+        page = int(req.get_param('page', required=False, default=1))
+        limit = int(req.get_param('limit', required=False, default=9))
+        data, pagination = services.get_training_material_by_training_id_with_pagination(
+            page=page, limit=limit, filters=filters, training_id=training_id
+        )
+        resouce_response_api(resp=resp, data=data, pagination=pagination)

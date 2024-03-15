@@ -5,6 +5,10 @@ def get_training_material_db_with_pagination(page=1, limit=9, filters=[], to_mod
         page=page, limit=limit, filters=filters, to_model=to_model
     )
 
+def get_training_material_by_training_id_with_pagination(page=1, limit=9, filters=[], training_id=0, to_model=False):
+    return repositoriesDB.find_by_training_id_with_pagination(
+        page=page, limit=limit, filters=filters, training_id=training_id, to_model=to_model
+    )
 
 def find_training_material_db_by_id(id=0, to_model=False):
     result = repositoriesDB.find_by_id(id=id)
@@ -13,6 +17,7 @@ def find_training_material_db_by_id(id=0, to_model=False):
     if to_model:
         return result
     return result.to_response()
+
 
 
 def update_training_material_db(json_object={}):
