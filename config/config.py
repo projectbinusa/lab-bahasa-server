@@ -1,14 +1,15 @@
 import os
-userDB = "app5"
-passwordDB = "rahasia7demak"
-hostDB = "103.82.92.115"
-portDB = int("3306")
-dbName = "event"
+userDB = os.environ["userDB"]
+passwordDB = os.environ["passwordDB"]
+hostDB = os.environ["hostDB"]
+portDB = int(os.environ["portDB"])
+dbName = os.environ["dbName"]
 dbDebug = False
-if "False".strip().upper() == "TRUE":
+if os.environ["dbDebug"].strip().upper() == "TRUE":
     dbDebug = True
-secret_jwt = "rahasiaEvent2024"
-driverDB = "mysql"
+
+secret_jwt = os.environ["secret_jwt"]
+driverDB = os.environ["driverDB"]
 TYPE_TOKEN_USER = 'user'
 DOMAIN_FILE_URL = 'http://file-event.lynk2.co'
 SALT_SORTER = 'rahasiademak'
