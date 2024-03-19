@@ -12,10 +12,6 @@ class PathwayUserResource:
         )
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 
-    def on_post(self, req, resp):
-        resouce_response_api(resp=resp, data=services.insert_pathway_user_db(json_object=req.media))
-
-
 class PathwayUserWithIdResource:
     def on_get(self, req, resp, pathway_user_id: int):
         resouce_response_api(resp=resp, data=services.find_pathway_user_db_by_id(id=int(pathway_user_id)))
@@ -41,6 +37,12 @@ class UserPathwayUserResource:
             page=page, limit=limit, filters=filters
         )
         resouce_response_api(resp=resp, data=data, pagination=pagination)
+
+    def on_post(self, req, resp):
+        body = req.media
+        body['user_id'] = req.context['user']['id']
+        body['user_name'] = req.context['user']['name']
+        resouce_response_api(resp=resp, data=services.insert_pathway_user_db(json_object=body))
 
     def on_put(self, req, resp):
         body = req.media

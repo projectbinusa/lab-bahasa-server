@@ -1,4 +1,6 @@
 from entitas.pathway_user import repositoriesDB
+from util.other_util import raise_error
+
 
 def get_pathway_user_db_with_pagination(page=1, limit=9, filters=[], to_model=False):
     return repositoriesDB.get_all_with_pagination(
@@ -50,7 +52,12 @@ def update_pathway_user_by_user(pathway_ids=[], user_id=0, user_name=''):
     return True
 
 def insert_pathway_user_db(json_object={}):
-    return repositoriesDB.insert(json_object=json_object)
+    from entitas.pathway.services import find_pathway_db_by_id
+    x = json_object.get("pathway_id")
+    pathway = find_pathway_db_by_id(id=x)
+    if not pathway:
+        raise_error(f"pathway id {x} tidak ditemukan")
+    return repositoriesDB.insert(json_object={**json_object, "pathway_name": pathway.get('name')})
 
 
 def delete_pathway_user_by_id(id=0):

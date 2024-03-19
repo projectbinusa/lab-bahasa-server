@@ -4,7 +4,7 @@ from util.entitas_util import generate_filters_resource, resouce_response_api
 
 class PathwayTrainingResource:
     def on_get(self, req, resp):
-        filters = generate_filters_resource(req=req, params_int=['id'], params_string=['name'])
+        filters = generate_filters_resource(req=req, params_int=['id', 'pathway_id'], params_string=['name'])
         page = int(req.get_param("page", required=False, default=1))
         limit = int(req.get_param("limit", required=False, default=9))
         data, pagination = services.get_pathway_training_db_with_pagination(

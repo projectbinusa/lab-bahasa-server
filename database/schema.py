@@ -361,7 +361,7 @@ class PathwayUserDB(db2.Entity):
     updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
-        item = Pathway_Training()
+        item = Pathway_User()
         item.id = self.id
         item.pathway_id = self.pathway_id
         item.pathway_name = self.pathway_name
