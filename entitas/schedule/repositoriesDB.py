@@ -34,7 +34,7 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
             data_in_db = data_in_db
         for item in data_in_db:
             if to_model:
-                result.append(item.to_model.to_response())
+                result.append(item.to_model().to_response())
             else:
                 result.append(item.to_model().to_response())
 
@@ -45,6 +45,21 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
         "page": page,
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
+
+@db_session
+def get_all_by_time(year=0, month=0, ids=[]):
+    result = []
+    try:
+        if len(ids) == 0:
+            for item in select(s for s in ScheduleDB if s.start_date.year == year and s.start_date.month == month).order_by(ScheduleDB.start_date):
+                result.append(item.to_model().to_response_calendar())
+        else:
+            for item in select(s for s in ScheduleDB if s.id in ids and s.start_date.year == year and s.start_date.month == month).order_by(ScheduleDB.start_date):
+                result.append(item.to_model().to_response_calendar())
+
+    except Exception as e:
+        print("error Schedule get_all_by_time: ", e)
+    return result
 
 @db_session
 def find_by_id(id=None):

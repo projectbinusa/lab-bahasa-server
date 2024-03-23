@@ -41,6 +41,7 @@ def user_routes(api):
     api.add_route("/api/user/pathway_user/{pathway_user_id}", UserPathwayByIdResuorce())
     api.add_route("/api/user/schedule_user/{schedule_user_id}", ScheduleUserWithIdResource())
     api.add_route("/api/user/schedule_user", ScheduleUserResource())
+    api.add_route("/api/user/calendar", UserCalendarResource())
     api.add_route("/api/user/training_user/{training_user_id}", TrainingUserWithIdResource())
     api.add_route("/api/user/training_user", TrainingUserResource())
     api.add_route("/api/user/pathway_training", PathwayTrainingResource())

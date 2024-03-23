@@ -13,6 +13,9 @@ def find_schedule_user_db_by_id(id=0, to_model=False):
         return result
     return result.to_response()
 
+def get_schedule_ids_by_user_id(user_id=0):
+    return repositoriesDB.get_schedule_ids_by_user_id(user_id=user_id)
+
 def update_schedule_user_db(json_object={}):
     return repositoriesDB.update(json_object=json_object)
 

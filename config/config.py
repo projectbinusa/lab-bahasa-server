@@ -14,3 +14,4 @@ TYPE_TOKEN_USER = 'user'
 DOMAIN_FILE_URL = 'http://file-event.lynk2.co'
 SALT_SORTER = 'rahasiademak'
 MATERIAL_FOLDER = 'files/'
+LINK_MEET = os.environ["LINK_MEET"]

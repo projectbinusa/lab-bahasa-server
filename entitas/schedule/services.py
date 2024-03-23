@@ -2,12 +2,22 @@ from entitas.schedule import repositoriesDB
 from util.shorter import ServiceShorter
 from config.config import SALT_SORTER
 from util.other_util import raise_error
-
+from datetime import datetime
 def get_schedule_db_with_pagination(page=1, limit=9, filters=[], to_model=False):
     return repositoriesDB.get_all_with_pagination(
         page=page, limit=limit, filters=filters, to_model=to_model
     )
 
+def get_calendar(year='', month='', user_id=0):
+    year = int(year) if year not in ['', '0'] else datetime.now().year
+    month = int(month) if month not in ['', '0'] else datetime.now().month
+    ids = []
+
+    if user_id not in [None, 0]:
+        from entitas.schedule_user.services import get_schedule_ids_by_user_id
+        ids = get_schedule_ids_by_user_id(user_id=0)
+    print('halo 111 ',year, month, user_id, ids)
+    return repositoriesDB.get_all_by_time(year=year, month=month, ids=ids)
 
 def find_schedule_db_by_id(id=0, to_model=False):
     result = repositoriesDB.find_by_id(id=id)

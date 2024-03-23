@@ -16,6 +16,15 @@ def get_all(to_model=True):
         print("error Room getAll: ", e)
     return result
 
+@db_session
+def get_schedule_ids_by_user_id(user_id=0):
+    result = []
+    try:
+        for item in select(s for s in ScheduleUserDB if s.user_id == user_id):
+            result.append(item.user_id)
+    except Exception as e:
+        print("error get_schedule_ids_by_user_id: ", e)
+    return result
 
 @db_session
 def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):

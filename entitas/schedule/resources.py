@@ -27,3 +27,15 @@ class ScheduleWithIdResource:
 
     def on_delete(self, req, resp, schedule_id: int):
         resouce_response_api(resp=resp, data=services.delete_schedule_by_id(id=int(schedule_id)))
+
+class UserCalendarResource:
+    def on_get(self, req, resp):
+        year = req.get_param("year", required=False, default='')
+        month = req.get_param("month", required=False, default='')
+        resouce_response_api(resp=resp, data=services.get_calendar(year=year, month=month, user_id=req.context['user']['id']))
+
+class AdminCalendarResource:
+    def on_get(self, req, resp):
+        year = req.get_param("year", required=False, default='')
+        month = req.get_param("month", required=False, default='')
+        resouce_response_api(resp=resp, data=services.get_calendar(year=year, month=month, user_id=0))
