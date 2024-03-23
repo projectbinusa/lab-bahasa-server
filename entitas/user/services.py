@@ -89,7 +89,7 @@ def signup_user_db(json_object={}):
         raise_error(str=PASSWORD_MUST_FILL)
     if not check_valid_email(email=json_object["email"]):
         raise_error(msg='Email tidak valid')
-    json_object["role"] = 'user'
+    json_object["role"] = 'student'
     json_object["token"] = str(uuid.uuid4())
 
     existing_account = repositoriesDB.find_by_email(email=json_object["email"], to_model=True)

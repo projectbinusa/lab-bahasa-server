@@ -182,6 +182,7 @@ def signup(json_object={}):
         birth_date=json_object["birth_date"],
         birth_place=json_object["birth_place"],
         email=json_object["email"],
+        role=json_object["role"],
         active=1,
         password=encrypt_string(json_object["new_password"]),
         token=str(uuid.uuid4())
