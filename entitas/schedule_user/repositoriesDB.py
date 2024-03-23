@@ -20,7 +20,7 @@ def get_all(to_model=True):
 def get_schedule_ids_by_user_id(user_id=0):
     result = []
     try:
-        for item in select(s for s in ScheduleUserDB if s.user_id == user_id):
+        for item in select(s for s in ScheduleUserDB if s.user_id == user_id and not s.is_deleted):
             result.append(item.user_id)
     except Exception as e:
         print("error get_schedule_ids_by_user_id: ", e)
@@ -73,7 +73,7 @@ def update(json_object={}, to_model={}):
         updated_schedule_user.instructur_id = json_object = ["instructur_id"]
         updated_schedule_user.schedule_id = json_object = ["schedule_id"]
         updated_schedule_user.instructur_name = json_object = ["instructur_name"]
-        updated_schedule_user.is_deteted = json_object = ["is_deteted"]
+        updated_schedule_user.is_deleted = json_object = ["is_deleted"]
         commit()
         if to_model:
             return updated_schedule_user.to_model()
@@ -102,7 +102,7 @@ def insert(json_object={}, to_model=False):
             instructur_id = json_object["instructur_id"],
             schedule_id = json_object["schedule_id"],
             instructur_name = json_object["instructur_name"],
-            is_deteted = json_object["is_deteted"],
+            is_deleted = json_object["is_deleted"],
         )
         commit()
         if to_model:

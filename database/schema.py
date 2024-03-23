@@ -454,7 +454,7 @@ class ScheduleInstructurDB(db2.Entity):
     schedule_id = Optional(int, nullable=True)
     instructur_id = Optional(int, nullable=True)
     instructur_name = Optional(str, nullable=True)
-    is_deteted = Optional(int, nullable=True)
+    is_deleted = Optional(int, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -464,7 +464,7 @@ class ScheduleInstructurDB(db2.Entity):
         item.schedule_id = self.schedule_id
         item.instructur_id = self.instructur_id
         item.instructur_name = self.instructur_name
-        item.is_deteted = self.is_deteted
+        item.is_deleted = self.is_deleted
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
@@ -476,7 +476,7 @@ class ScheduleUserDB(db2.Entity):
     schedule_id = Optional(int, nullable=True)
     user_id = Optional(int, nullable=True)
     user_name = Optional(str, nullable=True)
-    is_deteted = Optional(int, nullable=True)
+    is_deleted = Optional(int, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -486,7 +486,7 @@ class ScheduleUserDB(db2.Entity):
         item.schedule_id = self.schedule_id
         item.user_id = self.user_id
         item.user_name = self.user_name
-        item.is_deteted = self.is_deteted
+        item.is_deleted = self.is_deleted
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item

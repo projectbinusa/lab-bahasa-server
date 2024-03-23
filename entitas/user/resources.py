@@ -188,3 +188,19 @@ class UserRefreshTokenResource:
         resouce_response_api(resp=resp, data=services.refresh_token_authorization(authorization=req.headers['AUTH-EVENT'] if 'AUTH-EVENT' in req.headers else ''))
 
 
+class AdminInstructurResource:
+    def on_get(self, req, resp):
+        page = int(req.get_param("page", required=False, default=1))
+        limit = int(req.get_param("limit", required=False, default=9))
+        filters = generate_filters_resource(req=req, params_string=['ame', 'email'])
+        filters.append({'field': 'role', 'value': 'instructur'})
+        data, pagination = services.get_user_db_with_pagination(
+            page=page, limit=limit, filters=filters
+        )
+        resouce_response_api(resp=resp, data=data, pagination=pagination)
+
+
+class AdminUserUserIdResource:
+
+    def on_get(self, req, resp, instructur_id: int):
+        resouce_response_api(resp=resp, data=services.find_user_db_by_id(id=int(instructur_id)))

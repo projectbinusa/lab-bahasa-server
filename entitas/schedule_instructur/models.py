@@ -5,7 +5,7 @@ class Schedule_instuctur:
             schedule_id= 0,
             instructur_id= 0,
             instructur_name= '',
-            is_deteted='',
+            is_deleted='',
             created_date=None,
             updated_date=None,
     ):
@@ -13,7 +13,7 @@ class Schedule_instuctur:
         self.schecule_id = schedule_id
         self.instructur_id = instructur_id
         self.instructur_name = instructur_name
-        self.is_deteted = is_deteted
+        self.is_deleted = is_deleted
         self.created_date = created_date
         self.updated_date = updated_date
 
@@ -23,7 +23,7 @@ class Schedule_instuctur:
             "schedule_id": self.schecule_id,
             "instructur_id": self.instructur_id,
             "instructur_name": self.instructur_name,
-            "is_deteted": self.is_deteted,
+            "is_deleted": self.is_deleted,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
@@ -34,7 +34,7 @@ class Schedule_instuctur:
             "schedule_id": self.schecule_id,
             "instructur_id": self.instructur_id,
             "instructur_name": self.instructur_name,
-            "is_deteted": self.is_deteted,
+            "is_deleted": self.is_deleted,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }

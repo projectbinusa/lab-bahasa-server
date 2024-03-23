@@ -51,10 +51,10 @@ def get_all_by_time(year=0, month=0, ids=[]):
     result = []
     try:
         if len(ids) == 0:
-            for item in select(s for s in ScheduleDB if s.start_date.year == year and s.start_date.month == month).order_by(ScheduleDB.start_date):
+            for item in select(s for s in ScheduleDB if s.active and s.start_date.year == year and s.start_date.month == month).order_by(ScheduleDB.start_date):
                 result.append(item.to_model().to_response_calendar())
         else:
-            for item in select(s for s in ScheduleDB if s.id in ids and s.start_date.year == year and s.start_date.month == month).order_by(ScheduleDB.start_date):
+            for item in select(s for s in ScheduleDB if s.active and s.id in ids and s.start_date.year == year and s.start_date.month == month).order_by(ScheduleDB.start_date):
                 result.append(item.to_model().to_response_calendar())
 
     except Exception as e:

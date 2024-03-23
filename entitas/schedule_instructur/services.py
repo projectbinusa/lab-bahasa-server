@@ -56,7 +56,7 @@ def update_schedule_instructur_by_schedule_id(schedule_id=0, id=0, json_object={
         raise_error(msg="Schedule Instructur not found")
     json_object["id"] = schedule_instructur.id
     json_object["schedule_id"] = schedule_id
-    json_object['is_deteted'] = schedule_instructur.is_deteted
+    json_object['is_deleted'] = schedule_instructur.is_deleted
     return update_schedule_instructur_db(json_object=json_object)
 
 
@@ -73,5 +73,5 @@ def delete_schedule_instructur_by_schedule_id(schedule_id=0, instructur_id=0):
 def insert_schedule_instructur_db_by_schedule_id(schedule_id, json_object={}):
     # schedule_instructur = find_schedule_instructur_db_by_id(id=id, to_model=True)
     json_object["schedule_id"] = schedule_id
-    # json_object['is_deteted'] = schedule_instructur.is_deteted
+    # json_object['is_deleted'] = schedule_instructur.is_deleted
     return insert_schedule_instructur_db(json_object=json_object)

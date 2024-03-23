@@ -102,7 +102,7 @@ def update(json_object={}, to_model={}):
         updated_schedule_instructur.schedule_id = json_object["schedule_id"]
         updated_schedule_instructur.instructur_id = json_object["instructur_id"]
         updated_schedule_instructur.instructur_name = json_object["instructur_name"]
-        updated_schedule_instructur.is_deteted = json_object["is_deteted"]
+        updated_schedule_instructur.is_deleted = json_object["is_deleted"]
         commit()
         if to_model:
             return updated_schedule_instructur.to_model()
@@ -131,7 +131,7 @@ def insert(json_object={}, to_model=False):
             schedule_id=json_object["schedule_id"],
             instructur_id=json_object["instructur_id"],
             instructur_name=json_object["instructur_name"],
-            # is_deteted = json_object["is_deteted"],
+            # is_deleted = json_object["is_deleted"],
         )
         commit()
         if to_model:
@@ -150,7 +150,7 @@ def update_by_schedule_id(schedule_id, json_object={}, to_model=False):
         updated_schedule_instructur.schedule_id = json_object["schedule_id"]
         updated_schedule_instructur.instructur_id = json_object["instructur_id"]
         updated_schedule_instructur.instructur_name = json_object["instructur_name"]
-        updated_schedule_instructur.is_deteted = json_object.get("is_deteted", False)
+        updated_schedule_instructur.is_deleted = json_object.get("is_deleted", False)
         commit()
         if to_model:
             return updated_schedule_instructur.to_model()
@@ -190,7 +190,7 @@ def insert_schedule_instructur_by_schedule_id(schedule_id, json_object={}, to_mo
             schedule_id=schedule_id,
             instructur_id=json_object["instructur_id"],
             instructur_name=json_object["instructur_name"],
-            is_deteted=json_object.get("is_deteted", False),
+            is_deleted=json_object.get("is_deleted", False),
         )
         commit()
         if to_model:
