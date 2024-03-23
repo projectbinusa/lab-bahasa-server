@@ -99,6 +99,12 @@ def find_by_id(id=None):
         return None
     return data_in_db.first().to_model()
 
+@db_session
+def find_by_schedule_id_and_instructur_id(schedule_id=None, instructur_id=0):
+    data_in_db = select(s for s in ScheduleInstructurDB if s.schedule_id == schedule_id and s.instructur_id == instructur_id)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
 
 @db_session
 def update(json_object={}, to_model={}):
@@ -128,6 +134,15 @@ def delete_by_id(id=None):
         print("error Room delete: ", e)
     return
 
+@db_session
+def update_delete_by_id(id=None, is_deleted=False):
+    try:
+        ScheduleInstructurDB[id].is_deleted = is_deleted
+        commit()
+        return True
+    except Exception as e:
+        print("error Room delete: ", e)
+    return
 
 @db_session
 def insert(json_object={}, to_model=False):

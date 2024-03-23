@@ -27,7 +27,7 @@ def insert_schedule_instructur_db(json_object={}):
 
 
 def delete_schedule_instructur_by_id(id=0):
-    return repositoriesDB.delete_by_id(id=id)
+    return repositoriesDB.update_delete_by_id(id=id, is_deleted=True)
 
 
 def get_schedule_instructur_by_schedule_id(schedule_id=0, page=1, limit=9, filters=[], to_model=False,
@@ -71,7 +71,10 @@ def delete_schedule_instructur_by_schedule_id(schedule_id=0, instructur_id=0):
 
 
 def insert_schedule_instructur_db_by_schedule_id(schedule_id, json_object={}):
-    # schedule_instructur = find_schedule_instructur_db_by_id(id=id, to_model=True)
+    schedule_instructur = repositoriesDB.find_by_schedule_id_and_instructur_id(schedule_id=schedule_id, instructur_id=json_object["instructur_id"])
+    if schedule_instructur is not None:
+        repositoriesDB.update_delete_by_id(id=schedule_instructur.id, is_deleted=False)
+        return True
     json_object["schedule_id"] = schedule_id
-    # json_object['is_deleted'] = schedule_instructur.is_deleted
-    return insert_schedule_instructur_db(json_object=json_object)
+    insert_schedule_instructur_db(json_object=json_object)
+    return True
