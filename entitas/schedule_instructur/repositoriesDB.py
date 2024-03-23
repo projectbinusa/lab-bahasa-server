@@ -34,6 +34,11 @@ def get_all_with_pagination(
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
             elif item["field"] == "instructur_name":
                 data_in_db = data_in_db.filter(instructur_id=item["value"])
+            elif item["field"] == "schedule_id":
+                data_in_db = data_in_db.filter(schedule_id=item["value"])
+            elif item["field"] == "is_deleted":
+                data_in_db = data_in_db.filter(is_deleted=item["value"])
+
         total_record = count(data_in_db)
         if limit != 0:
             data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
