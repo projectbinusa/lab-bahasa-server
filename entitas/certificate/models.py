@@ -5,6 +5,7 @@ class Certificate:
             schedule_id= 0,
             training_id= 0,
             instructur_id= 0,
+            user_id=0,
             instructur_name= '',
             name= '',
             url_file= '',
@@ -18,6 +19,7 @@ class Certificate:
         self.schedule_id= schedule_id
         self.training_id= training_id
         self.instructur_id= instructur_id
+        self.user_id = user_id
         self.instructur_name= instructur_name
         self.name= name
         self.url_file= url_file
@@ -33,6 +35,7 @@ class Certificate:
             "schedule_id": self.schedule_id,
             "training_id": self.training_id,
             "instructur_name": self.instructur_name,
+            "user_id": self.user_id,
             "name": self.name,
             "url_file": self.url_file,
             "publish_date": self.publish_date,
@@ -47,6 +50,7 @@ class Certificate:
             "id": self.id,
             "schedule_id": self.schedule_id,
             "training_id": self.training_id,
+            "user_id": self.user_id,
             "instructur_name": self.instructur_name,
             "name": self.name,
             "url_file": self.url_file,

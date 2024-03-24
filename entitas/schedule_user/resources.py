@@ -27,3 +27,30 @@ class ScheduleUserWithIdResource:
 
     def on_delete(self, req, resp, schedule_user_id: int):
         resouce_response_api(resp=resp, data=services.delete_schedule_user_by_id(id=int(schedule_user_id)))
+
+class InstructurCalendarScheduleParticipantResource:
+    def on_get(self, req, resp, schedule_id: int):
+        filters = generate_filters_resource(req=req, params_int=['id'], params_string=['name'])
+        page = int(req.get_param("page", required=False, default=1))
+        limit = int(req.get_param("limit", required=False, default=9))
+        filters.append({'field': 'schedule_id', 'value': int(schedule_id)})
+        filters.append({'field': 'instructur_id', 'value': req.context['user']['id']})
+        data, pagination = services.get_schedule_user_db_with_pagination(
+            page=page, limit=limit, filters=filters
+        )
+        resouce_response_api(resp=resp, data=data, pagination=pagination)
+
+class InstructurCalendarScheduleParticipantGenerateCertificateResource:
+    def on_post(self, req, resp, schedule_id: int):
+        filters=[]
+        filters.append({'field': 'schedule_id', 'value': int(schedule_id)})
+        filters.append({'field': 'instructur_id', 'value': req.context['user']['id']})
+        resouce_response_api(resp=resp, data=services.schedule_user_generate_certificate(filters=filters))
+
+class InstructurCalendarScheduleParticipantScoreResource:
+    def on_put(self, req, resp, schedule_id: int, schedule_user_id: int):
+        body = req.media
+        resouce_response_api(resp=resp, data=services.update_schedule_user_for_instructur(
+            schedule_id=int(schedule_id),
+            schedule_user_id=int(schedule_user_id),
+            instructur_id=req.context['user']['id'], score=body['score']))

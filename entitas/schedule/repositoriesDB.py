@@ -45,6 +45,15 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
         "page": page,
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
+@db_session
+def get_training_ids_by_schedule_ids(schedule_ids=[]):
+    result = []
+    try:
+        for item in select(s for s in ScheduleDB if s.id in schedule_ids):
+            result.append(item.training_id)
+    except Exception as e:
+        print("error get_training_ids_by_schedule_ids: ", e)
+    return result
 
 @db_session
 def get_all_by_time(year=0, month=0, ids=[]):

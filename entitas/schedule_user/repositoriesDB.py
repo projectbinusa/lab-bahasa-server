@@ -21,36 +21,47 @@ def get_schedule_ids_by_user_id(user_id=0):
     result = []
     try:
         for item in select(s for s in ScheduleUserDB if s.user_id == user_id and not s.is_deleted):
-            result.append(item.user_id)
+            result.append(item.schedule_id)
     except Exception as e:
         print("error get_schedule_ids_by_user_id: ", e)
     return result
 
 @db_session
+def is_found_user_id_and_schedule_id(user_id=0, schedule_id=0):
+    data_in_db = select(s for s in ScheduleUserDB if s.user_id == user_id and s.schedule_id == schedule_id)
+    if data_in_db.count() > 0:
+        return True
+    return False
+
+@db_session
 def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
     result = []
     total_record = 0
-    try:
-        data_in_db = select(s for s in ScheduleUserDB).order_by(desc(ScheduleUserDB.id))
-        for item in filters:
-            if item["field"] == "id":
-                data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
-            elif item["field"] == "name":
-                data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
+    # try:
+    data_in_db = select(s for s in ScheduleUserDB).order_by(desc(ScheduleUserDB.id))
+    for item in filters:
+        if item["field"] == "id":
+            data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
+        elif item["field"] == "name":
+            data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
+        elif item["field"] == "schedule_id":
+            data_in_db = data_in_db.filter(lambda d: item["value"] == d.schedule_id)
+        elif item["field"] == "instructur_id":
+            data_in_db = data_in_db.filter(lambda d: d.user_id != item["value"])
 
-        total_record = data_in_db.count()
-        if limit > 0:
-            data_in_db = data_in_db(pagenum=page, pagesize=limit)
+    total_record = data_in_db.count()
+    if limit > 0:
+        data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
+    else:
+        data_in_db = data_in_db
+    for item in data_in_db:
+        if to_model:
+            result.append(item.to_model())
         else:
-            data_in_db = data_in_db
-        for item in data_in_db:
-            if to_model:
-                result.append(item.to_model())
-            else:
-                result.append(item.to_model().to_model())
+            result.append(item.to_model().to_response_participant())
 
-    except Exception as e:
-        print("error getAllWithPagination: ", e)
+    # except Exception as e:
+    #     print("error ScheduleUser getAllWithPagination: ", e)
     return result, {
         "total": total_record,
         "page": page,
@@ -65,15 +76,21 @@ def find_by_id(id=None):
         return None
     return data_in_db.first().to_model()
 
+@db_session
+def update_score(id=0, score=0):
+    for item in select(s for s in ScheduleUserDB if s.id == id):
+        item.score = score
+    commit()
+    return True
 
 @db_session
 def update(json_object={}, to_model={}):
     try:
         updated_schedule_user = ScheduleUserDB[json_object["id"]]
-        updated_schedule_user.instructur_id = json_object = ["instructur_id"]
-        updated_schedule_user.schedule_id = json_object = ["schedule_id"]
-        updated_schedule_user.instructur_name = json_object = ["instructur_name"]
-        updated_schedule_user.is_deleted = json_object = ["is_deleted"]
+        updated_schedule_user.instructur_id = json_object["instructur_id"]
+        updated_schedule_user.schedule_id = json_object["schedule_id"]
+        updated_schedule_user.instructur_name = json_object["instructur_name"]
+        updated_schedule_user.score = json_object["score"]
         commit()
         if to_model:
             return updated_schedule_user.to_model()
@@ -82,6 +99,28 @@ def update(json_object={}, to_model={}):
     except Exception as e:
         print("error Room update: ", e)
     return None
+
+@db_session
+def update_score(id=0, score=0):
+    try:
+        updated_schedule_user = ScheduleUserDB[id]
+        updated_schedule_user.score = score
+        commit()
+        return True
+    except Exception as e:
+        print("error ScheduleUser update_score: ", e)
+    return
+
+@db_session
+def update_certificate(id=0, certificate_url=''):
+    try:
+        updated_schedule_user = ScheduleUserDB[id]
+        updated_schedule_user.certificate_url = certificate_url
+        commit()
+        return True
+    except Exception as e:
+        print("error ScheduleUser update_score: ", e)
+    return
 
 
 @db_session
@@ -101,8 +140,8 @@ def insert(json_object={}, to_model=False):
         new_schedule_user = ScheduleUserDB(
             instructur_id = json_object["instructur_id"],
             schedule_id = json_object["schedule_id"],
-            instructur_name = json_object["instructur_name"],
-            is_deleted = json_object["is_deleted"],
+            instructur_name = json_object["instructur_name"]
+            # is_deleted = json_object["is_deleted"],
         )
         commit()
         if to_model:

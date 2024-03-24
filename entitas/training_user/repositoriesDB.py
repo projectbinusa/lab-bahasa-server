@@ -84,6 +84,18 @@ def delete_by_id(id=None):
         print("error Room delete: ", e)
     return
 
+@db_session
+def delete_by_training_id_and_user_id(user_id=0, training_id=0):
+    try:
+        for item in select(s for s in TrainingUserDB if s.training_id == training_id and s.user_id == user_id):
+            item.delete()
+        commit()
+        return True
+
+    except Exception as e:
+        print("error TrainingDB getAll: ", e)
+    return
+
 
 @db_session
 def insert(json_object={}, to_model=False):

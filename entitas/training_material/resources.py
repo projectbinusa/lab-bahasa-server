@@ -37,3 +37,14 @@ class TrainingMaterialWithTrainingIdResource:
             page=page, limit=limit, filters=filters, training_id=training_id
         )
         resouce_response_api(resp=resp, data=data, pagination=pagination)
+
+class dInstructurTrainingMaterialWithTrainingIdResource:
+    def on_get(self, req, resp, training_id: int):
+        filters = generate_filters_resource(req=req, params_int=['id'], params_string=['name'])
+        page = int(req.get_param('page', required=False, default=1))
+        limit = int(req.get_param('limit', required=False, default=9))
+        data, pagination = services.get_training_material_by_training_id_for_instructur(
+            page=page, limit=limit, filters=filters, training_id=int(training_id), user_id=req.context['user']['id']
+        )
+        resouce_response_api(resp=resp, data=data, pagination=pagination)
+

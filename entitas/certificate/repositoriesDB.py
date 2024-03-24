@@ -97,6 +97,7 @@ def insert(json_object={}, to_model=False):
         new_certificate = CertificateDB(
             sceduler_id=json_object["sceduler_id"],
             training_id=TrainingDB[json_object["training_id"]],
+            user_id=TrainingDB[json_object["user_id"]],
             instructur_id=InstructurDB[json_object["instructur_id"]],
             instructur_name=InstructurDB[json_object["instructur_name"]],
             name=json_object["name"],

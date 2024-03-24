@@ -25,3 +25,5 @@ def insert_training_user_db(json_object={}):
 def delete_training_user_by_id(id=0):
     return repositoriesDB.delete_by_id(id=id)
 
+def delete_training_user_by_training_id_and_user_id(user_id=0, training_id=0):
+    return repositoriesDB.delete_by_training_id_and_user_id(user_id=user_id, training_id=training_id)

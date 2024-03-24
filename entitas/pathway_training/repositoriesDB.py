@@ -17,6 +17,16 @@ def get_all(to_model=False):
         print("error PathwayTrainingDB getAll: ", e)
     return result
 
+@db_session
+def find_all_by_pathway_id(pathway_id=0):
+    result = []
+    try:
+        for item in select(s for s in PathwayTrainingDB if s.pathway_id == pathway_id):
+            result.append(item.to_model())
+    except Exception as e:
+        print("error PathwayTrainingDB find_all_by_pathway_id: ", e)
+    return result
+
 
 @db_session
 def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):

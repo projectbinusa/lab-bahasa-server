@@ -49,17 +49,17 @@ class ScheduleInstructurWithIdResource:
 
 
 class ScheduleInstructurByIdWithScheduleIdResource:
-    def on_get(self, req, resp, schedule_id: int, instructur_id: int):
+    def on_get(self, req, resp, schedule_id: int, user_id: int):
         resouce_response_api(resp=resp,
-                             data=services.find_schedule_instructur_by_schedule_id(schedule_id=int(schedule_id), instructur_id=int(instructur_id)))
+                             data=services.find_schedule_instructur_by_schedule_id(schedule_id=int(schedule_id), user_id=int(user_id)))
 
-    def on_put(self, req, resp, schedule_id: int, instructur_id: int):
+    def on_put(self, req, resp, schedule_id: int, user_id: int):
         body = req.media
         # body["schedule_id"] = int(schedule_id)
-        # body["instructur_id"] = int(instructur_id)
+        # body["user_id"] = int(user_id)
         resouce_response_api(resp=resp,
-                             data=services.update_schedule_instructur_by_schedule_id(schedule_id=schedule_id, id=instructur_id, json_object=body))
+                             data=services.update_schedule_instructur_by_schedule_id(schedule_id=schedule_id, id=user_id, json_object=body))
 
-    def on_delete(self, req, resp, schedule_id: int, instructur_id: int):
+    def on_delete(self, req, resp, schedule_id: int, user_id: int):
         resouce_response_api(resp=resp,
-                             data=services.delete_schedule_instructur_by_schedule_id(schedule_id, instructur_id))
+                             data=services.delete_schedule_instructur_by_schedule_id(schedule_id, user_id))

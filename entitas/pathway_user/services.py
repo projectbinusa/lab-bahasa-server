@@ -53,13 +53,30 @@ def update_pathway_user_by_user(pathway_ids=[], user_id=0, user_name=''):
 
 def insert_pathway_user_db(json_object={}):
     from entitas.pathway.services import find_pathway_db_by_id
-    x = json_object.get("pathway_id")
-    pathway = find_pathway_db_by_id(id=x)
-    if not pathway:
-        raise_error(f"pathway id {x} tidak ditemukan")
-    return repositoriesDB.insert(json_object={**json_object, "pathway_name": pathway.get('name')})
+    from entitas.pathway_training.services import find_all_pathway_training_by_pathway_id
+    from entitas.training_user.services import insert_training_user_db
+    pathway = find_pathway_db_by_id(id=json_object['pathway_id'])
+    if pathway is None:
+        raise_error(f"pathway id {json_object['pathway_id']} tidak ditemukan")
+    json_object['pathway_name'] = pathway['name']
+    repositoriesDB.insert(json_object=json_object)
+    for pathway_training in find_all_pathway_training_by_pathway_id(pathway_id=json_object["pathway_id"]):
+        insert_training_user_db(json_object={
+            'training_id': pathway_training.training_id,
+            'user_id': json_object["user_id"],
+            'is_active': True
+        })
+    return True
 
-
-def delete_pathway_user_by_id(id=0):
+def delete_pathway_user_by_id(id=0, user_id=0):
+    from entitas.training_user.services import delete_training_user_by_training_id_and_user_id
+    from entitas.pathway_training.services import find_all_pathway_training_by_pathway_id
+    pathway_user = repositoriesDB.find_by_id(id=id)
+    if pathway_user is None:
+        raise_error('Pathway_user_id not found')
+    if user_id>0 and pathway_user.user_id != user_id:
+        raise_error('Have no access')
+    for pathway_training in find_all_pathway_training_by_pathway_id(pathway_id=pathway_user.pathway_id):
+        delete_training_user_by_training_id_and_user_id(user_id=pathway_user.user_id, training_id=pathway_training.training_id)
     return repositoriesDB.delete_by_id(id=id)
 

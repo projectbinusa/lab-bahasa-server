@@ -40,8 +40,8 @@ def get_schedule_instructur_by_schedule_id(schedule_id=0, page=1, limit=9, filte
     )
 
 
-def find_schedule_instructur_by_schedule_id(schedule_id=0, instructur_id=0, to_model=False):
-    schedule_instructur = find_schedule_instructur_db_by_id(id=instructur_id, to_model=True)
+def find_schedule_instructur_by_schedule_id(schedule_id=0, user_id=0, to_model=False):
+    schedule_instructur = find_schedule_instructur_db_by_id(id=user_id, to_model=True)
     if schedule_instructur is None:
         raise_error(msg="schedule instructur not found")
     schedule = find_schedule_db_by_id(id=schedule_id, to_model=True)
@@ -60,21 +60,24 @@ def update_schedule_instructur_by_schedule_id(schedule_id=0, id=0, json_object={
     return update_schedule_instructur_db(json_object=json_object)
 
 
-def delete_schedule_instructur_by_schedule_id(schedule_id=0, instructur_id=0):
-    schedule_instructur = find_schedule_instructur_db_by_id(id=instructur_id, to_model=True)
+def delete_schedule_instructur_by_schedule_id(schedule_id=0, user_id=0):
+    schedule_instructur = find_schedule_instructur_db_by_id(id=user_id, to_model=True)
     if schedule_instructur is None:
         raise_error(msg="Schedule Instructur not found")
-    delete_schedule_instructur = delete_schedule_instructur_by_id(id=instructur_id)
+    delete_schedule_instructur = delete_schedule_instructur_by_id(id=user_id)
     if delete_schedule_instructur is None:
         raise_error(msg="Failed to delete")
     return True
 
 
 def insert_schedule_instructur_db_by_schedule_id(schedule_id, json_object={}):
-    schedule_instructur = repositoriesDB.find_by_schedule_id_and_instructur_id(schedule_id=schedule_id, instructur_id=json_object["instructur_id"])
+    schedule_instructur = repositoriesDB.find_by_schedule_id_and_user_id(schedule_id=schedule_id, user_id=json_object["user_id"])
     if schedule_instructur is not None:
         repositoriesDB.update_delete_by_id(id=schedule_instructur.id, is_deleted=False)
         return True
     json_object["schedule_id"] = schedule_id
     insert_schedule_instructur_db(json_object=json_object)
     return True
+
+def get_schedule_ids_by_user_id(user_id=0):
+    return repositoriesDB.get_schedule_ids_by_user_id(user_id=user_id)

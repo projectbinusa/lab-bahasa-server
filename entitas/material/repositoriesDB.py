@@ -35,6 +35,9 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.filename)
             if item["field"] == "url_file":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.url_file)
+            if item["field"] == "material_ids":
+                data_in_db = data_in_db.filter(lambda d: d.id in item["value"])
+
         total_record = data_in_db.count()
         if limit > 0:
             data_in_db = data_in_db.page(pagenum=page, pagesize=limit)

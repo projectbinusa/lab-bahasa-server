@@ -215,6 +215,7 @@ class CertificateDB(db2.Entity):
     id = PrimaryKey(int, auto=True)
     schedule_id = Optional(int, nullable=True)
     training_id = Optional(int, nullable=True)
+    user_id = Optional(int, nullable=True)
     instructur_id = Optional(int, nullable=True)
     training_name = Optional(str, nullable=True)
     name = Optional(str, nullable=True)
@@ -231,6 +232,7 @@ class CertificateDB(db2.Entity):
         item.schedule_id = self.schedule_id
         item.training_id = self.training_id
         item.instructur_id = self.instructur_id
+        item.user_id = self.user_id
         item.training_name = self.training_name
         item.name = self.name
         item.url_file = self.url_file
@@ -452,8 +454,8 @@ class ScheduleInstructurDB(db2.Entity):
     _table_ = "schedule_instructur"
     id = PrimaryKey(int, auto=True)
     schedule_id = Optional(int, nullable=True)
-    instructur_id = Optional(int, nullable=True)
-    instructur_name = Optional(str, nullable=True)
+    user_id = Optional(int, nullable=True)
+    user_name = Optional(str, nullable=True)
     is_deleted = Optional(int, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
@@ -462,8 +464,8 @@ class ScheduleInstructurDB(db2.Entity):
         item = Schedule_instuctur()
         item.id = self.id
         item.schedule_id = self.schedule_id
-        item.instructur_id = self.instructur_id
-        item.instructur_name = self.instructur_name
+        item.user_id = self.user_id
+        item.user_name = self.user_name
         item.is_deleted = self.is_deleted
         item.created_date = self.created_date
         item.updated_date = self.updated_date
@@ -476,7 +478,9 @@ class ScheduleUserDB(db2.Entity):
     schedule_id = Optional(int, nullable=True)
     user_id = Optional(int, nullable=True)
     user_name = Optional(str, nullable=True)
-    is_deleted = Optional(int, nullable=True)
+    is_deleted = Optional(bool, nullable=True)
+    score = Optional(int, nullable=True)
+    certificate_url = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -487,6 +491,8 @@ class ScheduleUserDB(db2.Entity):
         item.user_id = self.user_id
         item.user_name = self.user_name
         item.is_deleted = self.is_deleted
+        item.score = self.score
+        item.certificate_url = self.certificate_url
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item

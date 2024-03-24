@@ -32,8 +32,8 @@ def get_all_with_pagination(
         for item in filters:
             if item["field"] == "id":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
-            elif item["field"] == "instructur_name":
-                data_in_db = data_in_db.filter(instructur_id=item["value"])
+            elif item["field"] == "user_name":
+                data_in_db = data_in_db.filter(user_id=item["value"])
             elif item["field"] == "schedule_id":
                 data_in_db = data_in_db.filter(schedule_id=item["value"])
             elif item["field"] == "is_deleted":
@@ -100,8 +100,8 @@ def find_by_id(id=None):
     return data_in_db.first().to_model()
 
 @db_session
-def find_by_schedule_id_and_instructur_id(schedule_id=None, instructur_id=0):
-    data_in_db = select(s for s in ScheduleInstructurDB if s.schedule_id == schedule_id and s.instructur_id == instructur_id)
+def find_by_schedule_id_and_user_id(schedule_id=None, user_id=0):
+    data_in_db = select(s for s in ScheduleInstructurDB if s.schedule_id == schedule_id and s.user_id == user_id)
     if data_in_db.first() is None:
         return None
     return data_in_db.first().to_model()
@@ -111,8 +111,8 @@ def update(json_object={}, to_model={}):
     try:
         updated_schedule_instructur = ScheduleInstructurDB[json_object["id"]]
         updated_schedule_instructur.schedule_id = json_object["schedule_id"]
-        updated_schedule_instructur.instructur_id = json_object["instructur_id"]
-        updated_schedule_instructur.instructur_name = json_object["instructur_name"]
+        updated_schedule_instructur.user_id = json_object["user_id"]
+        updated_schedule_instructur.user_name = json_object["user_name"]
         updated_schedule_instructur.is_deleted = json_object["is_deleted"]
         commit()
         if to_model:
@@ -149,8 +149,8 @@ def insert(json_object={}, to_model=False):
     try:
         new_schedule_instructur = ScheduleInstructurDB(
             schedule_id=json_object["schedule_id"],
-            instructur_id=json_object["instructur_id"],
-            instructur_name=json_object["instructur_name"],
+            user_id=json_object["user_id"],
+            user_name=json_object["user_name"],
             # is_deleted = json_object["is_deleted"],
         )
         commit()
@@ -168,8 +168,8 @@ def update_by_schedule_id(schedule_id, json_object={}, to_model=False):
     try:
         updated_schedule_instructur = ScheduleInstructurDB[schedule_id, json_object["id"]]
         updated_schedule_instructur.schedule_id = json_object["schedule_id"]
-        updated_schedule_instructur.instructur_id = json_object["instructur_id"]
-        updated_schedule_instructur.instructur_name = json_object["instructur_name"]
+        updated_schedule_instructur.user_id = json_object["user_id"]
+        updated_schedule_instructur.user_name = json_object["user_name"]
         updated_schedule_instructur.is_deleted = json_object.get("is_deleted", False)
         commit()
         if to_model:
@@ -182,9 +182,9 @@ def update_by_schedule_id(schedule_id, json_object={}, to_model=False):
 
 
 @db_session
-def delete_by_schedule_id(schedule_id, instructur_id):
+def delete_by_schedule_id(schedule_id, user_id):
     try:
-        schedule_instructur = ScheduleInstructurDB[schedule_id, instructur_id]
+        schedule_instructur = ScheduleInstructurDB[schedule_id, user_id]
         schedule_instructur.delete()
         commit()
         return True
@@ -194,9 +194,9 @@ def delete_by_schedule_id(schedule_id, instructur_id):
 
 
 @db_session
-def find_by_schedule_id(schedule_id, instructur_id):
+def find_by_schedule_id(schedule_id, user_id):
     try:
-        schedule_instructur = ScheduleInstructurDB[schedule_id, instructur_id]
+        schedule_instructur = ScheduleInstructurDB[schedule_id, user_id]
         return schedule_instructur.to_model()
     except Exception as e:
         print("error ScheduleInstructur find by id: ", e)
@@ -208,8 +208,8 @@ def insert_schedule_instructur_by_schedule_id(schedule_id, json_object={}, to_mo
     try:
         new_schedule_instructur = ScheduleInstructurDB(
             schedule_id=schedule_id,
-            instructur_id=json_object["instructur_id"],
-            instructur_name=json_object["instructur_name"],
+            user_id=json_object["user_id"],
+            user_name=json_object["user_name"],
             is_deleted=json_object.get("is_deleted", False),
         )
         commit()
@@ -220,3 +220,13 @@ def insert_schedule_instructur_by_schedule_id(schedule_id, json_object={}, to_mo
     except Exception as e:
         print("error ScheduleInstructur insert: ", e)
         return None
+
+@db_session
+def get_schedule_ids_by_user_id(user_id=0):
+    result = []
+    try:
+        for item in select(s for s in ScheduleInstructurDB if s.user_id == user_id and not s.is_deleted):
+            result.append(item.user_id)
+    except Exception as e:
+        print("error get_schedule_ids_by_user_id: ", e)
+    return result

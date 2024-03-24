@@ -35,3 +35,37 @@ class MaterialWithIdResource:
 
     def on_delete(self, req, resp, material_id: int):
         resouce_response_api(resp=resp, data=services.delete_material_by_id(id=int(material_id)))
+
+class InstructurMaterialWithIdResource:
+    def on_get(self, req, resp, training_id: int, material_id: int):
+        resouce_response_api(resp=resp, data=services.find_material_for_instructur_by_id(id=int(material_id), training_id=int(training_id), user_id=req.context['user']['id']))
+
+    def on_put(self, req, resp, training_id: int, material_id: int):
+        file = req.get_param("file")
+        body = {}
+        body["id"] = int(material_id)
+        body['name'] = req.get_param("name")
+        body['description'] = req.get_param("description")
+        body["user_id"] = req.context["user"]["id"]
+        resouce_response_api(resp=resp, data=services.update_material_for_instructur(json_object=body, file=file, training_id=int(training_id), user_id=req.context['user']['id']))
+
+    def on_delete(self, req, resp, training_id: int, material_id: int):
+        resouce_response_api(resp=resp, data=services.delete_material_for_instructur_by_id(id=int(material_id), training_id=int(training_id), user_id=req.context['user']['id']))
+
+class InstructurTrainingMaterialWithTrainingIdResource:
+    def on_get(self, req, resp, training_id: int):
+        filters = generate_filters_resource(req=req, params_int=['id'], params_string=['name'])
+        page = int(req.get_param('page', required=False, default=1))
+        limit = int(req.get_param('limit', required=False, default=9))
+        data, pagination = services.get_material_by_training_id_for_instructur(
+            page=page, limit=limit, filters=filters, training_id=int(training_id), user_id=req.context['user']['id']
+        )
+        resouce_response_api(resp=resp, data=data, pagination=pagination)
+
+    def on_post(self, req, resp, training_id: int):
+        file = req.get_param("file")
+        body = {}
+        body['name'] = req.get_param("name")
+        body['description'] = req.get_param("description")
+        body["user_id"] = req.context["user"]["id"]
+        resouce_response_api(resp=resp, data=services.insert_material_by_instructur(json_object=body, file=file, training_id=int(training_id)))

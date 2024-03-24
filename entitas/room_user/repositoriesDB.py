@@ -61,13 +61,13 @@ def find_by_id(id=None):
 def update(json_object={}, to_model={}):
     try:
         updated_room_user = RoomUserDB[json_object["id"]]
-        updated_room_user.room_id = json_object = ["room_id"]
-        updated_room_user.user_id = json_object = ["user_id"]
-        updated_room_user.last_comment_user_id = json_object = ["last_comment_user_id"]
-        updated_room_user.last_comment_text = json_object = ["last_comment_text"]
-        updated_room_user.last_comment_date = json_object = ["last_comment_date"]
-        updated_room_user.user_id = json_object = ["user_id"]
-        updated_room_user.avatar_url = json_object = ["avatar_url"]
+        updated_room_user.room_id = json_object["room_id"]
+        updated_room_user.user_id = json_object["user_id"]
+        updated_room_user.last_comment_user_id = json_object["last_comment_user_id"]
+        updated_room_user.last_comment_text = json_object["last_comment_text"]
+        updated_room_user.last_comment_date = json_object["last_comment_date"]
+        updated_room_user.user_id = json_object["user_id"]
+        updated_room_user.avatar_url = json_object["avatar_url"]
         commit()
         if to_model:
             return updated_room_user.to_model()

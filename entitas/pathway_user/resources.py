@@ -53,4 +53,4 @@ class UserPathwayUserResource:
 
 class UserPathwayByIdResuorce:
     def on_delete(self, req, resp, pathway_user_id: int):
-        resouce_response_api(resp=resp, data=services.delete_pathway_user_by_id(id=int(pathway_user_id)))
+        resouce_response_api(resp=resp, data=services.delete_pathway_user_by_id(id=int(pathway_user_id), user_id=req.context['user']['id']))

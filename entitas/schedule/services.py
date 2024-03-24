@@ -15,9 +15,21 @@ def get_calendar(year='', month='', user_id=0):
 
     if user_id not in [None, 0]:
         from entitas.schedule_user.services import get_schedule_ids_by_user_id
-        ids = get_schedule_ids_by_user_id(user_id=0)
-    print('halo 111 ',year, month, user_id, ids)
+        ids = get_schedule_ids_by_user_id(user_id=user_id)
     return repositoriesDB.get_all_by_time(year=year, month=month, ids=ids)
+
+def get_calendar_instructur(year='', month='', user_id=0):
+    year = int(year) if year not in ['', '0'] else datetime.now().year
+    month = int(month) if month not in ['', '0'] else datetime.now().month
+    ids = []
+
+    if user_id not in [None, 0]:
+        from entitas.schedule_user.services import get_schedule_ids_by_user_id
+        ids = get_schedule_ids_by_user_id(user_id=user_id)
+    return repositoriesDB.get_all_by_time(year=year, month=month, ids=ids)
+
+def get_training_ids_by_schedule_ids(schedule_ids=[]):
+    return repositoriesDB.get_training_ids_by_schedule_ids(schedule_ids=schedule_ids)
 
 def find_schedule_db_by_id(id=0, to_model=False):
     result = repositoriesDB.find_by_id(id=id)

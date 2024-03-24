@@ -11,6 +11,7 @@ from config import config
 from router.core_routes import core_routes
 from router.user_routes import user_routes
 from router.admin_routes import admin_routes
+from router.instructur_routes import instructur_routes
 from util.jwt_util import portprq_auth
 
 os.environ["TZ"] = "Asia/Jakarta"
@@ -45,6 +46,7 @@ print("Event API Backend")
 core_routes(api)
 user_routes(api)
 admin_routes(api)
+instructur_routes(api)
 
 # SWAGGERUI_URL = "/docs"
 # SCHEMA_URL = "/static/openapi.yaml"

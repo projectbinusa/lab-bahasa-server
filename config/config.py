@@ -11,7 +11,8 @@ if os.environ["dbDebug"].strip().upper() == "TRUE":
 secret_jwt = os.environ["secret_jwt"]
 driverDB = os.environ["driverDB"]
 TYPE_TOKEN_USER = 'user'
-DOMAIN_FILE_URL = 'http://file-event.lynk2.co'
+DOMAIN_FILE_URL = 'https://file-event.lynk2.co'
 SALT_SORTER = 'rahasiademak'
 MATERIAL_FOLDER = 'files/'
+CERTIFICATE_FOLDER = 'files/'
 LINK_MEET = os.environ["LINK_MEET"]

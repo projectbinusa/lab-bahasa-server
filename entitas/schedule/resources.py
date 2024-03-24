@@ -39,3 +39,9 @@ class AdminCalendarResource:
         year = req.get_param("year", required=False, default='')
         month = req.get_param("month", required=False, default='')
         resouce_response_api(resp=resp, data=services.get_calendar(year=year, month=month, user_id=0))
+
+class InstructurCalendarResource:
+    def on_get(self, req, resp):
+        year = req.get_param("year", required=False, default='')
+        month = req.get_param("month", required=False, default='')
+        resouce_response_api(resp=resp, data=services.get_calendar_instructur(year=year, month=month, user_id=req.context['user']['id']))

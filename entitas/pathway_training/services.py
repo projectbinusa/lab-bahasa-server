@@ -14,6 +14,8 @@ def find_pathway_training_db_by_id(id=0, to_model=False):
         return result
     return result.to_response()
 
+def find_all_pathway_training_by_pathway_id(pathway_id=0):
+    return repositoriesDB.find_all_by_pathway_id(pathway_id=pathway_id)
 
 def update_pathway_training_db(json_object={}):
     return repositoriesDB.update(json_object=json_object)

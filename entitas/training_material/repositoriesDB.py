@@ -85,6 +85,33 @@ def find_by_id(id=None):
         return None
     return data_in_db.first().to_model()
 
+@db_session
+def find_by_training_id_and_material_id(training_id=0, material_id=0):
+    data_in_db = select(s for s in TrainingMaterialDB if s.training_id == training_id and s.material_id == material_id)
+    if data_in_db.first() is None:
+        return
+    return data_in_db.first().to_model()
+
+@db_session
+def get_material_ids_by_training_id(training_id=0):
+    result = []
+    for data_in_db in select(s for s in TrainingMaterialDB if s.training_id == training_id):
+        result.append(data_in_db.material_id)
+    return result
+
+@db_session
+def delete_by_material_id(material_id=0):
+    for data_in_db in select(s for s in TrainingMaterialDB if s.material_id == material_id):
+        data_in_db.delete()
+    commit()
+    return True
+
+@db_session
+def update_material_name_by_material_id(material_id=0, material_name=''):
+    for data_in_db in select(s for s in TrainingMaterialDB if s.material_id == material_id):
+        data_in_db.material_name=material_name
+    commit()
+    return True
 
 @db_session
 def update(json_object={}, to_model={}):
