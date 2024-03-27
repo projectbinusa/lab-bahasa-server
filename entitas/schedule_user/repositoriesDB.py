@@ -112,6 +112,11 @@ def update_score(id=0, score=0):
     return
 
 @db_session
+def get_score_by_id_schedule(schedule_id=None, schedule_user_id=None):
+    data_in_db = select(s for s in ScheduleUserDB if s.id == schedule_user_id and s.schedule_id == schedule_id)
+    return data_in_db.first().to_model().to_response()
+
+@db_session
 def update_certificate(id=0, certificate_url=''):
     try:
         updated_schedule_user = ScheduleUserDB[id]

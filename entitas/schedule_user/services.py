@@ -37,6 +37,9 @@ def update_schedule_user_for_instructur(schedule_id=0, schedule_user_id=0, instr
         raise_error("Data not match")
     return repositoriesDB.update_score(id=schedule_user_id, score=score)
 
+def get_schedule_user_for_instructur(schedule_id=0, schedule_user_id=0):
+    return repositoriesDB.get_score_by_id_schedule(schedule_id=schedule_id, schedule_user_id=schedule_user_id)
+
 def schedule_user_generate_certificate(filters=[]):
     from util.image_util import ImageUtil
     datas ,_ = repositoriesDB.get_all_with_pagination(page=1, limit=0, filters=filters)
