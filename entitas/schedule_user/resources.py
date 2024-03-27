@@ -54,3 +54,8 @@ class InstructurCalendarScheduleParticipantScoreResource:
             schedule_id=int(schedule_id),
             schedule_user_id=int(schedule_user_id),
             instructur_id=req.context['user']['id'], score=body['score']))
+
+    def on_get(self, req, resp, schedule_id: int, schedule_user_id: int):
+        resouce_response_api(resp=resp, data=services.get_schedule_user_for_instructur(
+            schedule_id=int(schedule_id),
+            schedule_user_id=int(schedule_user_id)))
