@@ -63,14 +63,14 @@ def find_by_id(id=None):
 def update(json_object={}, to_model=False):
     try:
         updated_assignment_user = Assignment_UserDB[json_object["id"]]
-        updated_assignment_user.assignment_id = json_object["assignment_id"]
-        updated_assignment_user.user_id = json_object["user_id"]
-        updated_assignment_user.training_id = json_object["training_id"]
-        updated_assignment_user.instructur_id = json_object["instructur_id"]
+        # updated_assignment_user.assignment_id = json_object["assignment_id"]
+        # updated_assignment_user.user_id = json_object["user_id"]
+        # updated_assignment_user.training_id = json_object["training_id"]
+        # updated_assignment_user.instructur_id = json_object["instructur_id"]
         updated_assignment_user.url_file = json_object["url_file"]
         updated_assignment_user.description = json_object["description"]
-        updated_assignment_user.score = json_object["score"]
-        updated_assignment_user.comment = json_object["comment"]
+        # updated_assignment_user.score = json_object["score"]
+        # updated_assignment_user.comment = json_object["comment"]
         commit()
         if to_model:
             return updated_assignment_user.to_model()
@@ -100,9 +100,9 @@ def insert(json_object={}, to_model=False):
             training_id=json_object["training_id"],
             instructur_id=json_object["instructur_id"],
             url_file=json_object["url_file"],
-            description=json_object["description"],
-            score=json_object["score"],
-            comment=json_object["comment"],
+            description=json_object["description"]
+            # score=json_object["score"],
+            # comment=json_object["comment"],
         )
         commit()
         if to_model:
@@ -112,3 +112,10 @@ def insert(json_object={}, to_model=False):
     except Exception as e:
         print("error Material insert: ", e)
         return None
+
+@db_session
+def find_by_assignment_id_and_user_id(assignment_id=0, user_id=0):
+    data_in_db = select(s for s in Assignment_UserDB if s.assignment_id == assignment_id and s.user_id == user_id)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()

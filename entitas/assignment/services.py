@@ -18,7 +18,7 @@ def find_assignment_db_by_id(id=0, to_model=False):
 def find_assignment_instructur_by_id(id=0, instructur_id=0, to_model=False):
     result = repositoriesDB.find_by_id(id=id)
     if result is None:
-        return None
+        raise_error('Assign not found')
     if to_model:
         return result
     if instructur_id != result.instructur_id:

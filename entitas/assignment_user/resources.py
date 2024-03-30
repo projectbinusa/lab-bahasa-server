@@ -27,3 +27,14 @@ class AssignmentUserWithIdResource:
 
     def on_delete(self, req, resp, assignment_user_id: int):
         resouce_response_api(resp=resp, data=services.delete_assignment_user_by_id(id=int(assignment_user_id)))
+
+class UserCalendarScheduleAssignmentByAssignmentIdResource:
+    def on_get(self, req, resp, schedule_id: int, assignment_id: int):
+        resouce_response_api(resp=resp, data=services.find_assignment_user_by_id(assignment_id=int(assignment_id), user_id=req.context['user']['id']))
+
+    def on_post(self, req, resp, schedule_id: int, assignment_id: int):
+        file = req.get_param("file")
+        body = {}
+        body["assignment_id"] = int(assignment_id)
+        body['description'] = req.get_param("description")
+        resouce_response_api(resp=resp, data=services.update_assignment_user(file=file, json_object=body, user_id=req.context['user']['id'], assignment_id=int(assignment_id)))
