@@ -15,9 +15,11 @@ def find_schedule_user_db_by_id(id=0, to_model=False):
     from entitas.schedule.services import find_schedule_db_by_id
     from entitas.schedule_instructur.services import get_user_ids_by_schedule_id
     from entitas.user.services import find_user_db_by_id
+    from entitas.assignment.services import get_assignment_db_with_pagination
     result = result.to_response()
     result['schedule'] = find_schedule_db_by_id(id=result['schedule_id'])
     result['instructur'] = None
+    result['assignment'], _ = get_assignment_db_with_pagination(filters=[{'field': 'schedule_id', 'value': result['schedule_id']}])
     for user_id in get_user_ids_by_schedule_id(schedule_id=result['schedule_id']):
         user = find_user_db_by_id(id=user_id, to_model=True)
         if user is None:

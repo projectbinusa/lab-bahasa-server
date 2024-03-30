@@ -171,9 +171,9 @@ class AssignmentDB(db2.Entity):
     def to_model(self):
         item = Assignment()
         item.id = self.id
-        schedule_id = self.schedule_id
-        training_id = self.training_id
-        instructur_id = self.instructur_id
+        item.schedule_id = self.schedule_id
+        item.training_id = self.training_id
+        item.instructur_id = self.instructur_id
         item.name = self.name
         item.description = self.description
         item.max_date = self.max_date

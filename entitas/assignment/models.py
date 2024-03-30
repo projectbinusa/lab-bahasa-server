@@ -1,5 +1,5 @@
 class Assignment:
-    def __init_(
+    def __init__(
             self,
             id= 0,
             schedule_id= 0,
@@ -29,7 +29,7 @@ class Assignment:
             "instructur_id": self.instructur_id,
             "name": self.name,
             "description": self.description,
-            "max_date": self.max_date,
+            "max_date": str(self.max_date) if self.max_date is not None else None,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
@@ -42,7 +42,7 @@ class Assignment:
             "instructur_id": self.instructur_id,
             "name": self.name,
             "description": self.description,
-            "max_date": self.max_date,
+            "max_date": str(self.max_date) if self.max_date is not None else None,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
