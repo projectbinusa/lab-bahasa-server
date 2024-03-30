@@ -77,7 +77,19 @@ def update(json_object={}, to_model=False):
         else:
             return updated_assignment_user.to_model().to_response()
     except Exception as e:
-        print("error Material update: ", e)
+        print("error AssignmentUser update: ", e)
+        return None
+
+@db_session
+def update_score(id=0, score=0, comment=''):
+    try:
+        updated_assignment_user = Assignment_UserDB[id]
+        updated_assignment_user.score = score
+        updated_assignment_user.comment = comment
+        commit()
+        return True
+    except Exception as e:
+        print("error AssignmentUser update_score: ", e)
         return None
 
 @db_session
@@ -87,7 +99,7 @@ def delete_by_id(id=None):
         commit()
         return True
     except Exception as e:
-        print("error Material deleteById: ", e)
+        print("error AssignmentUser deleteById: ", e)
     return
 
 
@@ -110,7 +122,7 @@ def insert(json_object={}, to_model=False):
         else:
             return new_assignment_user.to_model().to_response()
     except Exception as e:
-        print("error Material insert: ", e)
+        print("error AssignmentUser insert: ", e)
         return None
 
 @db_session

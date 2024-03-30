@@ -59,3 +59,11 @@ def update_assignment_user(file=None, assignment_id=0, user_id=0, json_object={}
         return repositoriesDB.insert(json_object=json_object)
     json_object['id'] = assignment_user.id
     return repositoriesDB.update(json_object=json_object)
+
+def assignment_user_update_score(id=0, instructur_id=0, score=0, comment=''):
+    assignment_user = repositoriesDB.find_by_id(id=id)
+    if assignment_user is None:
+        raise_error('Assignment user not found')
+    if assignment_user.instructur_id != instructur_id:
+        raise_error('Have no access')
+    return repositoriesDB.update_score(id=id, score=score, comment=comment)
