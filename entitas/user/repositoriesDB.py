@@ -151,6 +151,8 @@ def delete_by_id(id=None):
 
 @db_session
 def insert(json_object={}, to_model=False):
+    if 'description' not in json_object:
+        json_object['description'] = ''
     try:
         new_user = UserDB(
             role=json_object["role"],
@@ -164,6 +166,7 @@ def insert(json_object={}, to_model=False):
             active=1,
             password=encrypt_string(json_object["new_password"]),
             token=str(uuid.uuid4()),
+            description=json_object['description']
         )
         commit()
         if to_model:
@@ -175,6 +178,8 @@ def insert(json_object={}, to_model=False):
 
 @db_session
 def signup(json_object={}):
+    if 'description' not in json_object:
+        json_object['description'] = ''
     UserDB(
         address=json_object["address"],
         name=json_object["name"],
@@ -185,7 +190,8 @@ def signup(json_object={}):
         role=json_object["role"],
         active=1,
         password=encrypt_string(json_object["new_password"]),
-        token=str(uuid.uuid4())
+        token=str(uuid.uuid4()),
+        description=json_object['description']
     )
     commit()
     return True
@@ -247,6 +253,8 @@ def update_profile(json_object=None, to_model=False):
             updated_user.birth_date = json_object["birth_date"]
         if "birth_place" in json_object:
             updated_user.birth_place = json_object["birth_place"]
+        if "description" in json_object:
+            updated_user.description = json_object["description"]
         commit()
         if to_model:
             return updated_user.to_model()

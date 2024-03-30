@@ -16,6 +16,7 @@ class User:
             last_login='',
             hp='',
             token='',
+            description='',
             created_date=None,
             updated_date=None,
     ):
@@ -34,6 +35,7 @@ class User:
         self.last_login = last_login
         self.hp = hp
         self.token = token
+        self.description = description
         self.created_date = created_date
         self.updated_date = updated_date
 
@@ -53,6 +55,7 @@ class User:
             "activate": self.activate,
             "last_login": str(self.last_login) if self.last_login is not None else None,
             "token": self.token,
+            "description": self.description,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
@@ -74,13 +77,13 @@ class User:
             "id": self.id,
             "name": self.name,
             "email": self.email,
-            "password": self.password,
             "address": self.address,
             "birth_date": str(self.birth_date) if self.birth_date is not None else None,
             "role": self.role,
             "birth_place": self.birth_place,
             "picture": self.picture,
             "activate": self.activate,
+            "description": self.description,
             "last_login": str(self.last_login) if self.last_login is not None else None,
             "hp": self.hp,
         }
@@ -100,6 +103,7 @@ class User:
             "last_login": str(self.last_login) if self.last_login is not None else None,
             "hp": self.hp,
             "token": self.token,
+            "description": self.description,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
