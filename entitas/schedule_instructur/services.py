@@ -81,3 +81,6 @@ def insert_schedule_instructur_db_by_schedule_id(schedule_id, json_object={}):
 
 def get_schedule_ids_by_user_id(user_id=0):
     return repositoriesDB.get_schedule_ids_by_user_id(user_id=user_id)
+
+def get_user_ids_by_schedule_id(schedule_id=0):
+    return repositoriesDB.get_user_ids_by_schedule_id(schedule_id=schedule_id)

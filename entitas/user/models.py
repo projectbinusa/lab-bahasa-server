@@ -112,9 +112,9 @@ class User:
         return {"email": self.email}
 
     def to_response_simple(self):
-        print('hl aas')
         return {
             "name": 'self.name',
             "email": 'self.email',
-            "picture": ""
+            "picture": "",
+            "description": self.description
         }

@@ -226,7 +226,17 @@ def get_schedule_ids_by_user_id(user_id=0):
     result = []
     try:
         for item in select(s for s in ScheduleInstructurDB if s.user_id == user_id and not s.is_deleted):
-            result.append(item.user_id)
+            result.append(item.schedule_id)
     except Exception as e:
         print("error get_schedule_ids_by_user_id: ", e)
+    return result
+
+@db_session
+def get_user_ids_by_schedule_id(schedule_id=0):
+    result = []
+    try:
+        for item in select(s for s in ScheduleInstructurDB if s.schedule_id == schedule_id and not s.is_deleted):
+            result.append(item.user_id)
+    except Exception as e:
+        print("error get_user_ids_by_schedule_id: ", e)
     return result

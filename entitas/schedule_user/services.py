@@ -12,7 +12,19 @@ def find_schedule_user_db_by_id(id=0, to_model=False):
         return None
     if to_model:
         return result
-    return result.to_response()
+    from entitas.schedule.services import find_schedule_db_by_id
+    from entitas.schedule_instructur.services import get_user_ids_by_schedule_id
+    from entitas.user.services import find_user_db_by_id
+    result = result.to_response()
+    result['schedule'] = find_schedule_db_by_id(id=result['schedule_id'])
+    result['instructur'] = None
+    for user_id in get_user_ids_by_schedule_id(schedule_id=result['schedule_id']):
+        user = find_user_db_by_id(id=user_id, to_model=True)
+        if user is None:
+            continue
+        if user.role == 'instructur':
+            result['instructur'] = user.to_response_simple()
+    return result
 
 def get_schedule_ids_by_user_id(user_id=0):
     return repositoriesDB.get_schedule_ids_by_user_id(user_id=user_id)
