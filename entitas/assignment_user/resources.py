@@ -56,3 +56,7 @@ class InstructurCalendarScheduleAssignmentByAssignmentIdUserIdResource:
         body = req.media
         resouce_response_api(resp=resp, data=services.assignment_user_update_score(
             id=int(assignment_user_id), instructur_id=req.context['user']['id'], score=body['score'], comment=body['comment']))
+
+    def on_get(self, req, resp, schedule_id: int, assignment_id: int, assignment_user_id: int):
+        resouce_response_api(resp=resp, data=services.preview_assignment_user_for_instructur(
+            id=int(assignment_user_id), instructur_id=req.context['user']['id']))

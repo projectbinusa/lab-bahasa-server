@@ -67,3 +67,11 @@ def assignment_user_update_score(id=0, instructur_id=0, score=0, comment=''):
     if assignment_user.instructur_id != instructur_id:
         raise_error('Have no access')
     return repositoriesDB.update_score(id=id, score=score, comment=comment)
+
+def preview_assignment_user_for_instructur(id=0, instructur_id=0):
+    assignment_user = repositoriesDB.find_by_id(id=id)
+    if assignment_user is None:
+        raise_error('Assignment user not found')
+    if assignment_user.instructur_id != instructur_id:
+        raise_error('Have no access')
+    return assignment_user.to_response()
