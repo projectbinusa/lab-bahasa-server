@@ -41,6 +41,9 @@ def insert_schedule_user_db(json_object={}):
 def delete_schedule_user_by_id(id=0):
     return repositoriesDB.delete_by_id(id=id)
 
+def is_found_user_id_and_schedule_id(schedule_id=0, user_id=0):
+    return repositoriesDB.is_found_user_id_and_schedule_id(user_id=user_id, schedule_id=schedule_id)
+
 def update_schedule_user_for_instructur(schedule_id=0, schedule_user_id=0, instructur_id=0, score=0):
     if not repositoriesDB.is_found_user_id_and_schedule_id(user_id=instructur_id, schedule_id=schedule_id):
         raise_error("Have no access")
