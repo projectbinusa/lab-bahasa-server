@@ -34,6 +34,16 @@ class UserCalendarResource:
         month = req.get_param("month", required=False, default='')
         resouce_response_api(resp=resp, data=services.get_calendar(year=year, month=month, user_id=req.context['user']['id']))
 
+class UserMyTrainingResource:
+    def on_get(self, req, resp):
+        filters = generate_filters_resource(req=req, params_int=['id'], params_string=['name'])
+        page = int(req.get_param("page", required=False, default=1))
+        limit = int(req.get_param("limit", required=False, default=9))
+        data, pagination = services.get_mytraining_student(
+            user_id=req.context['user']['id'], page=page, limit=limit, filters=filters
+        )
+        resouce_response_api(resp=resp, data=data, pagination=pagination)
+
 class AdminCalendarResource:
     def on_get(self, req, resp):
         year = req.get_param("year", required=False, default='')
