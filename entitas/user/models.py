@@ -113,8 +113,8 @@ class User:
 
     def to_response_simple(self):
         return {
-            "name": 'self.name',
-            "email": 'self.email',
+            "name": self.name,
+            "email": self.email,
             "picture": "",
             "description": self.description
         }
