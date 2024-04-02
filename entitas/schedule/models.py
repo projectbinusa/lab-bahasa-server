@@ -6,6 +6,7 @@ class Schedule:
             training_id=0,
             training_name='',
             link='',
+            other_link='',
             is_online=0,
             location='',
             active='',
@@ -18,6 +19,7 @@ class Schedule:
         self.training_id = training_id
         self.training_name = training_name
         self.link = link
+        self.other_link = other_link
         self.is_online = is_online
         self.location = location
         self.active = active
@@ -32,6 +34,8 @@ class Schedule:
             "training_id": self.training_id,
             "training_name": self.training_name,
             "link": self.link,
+            "full_link": 'https://dev-event.lynk2.co/roomMeet?id=' + self.link if self.link not in ['', None] else None,
+            "other_link": self.other_link,
             "is_online": self.is_online,
             "location": self.location,
             "active": self.active,
@@ -47,6 +51,8 @@ class Schedule:
             "training_id": self.training_id,
             "training_name": self.training_name,
             "link": self.link,
+            "full_link": 'https://dev-event.lynk2.co/roomMeet?id=' + self.link if self.link not in ['', None] else None,
+            "other_link": self.other_link,
             "is_online": self.is_online,
             "location": self.location,
             "active": self.active,
@@ -62,7 +68,8 @@ class Schedule:
             "training_id": self.training_id,
             "training_name": self.training_name,
             "link": self.link,
-            "full_link": 'https://dev-event.lynk2.co/roomMeet/'+self.link,
+            "full_link": 'https://dev-event.lynk2.co/roomMeet?id='+self.link if self.link not in ['', None] else None,
+            "other_link": self.other_link,
             "is_online": self.is_online,
             "location": self.location,
             "active": self.active,
