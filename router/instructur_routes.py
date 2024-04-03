@@ -13,6 +13,7 @@ def instructur_routes(api):
     api.add_route("/api/instructur/training/{training_id}/material/{material_id}", InstructurMaterialWithIdResource())
     api.add_route("/api/instructur/calendar", InstructurCalendarResource())
     api.add_route("/api/instructur/mytraining", InstructurMytrainingResource())
+    api.add_route("/api/instructur/mytraining/{schedule_id}", InstructurMytrainingScheduleIdResource())
     api.add_route("/api/instructur/calendar/{schedule_id}/participant", InstructurCalendarScheduleParticipantResource())
     api.add_route("/api/instructur/calendar/{schedule_id}/assignment", InstructurCalendarScheduleAssignmentResource())
     api.add_route("/api/instructur/calendar/{schedule_id}/assignment/{assignment_id}", InstructurCalendarScheduleAssignmentByAssignmentIdResource())
@@ -22,3 +23,15 @@ def instructur_routes(api):
                   InstructurCalendarScheduleAssignmentByAssignmentIdUserIdResource())
     api.add_route("/api/instructur/calendar/{schedule_id}/participant/generate_certificate", InstructurCalendarScheduleParticipantGenerateCertificateResource())
     api.add_route("/api/instructur/calendar/{schedule_id}/participant/{schedule_user_id}/score", InstructurCalendarScheduleParticipantScoreResource())
+    api.add_route("/api/instructur/mytraining/{schedule_id}/participant", InstructurCalendarScheduleParticipantResource())
+    api.add_route("/api/instructur/mytraining/{schedule_id}/assignment", InstructurCalendarScheduleAssignmentResource())
+    api.add_route("/api/instructur/mytraining/{schedule_id}/assignment/{assignment_id}",
+                  InstructurCalendarScheduleAssignmentByAssignmentIdResource())
+    api.add_route("/api/instructur/mytraining/{schedule_id}/assignment/{assignment_id}/user",
+                  InstructurCalendarScheduleAssignmentByAssignmentIdUserResource())
+    api.add_route("/api/instructur/mytraining/{schedule_id}/assignment/{assignment_id}/user/{assignment_user_id}",
+                  InstructurCalendarScheduleAssignmentByAssignmentIdUserIdResource())
+    api.add_route("/api/instructur/mytraining/{schedule_id}/participant/generate_certificate",
+                  InstructurCalendarScheduleParticipantGenerateCertificateResource())
+    api.add_route("/api/instructur/mytraining/{schedule_id}/participant/{schedule_user_id}/score",
+                  InstructurCalendarScheduleParticipantScoreResource())

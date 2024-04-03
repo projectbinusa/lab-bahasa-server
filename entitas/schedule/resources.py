@@ -65,3 +65,7 @@ class InstructurMytrainingResource:
             user_id=req.context['user']['id'], page=page, limit=limit, filters=filters
         )
         resouce_response_api(resp=resp, data=data, pagination=pagination)
+
+class InstructurMytrainingScheduleIdResource:
+    def on_get(self, req, resp, schedule_id: int):
+        resouce_response_api(resp=resp, data=services.find_schedule_db_by_id(id=int(schedule_id)))
