@@ -54,3 +54,6 @@ class InstructurCalendarScheduleAssignmentByAssignmentIdResource:
         body["id"] = int(assignment_id)
         body["instructur_id"] = req.context['user']['id']
         resouce_response_api(resp=resp, data=services.update_assignment_instructur(json_object=body, instructur_id=req.context['user']['id']))
+
+    def on_delete(self, req, resp, schedule_id: int,  assignment_id: int):
+        resouce_response_api(resp=resp, data=services.delete_assignment_instructur_by_id(id=int(assignment_id), instructur_id=req.context['user']['id']))

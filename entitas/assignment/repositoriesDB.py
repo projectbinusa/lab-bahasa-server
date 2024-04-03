@@ -95,8 +95,7 @@ def delete_by_id(id=None):
 def insert(json_object={}, to_model=False):
     try:
         new_assignment = AssignmentDB(
-            schedule_id=json_object["schedule_id"],
-            training_id=json_object["training_id"],
+           training_id=json_object["training_id"],
             instructur_id=json_object["instructur_id"],
             name=json_object["name"],
             description=json_object["description"],
