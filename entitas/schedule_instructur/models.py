@@ -10,7 +10,7 @@ class Schedule_instuctur:
             updated_date=None,
     ):
         self.id = id
-        self.schecule_id = schedule_id
+        self.schedule_id = schedule_id
         self.user_id = user_id
         self.user_name = user_name
         self.is_deleted = is_deleted
@@ -20,7 +20,7 @@ class Schedule_instuctur:
     def to_json(self):
         return {
             "id": self.id,
-            "schedule_id": self.schecule_id,
+            "schedule_id": self.schedule_id,
             "user_id": self.user_id,
             "user_name": self.user_name,
             "is_deleted": self.is_deleted,
@@ -31,7 +31,7 @@ class Schedule_instuctur:
     def to_response(self):
         return {
             "id": self.id,
-            "schedule_id": self.schecule_id,
+            "schedule_id": self.schedule_id,
             "user_id": self.user_id,
             "user_name": self.user_name,
             "is_deleted": self.is_deleted,
