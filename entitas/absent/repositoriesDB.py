@@ -93,6 +93,8 @@ def delete_by_id(id=None):
 @db_session
 def insert(json_object={}, to_model=[]):
     try:
+        if 'location' not in json_object:
+            json_object['location'] = ''
         new_absent = AbsentDB(
             training_id = json_object["training_id"],
             training_name = json_object["training_name"],
@@ -102,6 +104,7 @@ def insert(json_object={}, to_model=[]):
             user_id = json_object["user_id"],
             user_name = json_object["user_name"],
             description = json_object["description"],
+            location=json_object['location']
         )
         commit()
         if to_model:
