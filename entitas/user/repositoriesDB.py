@@ -111,6 +111,10 @@ def update(json_object=None, to_model=False):
         updated_user.name = json_object["name"]
         updated_user.hp = json_object["hp"]
         updated_user.email = json_object["email"]
+        if 'nip' in json_object:
+            updated_user.nip = json_object['nip']
+        if 'tag' in json_object:
+            updated_user.tag = json_object['tag']
         commit()
         if to_model:
             updated_user.to_model()
@@ -153,6 +157,10 @@ def delete_by_id(id=None):
 def insert(json_object={}, to_model=False):
     if 'description' not in json_object:
         json_object['description'] = ''
+    if 'nip' not in json_object:
+        json_object['nip'] = ''
+    if 'tag' not in json_object:
+        json_object['tag'] = ''
     try:
         new_user = UserDB(
             role=json_object["role"],
@@ -166,7 +174,9 @@ def insert(json_object={}, to_model=False):
             active=1,
             password=encrypt_string(json_object["new_password"]),
             token=str(uuid.uuid4()),
-            description=json_object['description']
+            description=json_object['description'],
+            nip=json_object['nip'],
+            tag=json_object['tag']
         )
         commit()
         if to_model:
@@ -180,6 +190,10 @@ def insert(json_object={}, to_model=False):
 def signup(json_object={}):
     if 'description' not in json_object:
         json_object['description'] = ''
+    if 'nip' not in json_object:
+        json_object['nip'] = ''
+    if 'tag' not in json_object:
+        json_object['tag'] = ''
     UserDB(
         address=json_object["address"],
         name=json_object["name"],
@@ -191,7 +205,9 @@ def signup(json_object={}):
         active=1,
         password=encrypt_string(json_object["new_password"]),
         token=str(uuid.uuid4()),
-        description=json_object['description']
+        description=json_object['description'],
+        nip=json_object['nip'],
+        tag=json_object['tag']
     )
     commit()
     return True

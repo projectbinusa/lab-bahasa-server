@@ -43,6 +43,8 @@ class UserDB(db2.Entity):
     picture = Optional(str, 1000, nullable=True)
     role = Optional(str, nullable=True)
     description = Optional(str, 100000, nullable=True)
+    nip = Optional(str, nullable=True)
+    tag = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -64,6 +66,8 @@ class UserDB(db2.Entity):
         item.picture = self.picture
         item.role = self.role
         item.description = self.description
+        item.nip = self.nip
+        item.tag = self.tag
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item

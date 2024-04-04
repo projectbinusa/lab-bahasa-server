@@ -17,6 +17,8 @@ class User:
             hp='',
             token='',
             description='',
+            nip='',
+            tag='',
             created_date=None,
             updated_date=None,
     ):
@@ -36,6 +38,8 @@ class User:
         self.hp = hp
         self.token = token
         self.description = description
+        self.nip = nip
+        self.tag = tag
         self.created_date = created_date
         self.updated_date = updated_date
 
@@ -56,6 +60,8 @@ class User:
             "last_login": str(self.last_login) if self.last_login is not None else None,
             "token": self.token,
             "description": self.description,
+            "nip": self.nip,
+            "tag": self.tag,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
@@ -86,6 +92,8 @@ class User:
             "description": self.description,
             "last_login": str(self.last_login) if self.last_login is not None else None,
             "hp": self.hp,
+            "nip": self.nip,
+            "tag": self.tag
         }
 
     def to_response(self):
@@ -104,6 +112,8 @@ class User:
             "hp": self.hp,
             "token": self.token,
             "description": self.description,
+            "nip": self.nip,
+            "tag": self.tag,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
