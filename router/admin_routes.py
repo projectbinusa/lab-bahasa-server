@@ -52,3 +52,4 @@ def admin_routes(api):
     api.add_route("/api/admin/schedule_instructur/{schedule_instructur_id}", ScheduleInstructurWithIdResource())
     api.add_route("/api/admin/schedule_instructur", ScheduleInstructurResource())
     api.add_route("/api/admin/calendar", AdminCalendarResource())
+    api.add_route("/api/admin/mytraining", AdminMytrainingResource())
