@@ -49,3 +49,5 @@ def user_routes(api):
     api.add_route("/api/user/training_user/{training_user_id}", TrainingUserWithIdResource())
     api.add_route("/api/user/training_user", TrainingUserResource())
     api.add_route("/api/user/pathway_training", PathwayTrainingResource())
+    api.add_route("/api/user/calendar/{schedule_id}/participant/{schedule_user_id}/confirmed",
+                  InstructurCalendarScheduleParticipantConfirmedResource())

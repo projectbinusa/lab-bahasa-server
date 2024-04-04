@@ -54,6 +54,16 @@ def update_schedule_user_for_instructur(schedule_id=0, schedule_user_id=0, instr
         raise_error("Data not match")
     return repositoriesDB.update_score(id=schedule_user_id, score=score)
 
+def update_schedule_user_for_confirmed(schedule_id=0, schedule_user_id=0, user_id=0, confirmed=False):
+    if not repositoriesDB.is_found_user_id_and_schedule_id(user_id=user_id, schedule_id=schedule_id):
+        raise_error("Have no access")
+    schedule_user = repositoriesDB.find_by_id(id=schedule_user_id)
+    if schedule_user is None:
+        raise_error("Data not found")
+    if schedule_user.schedule_id != schedule_id:
+        raise_error("Data not match")
+    return repositoriesDB.update_confirmed(id=schedule_user_id, confirmed=confirmed)
+
 def get_schedule_user_for_instructur(schedule_id=0, schedule_user_id=0):
     return repositoriesDB.get_score_by_id_schedule(schedule_id=schedule_id, schedule_user_id=schedule_user_id)
 

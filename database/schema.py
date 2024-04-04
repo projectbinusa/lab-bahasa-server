@@ -491,6 +491,7 @@ class ScheduleUserDB(db2.Entity):
     is_deleted = Optional(bool, nullable=True)
     score = Optional(int, nullable=True)
     certificate_url = Optional(str, nullable=True)
+    confirmed = Optional(bool, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -503,6 +504,7 @@ class ScheduleUserDB(db2.Entity):
         item.is_deleted = self.is_deleted
         item.score = self.score
         item.certificate_url = self.certificate_url
+        item.confirmed = self.confirmed
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item

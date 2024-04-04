@@ -84,6 +84,13 @@ def update_score(id=0, score=0):
     return True
 
 @db_session
+def update_confirmed(id=0, confirmed=False):
+    for item in select(s for s in ScheduleUserDB if s.id == id):
+        item.confirmed = confirmed
+    commit()
+    return True
+
+@db_session
 def update(json_object={}, to_model={}):
     try:
         updated_schedule_user = ScheduleUserDB[json_object["id"]]
