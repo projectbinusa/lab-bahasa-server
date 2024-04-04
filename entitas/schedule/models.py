@@ -11,6 +11,7 @@ class Schedule:
             location='',
             active='',
             start_date='',
+            is_finish=False,
             created_date=None,
             updated_date=None,
     ):
@@ -24,6 +25,7 @@ class Schedule:
         self.location = location
         self.active = active
         self.start_date = start_date
+        self.is_finish = is_finish
         self.created_date = created_date
         self.updated_date = updated_date
 
@@ -39,6 +41,7 @@ class Schedule:
             "is_online": self.is_online,
             "location": self.location,
             "active": self.active,
+            "is_finish": self.is_finish,
             "start_date": str(self.start_date) if self.start_date is not None else None,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
@@ -56,6 +59,7 @@ class Schedule:
             "is_online": self.is_online,
             "location": self.location,
             "active": self.active,
+            "is_finish": self.is_finish,
             "start_date": str(self.start_date) if self.start_date is not None else None,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
@@ -73,6 +77,7 @@ class Schedule:
             "is_online": self.is_online,
             "location": self.location,
             "active": self.active,
+            "is_finish": self.is_finish,
             "start_date": str(self.start_date) if self.start_date is not None else None,
             "day": self.start_date.day if self.start_date is not None else None,
             "hour": self.start_date.hour if self.start_date is not None else None

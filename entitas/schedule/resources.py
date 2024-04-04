@@ -28,6 +28,14 @@ class ScheduleWithIdResource:
     def on_delete(self, req, resp, schedule_id: int):
         resouce_response_api(resp=resp, data=services.delete_schedule_by_id(id=int(schedule_id)))
 
+class ScheduleWithIdFinishResource:
+    def on_put(self, req, resp, schedule_id: int):
+        resouce_response_api(resp=resp, data=services.update_schedule_for_finish(id=int(schedule_id), is_finish=True))
+
+class ScheduleWithIdUnFinishResource:
+    def on_put(self, req, resp, schedule_id: int):
+        resouce_response_api(resp=resp, data=services.update_schedule_for_finish(id=int(schedule_id), is_finish=False))
+
 class UserCalendarResource:
     def on_get(self, req, resp):
         year = req.get_param("year", required=False, default='')

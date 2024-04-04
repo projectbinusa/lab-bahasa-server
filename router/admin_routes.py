@@ -39,6 +39,8 @@ def admin_routes(api):
     api.add_route("/api/admin/room_user/{room_user_id}", RoomUserWithIdResource())
     api.add_route("/api/admin/room_user", RoomUserResource())
     api.add_route("/api/admin/schedule/{schedule_id}", ScheduleWithIdResource())
+    api.add_route("/api/admin/schedule/{schedule_id}/finish", ScheduleWithIdFinishResource())
+    api.add_route("/api/admin/schedule/{schedule_id}/unfinish", ScheduleWithIdUnFinishResource())
     api.add_route("/api/admin/schedule", ScheduleResource())
     api.add_route("/api/admin/training/{training_id}", TrainingWithIdResource())
     api.add_route("/api/admin/training", TrainingResource())

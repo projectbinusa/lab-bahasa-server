@@ -112,6 +112,18 @@ def update_link(id=0, link=''):
     return
 
 @db_session
+def update_is_finish(id=0, is_finish=False):
+    try:
+        updated_schedule = ScheduleDB[id]
+        updated_schedule.is_finish = is_finish
+        commit()
+        return True
+
+    except Exception as e:
+        print("error Schedule update_is_finish: ", e)
+    return
+
+@db_session
 def delete_by_id(id=None):
     try:
         ScheduleDB[id].delete()

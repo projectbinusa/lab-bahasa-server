@@ -440,6 +440,7 @@ class ScheduleDB(db2.Entity):
     is_online = Optional(int, nullable=True)
     location = Optional(str, nullable=True)
     active = Optional(int, nullable=True)
+    is_finish = Optional(bool, nullable=True)
     start_date = Optional(datetime, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
@@ -456,6 +457,7 @@ class ScheduleDB(db2.Entity):
         item.location = self.location
         item.active = self.active
         item.start_date = self.start_date
+        item.is_finish = self.is_finish
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item

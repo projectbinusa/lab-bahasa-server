@@ -59,6 +59,13 @@ def find_schedule_db_by_id(id=0, to_model=False):
         return result
     return result.to_response()
 
+
+def update_schedule_for_finish(id=0, is_finish=False):
+    result = repositoriesDB.find_by_id(id=id)
+    if result is None:
+        raise_error('Data not found')
+    return repositoriesDB.update_is_finish(id=id, is_finish=is_finish)
+
 def find_schedule_for_instructur_by_id(id=0, user_id=0, to_model=False):
     from entitas.schedule_user.services import is_found_user_id_and_schedule_id
     result = repositoriesDB.find_by_id(id=id)
