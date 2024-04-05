@@ -31,7 +31,7 @@ def get_calendar_instructur(year='', month='', user_id=0):
 def get_mytraining_instructur(user_id=0, page=1, limit=9, filters=[]):
     ids = []
     if user_id not in [None, 0]:
-        from entitas.schedule_user.services import get_schedule_ids_by_user_id
+        from entitas.schedule_instructur.services import get_schedule_ids_by_user_id
         ids = get_schedule_ids_by_user_id(user_id=user_id)
     filters.append({'field': 'ids', 'value': ids})
     return repositoriesDB.get_all_with_pagination(
