@@ -28,6 +28,37 @@ def find_schedule_user_db_by_id(id=0, to_model=False):
             result['instructur'] = user.to_response_simple()
     return result
 
+def find_schedule_user_for_student_by_id(id=0, user_id=0, to_model=False):
+    result = repositoriesDB.find_by_id(id=id)
+    if result is None:
+        raise_error('data not found')
+    if to_model:
+        return result
+    if result.user_id != user_id:
+        raise_error('have no access')
+    from entitas.schedule.services import find_schedule_db_by_id
+    from entitas.schedule_instructur.services import get_user_ids_by_schedule_id
+    from entitas.user.services import find_user_db_by_id
+    from entitas.assignment.services import get_assignment_db_with_pagination
+    from entitas.assignment_user.services import get_assignment_user_by_id
+    result = result.to_response()
+    result['schedule'] = find_schedule_db_by_id(id=result['schedule_id'])
+    result['instructur'] = None
+    result['assignment'], _ = get_assignment_db_with_pagination(filters=[{'field': 'schedule_id', 'value': result['schedule_id']}])
+    for i in range(len(result['assignment'])):
+        result['assignment'][i]['result'] = None
+        assignment_user = get_assignment_user_by_id(assignment_id=result['assignment'][i]['id'], user_id=user_id)
+        if assignment_user is not None:
+            result['assignment'][i]['result'] = assignment_user.to_response_simple()
+
+    for user_id in get_user_ids_by_schedule_id(schedule_id=result['schedule_id']):
+        user = find_user_db_by_id(id=user_id, to_model=True)
+        if user is None:
+            continue
+        if user.role == 'instructur':
+            result['instructur'] = user.to_response_simple()
+    return result
+
 def get_schedule_ids_by_user_id(user_id=0):
     return repositoriesDB.get_schedule_ids_by_user_id(user_id=user_id)
 

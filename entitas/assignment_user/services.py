@@ -38,6 +38,10 @@ def find_assignment_user_by_id(assignment_id=0, user_id=0):
         return {}
     return assignment_user.to_response()
 
+def get_assignment_user_by_id(assignment_id=0, user_id=0):
+    return repositoriesDB.find_by_assignment_id_and_user_id(assignment_id=assignment_id, user_id=user_id)
+
+
 def update_assignment_user(file=None, assignment_id=0, user_id=0, json_object={}):
     from entitas.assignment.services import find_assignment_db_by_id
     if file is None:
