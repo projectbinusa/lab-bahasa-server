@@ -15,6 +15,19 @@ def get_all(to_model=False):
     return result
 
 @db_session
+def get_all_by_user_id(user_id=0, to_model=False):
+    result = []
+    try:
+        for item in select(s for s in AbsentDB if s.user_id == user_id):
+            if to_model:
+                result.append(item.to_model())
+            else:
+                result.append(item.to_model().to_response())
+    except Exception as e:
+        print("error Absent get_all_by_user_id: ", e)
+    return result
+
+@db_session
 def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False ):
     result = []
     total_record = 0

@@ -150,7 +150,12 @@ def get_profile_id_user_db(json_object={}):
     account = repositoriesDB.find_by_id(id=json_object["id"])
     if account is None:
         return
-    return account.to_response_profile()
+    account = account.to_response_profile()
+    from entitas.schedule.services import get_mytraining_student
+    from entitas.absent.services import get_all_absent_by_user_id
+    account['trainings'], _ = get_mytraining_student(user_id=json_object["id"], limit=0)
+    account['absents'] = get_all_absent_by_user_id(user_id=json_object["id"])
+    return account
 
 
 def get_profile_id_user_db_admin(id=0):

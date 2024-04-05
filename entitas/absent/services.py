@@ -7,6 +7,8 @@ def get_absent_db_with_pagination(page=1, limit=9, filters=[], to_model=False):
         page=page, limit=limit, filters=filters, to_model=to_model
     )
 
+def get_all_absent_by_user_id(user_id=0, to_model=False):
+    return repositoriesDB.get_all_by_user_id(user_id=user_id, to_model=to_model)
 
 def find_absent_db_by_id(id=0, to_model=False):
     result = repositoriesDB.find_by_id(id=id)
