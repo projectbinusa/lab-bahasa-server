@@ -87,6 +87,7 @@ def update_schedule_db(json_object={}):
         if training is None:
             raise_error("Training not found")
         json_object['training_name'] = training.name
+        json_object['training_image_url'] = training.image_url
 
     return repositoriesDB.update(json_object=json_object)
 
@@ -96,6 +97,7 @@ def insert_schedule_db(json_object={}):
     if training is None:
         raise_error("Training not found")
     json_object['training_name'] = training.name
+    json_object['training_image_url'] = training.image_url
     data = repositoriesDB.insert(json_object=json_object)
     serviceShorter = ServiceShorter(salt_shorter=SALT_SORTER, url_id=data['id'])
     data['link'] = serviceShorter.encode()

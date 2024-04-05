@@ -435,6 +435,7 @@ class ScheduleDB(db2.Entity):
     name = Optional(str, nullable=True)
     training_id = Optional(int, nullable=True)
     training_name = Optional(str, nullable=True)
+    training_image_url = Optional(str, nullable=True)
     link = Optional(str, nullable=True)
     other_link = Optional(str, nullable=True)
     is_online = Optional(int, nullable=True)
@@ -451,6 +452,7 @@ class ScheduleDB(db2.Entity):
         item.name = self.name
         item.training_id = self.training_id
         item.training_name = self.training_name
+        item.training_image_url = self.training_image_url
         item.link = self.link
         item.other_link = self.other_link
         item.is_online = self.is_online
