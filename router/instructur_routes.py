@@ -23,7 +23,9 @@ def instructur_routes(api):
                   InstructurCalendarScheduleAssignmentByAssignmentIdUserIdResource())
     api.add_route("/api/instructur/calendar/{schedule_id}/participant/generate_certificate", InstructurCalendarScheduleParticipantGenerateCertificateResource())
     api.add_route("/api/instructur/calendar/{schedule_id}/participant/{schedule_user_id}/score", InstructurCalendarScheduleParticipantScoreResource())
-    api.add_route("/api/instructur/calendar/{schedule_id}/participant/{schedule_user_id}/confirmed",
+    api.add_route("/api/instructur/calendar/{schedule_id}/confirmed",
+                  InstructurCalendarScheduleParticipantConfirmedResource())
+    api.add_route("/api/instructur/mytrain/{schedule_id}/confirmed",
                   InstructurCalendarScheduleParticipantConfirmedResource())
     api.add_route("/api/instructur/mytraining/{schedule_id}/participant", InstructurCalendarScheduleParticipantResource())
     api.add_route("/api/instructur/mytraining/{schedule_id}/assignment", InstructurCalendarScheduleAssignmentResource())

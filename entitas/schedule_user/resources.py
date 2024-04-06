@@ -81,9 +81,9 @@ class InstructurCalendarScheduleParticipantScoreResource:
             schedule_user_id=int(schedule_user_id)))
 
 class InstructurCalendarScheduleParticipantConfirmedResource:
-    def on_put(self, req, resp, schedule_id: int, schedule_user_id: int):
+    def on_put(self, req, resp, schedule_id: int):
         body = req.media
-        resouce_response_api(resp=resp, data=services.update_schedule_user_for_confirmed(
+        resouce_response_api(resp=resp, data=services.update_schedule_user_for_confirmed_user(
             schedule_id=int(schedule_id),
-            schedule_user_id=int(schedule_user_id),
-            user_id=req.context['user']['id'], confirmed=body['confirmed']))
+            user_id=req.context['user']['id'],
+            confirmed=body['confirmed']))

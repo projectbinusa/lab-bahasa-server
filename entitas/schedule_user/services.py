@@ -124,6 +124,12 @@ def update_schedule_user_for_confirmed(schedule_id=0, schedule_user_id=0, user_i
         raise_error("Data not match")
     return repositoriesDB.update_confirmed(id=schedule_user_id, confirmed=confirmed)
 
+def update_schedule_user_for_confirmed_user(schedule_id=0, user_id=0, confirmed=False):
+    schedule_user = repositoriesDB.find_by_schedule_id_and_user_id(schedule_id=schedule_id, user_id=user_id)
+    if schedule_user is  None:
+        raise_error('Data not found')
+    return repositoriesDB.update_confirmed(id=schedule_user.id, confirmed=confirmed)
+
 
 def get_schedule_user_for_instructur(schedule_id=0, schedule_user_id=0):
     return repositoriesDB.get_score_by_id_schedule(schedule_id=schedule_id, schedule_user_id=schedule_user_id)
