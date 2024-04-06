@@ -29,7 +29,10 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
             elif item["field"] == "name":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
-
+            elif item["field"] == "instructur_id":
+                data_in_db = data_in_db.filter(lambda d: item['value'] in d.instructur_id)
+            # elif item['field'] == "assignment_id":
+            #     data_in_db = data_in_db.filter(lambda d: d.assignment_id in item["value"])
 
         total_record = data_in_db.count()
         if limit > 0:
@@ -80,6 +83,7 @@ def update(json_object={}, to_model=False):
         print("error AssignmentUser update: ", e)
         return None
 
+
 @db_session
 def update_score(id=0, score=0, comment=''):
     try:
@@ -91,6 +95,7 @@ def update_score(id=0, score=0, comment=''):
     except Exception as e:
         print("error AssignmentUser update_score: ", e)
         return None
+
 
 @db_session
 def delete_by_id(id=None):
@@ -124,6 +129,7 @@ def insert(json_object={}, to_model=False):
     except Exception as e:
         print("error AssignmentUser insert: ", e)
         return None
+
 
 @db_session
 def find_by_assignment_id_and_user_id(assignment_id=0, user_id=0):
