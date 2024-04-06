@@ -46,8 +46,8 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
             data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
         elif item["field"] == "schedule_id":
             data_in_db = data_in_db.filter(lambda d: item["value"] == d.schedule_id)
-        elif item["field"] == "instructur_id":
-            data_in_db = data_in_db.filter(lambda d: d.user_id != item["value"])
+        # elif item["field"] == "instructur_id":
+        #     data_in_db = data_in_db.filter(lambda d: d.user_id != item["value"])
 
     total_record = data_in_db.count()
     if limit > 0:
@@ -72,6 +72,13 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
 @db_session
 def find_by_id(id=None):
     data_in_db = select(s for s in ScheduleUserDB if s.id == id)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
+
+@db_session
+def find_by_schedule_id_and_user_id(schedule_id=None, user_id=0):
+    data_in_db = select(s for s in ScheduleUserDB if s.schedule_id == schedule_id and s.user_id == user_id)
     if data_in_db.first() is None:
         return None
     return data_in_db.first().to_model()
@@ -145,14 +152,22 @@ def delete_by_id(id=None):
         print("error Room delete: ", e)
     return
 
+def update_delete_by_id(id=None, is_deleted=False):
+    try:
+        ScheduleUserDB[id].is_deleted = is_deleted
+        commit()
+        return True
+    except Exception as e:
+        print('error schedule_user delete: ', e)
+    return
 
 @db_session
 def insert(json_object={}, to_model=False):
     try:
         new_schedule_user = ScheduleUserDB(
-            instructur_id = json_object["instructur_id"],
-            schedule_id = json_object["schedule_id"],
-            instructur_name = json_object["instructur_name"]
+            user_id=json_object["user_id"],
+            schedule_id=json_object["schedule_id"],
+            user_name=json_object["user_name"]
             # is_deleted = json_object["is_deleted"],
         )
         commit()
