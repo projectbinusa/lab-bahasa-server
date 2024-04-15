@@ -6,7 +6,7 @@ from entitas.notification.resources import *
 from entitas.pathway.resources import *
 from entitas.pathway_training.resources import *
 from entitas.pathway_user.resources import *
-from entitas.room.resources import *
+from entitas.announcement.resources import *
 from entitas.room_user.resources import *
 from entitas.schedule.resources import *
 from entitas.schedule_instructur.resources import *
@@ -51,3 +51,4 @@ def user_routes(api):
     api.add_route("/api/user/pathway_training", PathwayTrainingResource())
     api.add_route("/api/user/calendar/{schedule_id}/confirmed",
                   InstructurCalendarScheduleParticipantConfirmedResource())
+    api.add_route("/api/user/announcement", AnnouncementStudentResource())

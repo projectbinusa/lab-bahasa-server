@@ -1,6 +1,6 @@
 from entitas.absent.resources import *
 from entitas.assignment.resources import *
-from entitas.assignment_user.resources import *
+from entitas.announcement.resources import *
 from entitas.certificate.resources import *
 from entitas.notification.resources import *
 from entitas.pathway.resources import *
@@ -36,6 +36,10 @@ def admin_routes(api):
     api.add_route("/api/admin/pathway_traning", PathwayTrainingResource())
     api.add_route("/api/admin/room/{room_id}", RoomWithIdResource())
     api.add_route("/api/admin/room", RoomResource())
+    api.add_route("/api/admin/announcement/{announcement_id}", AnnouncementWithIdResource())
+    api.add_route("/api/admin/announcement/{announcement_id}/publish", AnnouncementWithIdPublishResource())
+    api.add_route("/api/admin/announcement/{announcement_id}/unpublish", AnnouncementWithIdUnPublishResource())
+    api.add_route("/api/admin/announcement", AnnouncementResource())
     api.add_route("/api/admin/room_user/{room_user_id}", RoomUserWithIdResource())
     api.add_route("/api/admin/room_user", RoomUserResource())
     api.add_route("/api/admin/schedule/{schedule_id}", ScheduleWithIdResource())

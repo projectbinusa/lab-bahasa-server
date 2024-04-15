@@ -4,6 +4,7 @@ from entitas.material.resources import *
 from entitas.training.resources import *
 from entitas.assignment.resources import *
 from entitas.assignment_user.resources import *
+from entitas.announcement.resources import *
 
 
 def instructur_routes(api):
@@ -39,3 +40,4 @@ def instructur_routes(api):
                   InstructurCalendarScheduleParticipantGenerateCertificateResource())
     api.add_route("/api/instructur/mytraining/{schedule_id}/participant/{schedule_user_id}/score",
                   InstructurCalendarScheduleParticipantScoreResource())
+    api.add_route("/api/instructur/announcement", AnnouncementInstructurResource())

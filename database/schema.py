@@ -12,6 +12,7 @@ from entitas.pathway.models import Pathway
 from entitas.pathway_user.models import Pathway_User
 from entitas.pathway_training.models import Pathway_Training
 from entitas.room.models import Room
+from entitas.announcement.models import Announcement
 from entitas.room_user.models import Room_User
 from entitas.schedule.models import Schedule
 from entitas.schedule_instructur.models import Schedule_instuctur
@@ -399,6 +400,25 @@ class RoomDB(db2.Entity):
         item.avatar_url = self.avatar_url
         item.is_removed = self.is_removed
         item.last_comment = self.last_comment
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
+class AnnouncementDB(db2.Entity):
+    _table_ = "announcement"
+    id = PrimaryKey(int, auto=True)
+    name = Optional(str, nullable=True)
+    is_published = Optional(bool, nullable=True)
+    description = Optional(str, 10000, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = Announcement()
+        item.id = self.id
+        item.name = self.name
+        item.is_published = self.is_published
+        item.description = self.description
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
