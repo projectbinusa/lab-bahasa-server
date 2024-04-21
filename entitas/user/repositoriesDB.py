@@ -271,6 +271,11 @@ def update_profile(json_object=None, to_model=False):
             updated_user.birth_place = json_object["birth_place"]
         if "description" in json_object:
             updated_user.description = json_object["description"]
+        if 'nip' in json_object:
+            updated_user.nip = json_object['nip']
+        if 'tag' in json_object:
+            updated_user.tag = json_object['tag']
+
         commit()
         if to_model:
             return updated_user.to_model()
