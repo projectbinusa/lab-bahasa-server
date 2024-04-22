@@ -518,6 +518,8 @@ class ScheduleUserDB(db2.Entity):
     score = Optional(int, nullable=True)
     certificate_url = Optional(str, nullable=True)
     confirmed = Optional(bool, nullable=True)
+    kritik = Optional(str, nullable=True)
+    saran = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -531,6 +533,8 @@ class ScheduleUserDB(db2.Entity):
         item.score = self.score
         item.certificate_url = self.certificate_url
         item.confirmed = self.confirmed
+        item.kritik = self.kritik
+        item.saran = self.saran
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item

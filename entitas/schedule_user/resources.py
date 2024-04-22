@@ -87,3 +87,8 @@ class InstructurCalendarScheduleParticipantConfirmedResource:
             schedule_id=int(schedule_id),
             user_id=req.context['user']['id'],
             confirmed=body['confirmed']))
+
+class ScheduleUserWithIdFeedbackResource:
+    def on_put(self, req, resp, schedule_user_id: int):
+        body = req.media
+        resouce_response_api(resp=resp, data=services.update_schedule_user_for_feeback(id=int(schedule_user_id), user_id=req.context['user']['id'], kritik=body['kritik'], saran=body['saran']))

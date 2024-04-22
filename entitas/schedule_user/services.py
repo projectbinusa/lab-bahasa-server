@@ -80,6 +80,13 @@ def get_schedule_user_by_schedule_id(schedule_id=0, page=1, limit=9, filters=[],
 def update_schedule_user_db(json_object={}):
     return repositoriesDB.update(json_object=json_object)
 
+def update_schedule_user_for_feeback(id=0, user_id=0, kritik='', saran=''):
+    schedule_user = repositoriesDB.find_by_id(id=id)
+    if schedule_user is None:
+        raise_error('ID not found')
+    if schedule_user.user_id != user_id:
+        raise_error('Have no access')
+    return repositoriesDB.update_feedback(id=id, kritik=kritik, saran=saran)
 
 def insert_schedule_user_db(json_object={}):
     return repositoriesDB.insert(json_object=json_object)

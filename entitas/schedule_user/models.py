@@ -10,6 +10,8 @@ class Schedule_User:
             score=0,
             certificate_url='',
             confirmed=False,
+            kritik='',
+            saran='',
             created_date= None,
             updated_date= None
     ):
@@ -21,6 +23,8 @@ class Schedule_User:
         self.score = score
         self.certificate_url = certificate_url
         self.confirmed = confirmed
+        self.kritik = kritik
+        self.saran = saran
         self.created_date= created_date
         self.updated_date= updated_date
 
@@ -34,6 +38,8 @@ class Schedule_User:
             "score": self.score,
             "certificate_url": self.certificate_url,
             "confirmed": self.confirmed,
+            "kritik": self.kritik,
+            "saran": self.saran,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
@@ -48,6 +54,8 @@ class Schedule_User:
             "score": self.score,
             "certificate_url": DOMAIN_FILE_URL + '/files/' + self.certificate_url if self.certificate_url not in [None, ''] else self.certificate_url,
             "confirmed": self.confirmed,
+            "kritik": self.kritik,
+            "saran": self.saran,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
@@ -61,4 +69,6 @@ class Schedule_User:
             "score": self.score,
             "certificate_url": DOMAIN_FILE_URL + '/files/' + self.certificate_url if self.certificate_url not in [None, ''] else self.certificate_url,
             "confirmed": self.confirmed,
+            "kritik": self.kritik,
+            "saran": self.saran,
         }

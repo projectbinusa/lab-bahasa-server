@@ -91,6 +91,14 @@ def update_score(id=0, score=0):
     return True
 
 @db_session
+def update_feedback(id=0, kritik='', saran=''):
+    for item in select(s for s in ScheduleUserDB if s.id == id):
+        item.kritik = kritik
+        item.saran = saran
+    commit()
+    return True
+
+@db_session
 def update_confirmed(id=0, confirmed=False):
     for item in select(s for s in ScheduleUserDB if s.id == id):
         item.confirmed = confirmed
