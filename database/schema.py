@@ -141,6 +141,7 @@ class AbsentDB(db2.Entity):
     status = Optional(int, nullable=True)
     description = Optional(str, nullable=True)
     location = Optional(str, nullable=True)
+    signature = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -156,6 +157,7 @@ class AbsentDB(db2.Entity):
         item.status = self.status
         item.description = self.description
         item.location = self.location
+        item.signature = self.signature
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item

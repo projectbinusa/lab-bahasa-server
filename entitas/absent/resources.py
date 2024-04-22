@@ -43,3 +43,8 @@ class AbsentWithIdResource:
 
     def on_delete(self, req, resp, absent_id: int):
         resouce_response_api(resp=resp, data=services.delete_absent_by_id(id=int(absent_id)))
+
+class AbsentWithIdSignatureResource:
+    def on_post(self, req, resp):
+        file = req.get_param("file")
+        resouce_response_api(resp=resp, data=services.upload_signature_user(file=file, user_id=req.context['user']['id']))

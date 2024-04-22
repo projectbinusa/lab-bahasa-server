@@ -16,4 +16,5 @@ SALT_SORTER = 'rahasiademak'
 MATERIAL_FOLDER = 'files/'
 CERTIFICATE_FOLDER = 'files/'
 ASSIGNMENT_FOLDER = 'files/'
+SIGNATURE_FOLDER = 'files/'
 LINK_MEET = os.environ["LINK_MEET"]

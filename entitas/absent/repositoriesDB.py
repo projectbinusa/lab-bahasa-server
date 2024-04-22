@@ -117,7 +117,8 @@ def insert(json_object={}, to_model=[]):
             user_id = json_object["user_id"],
             user_name = json_object["user_name"],
             description = json_object["description"],
-            location=json_object['location']
+            location=json_object['location'],
+            signature=json_object['signature']
         )
         commit()
         if to_model:

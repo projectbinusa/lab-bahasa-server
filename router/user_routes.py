@@ -29,6 +29,7 @@ def user_routes(api):
     api.add_route("/api/user/reset_password/{token}", UserResetPasswordWithResource())
     api.add_route("/api/user/activation/{token}", UserActivationResource())
     api.add_route("/api/user/absent/{absent_id}", AbsentWithIdResource())
+    api.add_route("/api/user/absent/signature", AbsentWithIdSignatureResource())
     api.add_route("/api/user/absent", AbsentResource())
     api.add_route("/api/user/assignment_user/{assignment_user_id}", AssignmentUserWithIdResource())
     api.add_route("/api/user/assignment_user", AssignmentUserResource())

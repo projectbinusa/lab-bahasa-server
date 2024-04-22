@@ -1,6 +1,8 @@
 from entitas.absent import repositoriesDB
 from util.other_util import raise_error
 import datetime
+import uuid
+from config.config import SIGNATURE_FOLDER, DOMAIN_FILE_URL
 
 def get_absent_db_with_pagination(page=1, limit=9, filters=[], to_model=False):
     return repositoriesDB.get_all_with_pagination(
@@ -21,6 +23,17 @@ def find_absent_db_by_id(id=0, to_model=False):
 def update_absent_db(json_object={}):
     return repositoriesDB.update(json_object=json_object)
 
+def upload_signature_user(file=None, user_id=0):
+    if file is None:
+        raise_error('File not found')
+    temp_file = 'sign' + str(user_id) + '_'+ str(uuid.uuid4()) + file.filename.replace(" ", "")
+    json_object = {}
+    with open(SIGNATURE_FOLDER + temp_file, "wb") as f:
+        f.write(file.file.read())
+    json_object['user_id'] = user_id
+    json_object["url_file"] = DOMAIN_FILE_URL + '/files/' + json_object["filename"]
+    return json_object
+
 def insert_absent_db(json_object={}):
     from entitas.schedule.services import find_schedule_db_by_id
     from entitas.user.services import find_user_db_by_id
@@ -35,6 +48,8 @@ def insert_absent_db(json_object={}):
     if user is None:
         raise_error("user not found")
     json_object['user_name'] = user.name
+    if 'signature' not in json_object:
+        json_object['signature'] = ''
     return repositoriesDB.insert(json_object=json_object)
 
 
