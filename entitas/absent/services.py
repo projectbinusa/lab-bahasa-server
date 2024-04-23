@@ -28,10 +28,13 @@ def upload_signature_user(file=None, user_id=0):
         raise_error('File not found')
     temp_file = 'sign' + str(user_id) + '_'+ str(uuid.uuid4()) + file.filename.replace(" ", "")
     json_object = {}
-    with open(SIGNATURE_FOLDER + temp_file, "wb") as f:
+    json_object["filename"] = temp_file
+    with open(SIGNATURE_FOLDER + json_object['filename'], "wb") as f:
         f.write(file.file.read())
+    print("THE FILE -------------->", json_object)
     json_object['user_id'] = user_id
     json_object["url_file"] = DOMAIN_FILE_URL + '/files/' + json_object["filename"]
+    print("THE JSON -------------->", json_object)
     return json_object
 
 def insert_absent_db(json_object={}):
