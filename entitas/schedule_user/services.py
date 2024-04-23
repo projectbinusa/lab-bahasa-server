@@ -1,6 +1,7 @@
 from entitas.schedule_user import repositoriesDB
 from util.other_util import raise_error
 from entitas.schedule.services import find_schedule_db_by_id
+from entitas.user.repositoriesDB import find_by_id
 
 
 def get_schedule_user_db_with_pagination(page=1, limit=9, filters=[], to_model=False):
@@ -94,10 +95,12 @@ def insert_schedule_user_db(json_object={}):
 
 def insert_schedule_user_db_by_schedule_id(schedule_id=0, json_object={}):
     schedule_user = repositoriesDB.find_by_schedule_id_and_user_id(schedule_id=schedule_id, user_id=json_object['user_id'])
+    user_name = find_by_id(id=json_object['user_id'])
     if schedule_user is not None:
         repositoriesDB.update_delete_by_id(id=schedule_user.id, is_deleted=False)
         return True
     json_object['schedule_id'] = schedule_id
+    json_object['user_name'] = user_name.name
     insert_schedule_user_db(json_object=json_object)
     return True
 
