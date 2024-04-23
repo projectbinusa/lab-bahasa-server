@@ -31,10 +31,8 @@ def upload_signature_user(file=None, user_id=0):
     json_object["filename"] = temp_file
     with open(SIGNATURE_FOLDER + json_object['filename'], "wb") as f:
         f.write(file.file.read())
-    print("THE FILE -------------->", json_object)
     json_object['user_id'] = user_id
     json_object["url_file"] = DOMAIN_FILE_URL + '/files/' + json_object["filename"]
-    print("THE JSON -------------->", json_object)
     return json_object
 
 def insert_absent_db(json_object={}):
