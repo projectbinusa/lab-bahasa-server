@@ -41,21 +41,24 @@ def get_all_with_pagination(
     result = []
     total_record = 0
     try:
-        data_in_db = select(s for s in UserDB)
+        data_in_db = select(s for s in UserDB).order_by(desc(UserDB.id))
         for item in filters:
             if item["field"] == "email":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.email)
-            if item["field"] == "name":
+            elif item["field"] == "name":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
-            if item["field"] == "hp":
+            elif item["field"] == "hp":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.hp)
-            if item["field"] == "role":
-                data_in_db = data_in_db.filter(role=item["value"])
+            elif item["field"] == "role":
+                data_in_db = data_in_db.filter(lambda d: d.role == item["value"])
         if name:
             data_in_db = data_in_db.filter(lambda d: d.name == name)
         total_record = count(data_in_db)
-        if limit != 0:
+        total_record = data_in_db.count()
+        if limit > 0:
             data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
+        else:
+            data_in_db = data_in_db
         for item in data_in_db:
             if to_model:
                 result.append(item.to_model())

@@ -61,7 +61,7 @@ class UserSignupResource:
     def on_get(self, req, resp):
         page = int(req.get_param("page", required=False, default=1))
         limit = int(req.get_param("limit", required=False, default=9))
-        filters = generate_filters_resource(req=req, params_string=['name'])
+        filters = generate_filters_resource(req=req, params_int=['id'], params_string=['name', 'email', 'role'])
         data, pagination = services.get_user_db_with_pagination(
             page=page, limit=limit, filters=filters
         )
