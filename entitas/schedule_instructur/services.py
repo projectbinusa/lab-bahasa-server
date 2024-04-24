@@ -60,11 +60,11 @@ def update_schedule_instructur_by_schedule_id(schedule_id=0, id=0, json_object={
     return update_schedule_instructur_db(json_object=json_object)
 
 
-def delete_schedule_instructur_by_schedule_id(schedule_id=0, user_id=0):
-    schedule_instructur = find_schedule_instructur_db_by_id(id=user_id, to_model=True)
+def delete_schedule_instructur_by_schedule_id(schedule_id=0, id=0):
+    schedule_instructur = find_schedule_instructur_db_by_id(id=id, to_model=True)
     if schedule_instructur is None:
         raise_error(msg="Schedule Instructur not found")
-    delete_schedule_instructur = delete_schedule_instructur_by_id(id=user_id)
+    delete_schedule_instructur = delete_schedule_instructur_by_id(id=id)
     if delete_schedule_instructur is None:
         raise_error(msg="Failed to delete")
     return True

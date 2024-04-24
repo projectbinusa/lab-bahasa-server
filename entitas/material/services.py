@@ -81,7 +81,6 @@ def delete_material_for_instructur_by_id(id=0, training_id=0, user_id=0):
     if training_material is None:
         raise_error("have no access")
 
-
     delete_training_material_by_material_id(material_id=id)
     return repositoriesDB.delete_by_id(id=id)
 
