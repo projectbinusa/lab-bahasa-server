@@ -76,7 +76,7 @@ def update(json_object={}, to_model=False):
 @db_session
 def delete_by_id(id=None):
     try:
-        PathwayDB.delete()
+        PathwayDB[id].delete()
         commit()
         return True
     except Exception as e:
