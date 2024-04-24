@@ -33,7 +33,7 @@ def get_all_with_pagination(
             if item["field"] == "id":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
             elif item["field"] == "user_name":
-                data_in_db = data_in_db.filter(user_id=item["value"])
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.user_name)
             elif item["field"] == "schedule_id":
                 data_in_db = data_in_db.filter(schedule_id=item["value"])
             elif item["field"] == "is_deleted":
