@@ -92,6 +92,7 @@ def update(json_object={}, to_model=False):
         updated_schedule.active = json_object["active"]
         updated_schedule.other_link = json_object['other_link']
         updated_schedule.start_date = json_object["start_date"]
+        updated_schedule.end_date = json_object["end_date"]
         commit()
         if to_model:
             return updated_schedule.to_model()
@@ -149,7 +150,8 @@ def insert(json_object={}, to_model=False):
             is_online = json_object["is_online"],
             location = json_object["location"],
             active = json_object["active"],
-            start_date = json_object["start_date"]
+            start_date = json_object["start_date"],
+            end_date = json_object["end_date"]
         )
         commit()
         if to_model:

@@ -465,6 +465,7 @@ class ScheduleDB(db2.Entity):
     active = Optional(int, nullable=True)
     is_finish = Optional(bool, nullable=True)
     start_date = Optional(datetime, nullable=True)
+    end_date = Optional(datetime, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -481,6 +482,7 @@ class ScheduleDB(db2.Entity):
         item.location = self.location
         item.active = self.active
         item.start_date = self.start_date
+        item.end_date = self.end_date
         item.is_finish = self.is_finish
         item.created_date = self.created_date
         item.updated_date = self.updated_date
@@ -597,6 +599,41 @@ class TrainingUserDB(db2.Entity):
         item.training_id = self.training_id
         item.user_id = self.user_id
         item.is_active = self.is_active
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
+class LogBookDB(db2.Entity):
+    _table_ = "logbook"
+    id = PrimaryKey(int, auto=True)
+    schedule_id = Optional(int, nullable=True)
+    user_id = Optional(int, nullable=True)
+    user_name = Optional(str, nullable=True)
+    periode_date = Optional(datetime, nullable=True)
+    periode_start_time = Optional(str, nullable=True)
+    periode_end_time = Optional(str, nullable=True)
+    topic = Optional(str, nullable=True)
+    materi = Optional(str, nullable=True)
+    training_proof_start = Optional(str, nullable=True)
+    bukti_start = Optional(str, nullable=True)
+    bukti_end = Optional(str, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = Training_user()
+        item.id = self.id
+        item.schedule_id = self.schedule_id
+        item.user_id = self.user_id
+        item.user_name = self.user_name
+        item.periode_date = self.periode_date
+        item.periode_start_time = self.periode_start_time
+        item.periode_end_time = self.periode_end_time
+        item.topic = self.topic
+        item.materi = self.materi
+        item.training_proof_start = self.training_proof_start
+        item.bukti_start = self.bukti_start
+        item.bukti_end = self.bukti_end
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item

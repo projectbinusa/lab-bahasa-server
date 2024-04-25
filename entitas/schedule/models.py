@@ -12,6 +12,7 @@ class Schedule:
             location='',
             active='',
             start_date='',
+            end_date='',
             is_finish=False,
             created_date=None,
             updated_date=None,
@@ -27,6 +28,7 @@ class Schedule:
         self.location = location
         self.active = active
         self.start_date = start_date
+        self.end_date = end_date
         self.is_finish = is_finish
         self.created_date = created_date
         self.updated_date = updated_date
@@ -46,6 +48,7 @@ class Schedule:
             "active": self.active,
             "is_finish": self.is_finish,
             "start_date": str(self.start_date) if self.start_date is not None else None,
+            "end_date": str(self.end_date) if self.end_date is not None else None,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
@@ -65,6 +68,7 @@ class Schedule:
             "active": self.active,
             "is_finish": self.is_finish,
             "start_date": str(self.start_date) if self.start_date is not None else None,
+            "end_date": str(self.end_date) if self.end_date is not None else None,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
@@ -84,6 +88,9 @@ class Schedule:
             "active": self.active,
             "is_finish": self.is_finish,
             "start_date": str(self.start_date) if self.start_date is not None else None,
+            "end_date": str(self.end_date) if self.end_date is not None else None,
             "day": self.start_date.day if self.start_date is not None else None,
+            "day": self.end_date.day if self.end_date is not None else None,
+            "hour": self.end_date.hour if self.end_date is not None else None,
             "hour": self.start_date.hour if self.start_date is not None else None
         }
