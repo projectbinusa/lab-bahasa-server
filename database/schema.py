@@ -76,6 +76,7 @@ class UserDB(db2.Entity):
 
 # end User
 
+
 # start Material
 class MaterialDB(db2.Entity):
     _table_ = "material"
@@ -86,6 +87,7 @@ class MaterialDB(db2.Entity):
     filename = Optional(str, nullable=True)
     description = Optional(str, nullable=True)
     url_file = Optional(str, nullable=True)
+    tag = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -98,6 +100,7 @@ class MaterialDB(db2.Entity):
         item.filename = self.filename
         item.description = self.description
         item.url_file = self.url_file
+        item.tag = self.tag
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
