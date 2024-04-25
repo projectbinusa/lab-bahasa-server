@@ -44,3 +44,9 @@ class Pathway_Training:
             "training_name": self.training_name,
             "urut": self.urut
         }
+    def to_response_trainings(self):
+        return {
+            "training_id": self.training_id,
+            "name": self.training_name,
+            "urut": self.urut
+        }
