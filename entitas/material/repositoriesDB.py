@@ -31,6 +31,8 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
             if item["field"] == "description":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.description)
+            if item["field"] == "tag":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.tag)
             if item["field"] == "filename":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.filename)
             if item["field"] == "url_file":

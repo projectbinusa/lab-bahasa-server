@@ -6,6 +6,7 @@ class Material:
             name="",
             filename='',
             description='',
+            tag='',
             url_file='',
             created_date=None,
             updated_date=None,
@@ -15,6 +16,7 @@ class Material:
         self.user_id = user_id
         self.filename = filename
         self.description = description
+        self.tag = tag
         self.url_file = url_file
         self.created_date = created_date
         self.updated_date = updated_date
@@ -26,6 +28,7 @@ class Material:
             "user_id": self.user_id,
             "filename": self.filename,
             "description": self.description,
+            "tag": self.tag,
             "url_file": self.url_file,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None
@@ -38,6 +41,7 @@ class Material:
             "user_id": self.user_id,
             "filename": self.filename,
             "description": self.description,
+            "tag": self.tag,
             "url_file": self.url_file,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None
