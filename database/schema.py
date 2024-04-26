@@ -46,6 +46,19 @@ class UserDB(db2.Entity):
     description = Optional(str, 100000, nullable=True)
     nip = Optional(str, nullable=True)
     tag = Optional(str, nullable=True)
+    position= Optional(str, nullable=True)
+    agency= Optional(str, nullable=True)
+    work_unit= Optional(str, nullable=True)
+    city= Optional(str, nullable=True)
+    rank= Optional(str, nullable=True)
+    npwp= Optional(str, nullable=True)
+    bank_name= Optional(str, nullable=True)
+    bank_account= Optional(str, nullable=True)
+    bank_in_name= Optional(str, nullable=True)
+    bank_book_photo= Optional(str, nullable=True)
+    id_card= Optional(str, nullable=True)
+    signature= Optional(str, nullable=True)
+    last_education= Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -69,6 +82,17 @@ class UserDB(db2.Entity):
         item.description = self.description
         item.nip = self.nip
         item.tag = self.tag
+        item.position = self.position
+        item.agency = self.agency
+        item.work_unit = self.work_unit
+        item.city = self.city
+        item.rank = self.rank
+        item.npwp = self.npwp
+        item.bank_name = self.bank_name
+        item.bank_book_photo = self.bank_book_photo
+        item.id_card = self.id_card
+        item.signature = self.signature
+        item.last_education = self.last_education
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
