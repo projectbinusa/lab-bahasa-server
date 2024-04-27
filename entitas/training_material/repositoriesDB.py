@@ -57,9 +57,9 @@ def find_by_training_id_with_pagination(page=1, limit=9, filters=[], training_id
         data_in_db = select(s for s in TrainingMaterialDB if s.training_id == training_id).order_by(desc(TrainingMaterialDB.id))
         for item in filters:
             if item["field"] == "id":
-                data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.material_id)
             elif item["field"] == "name":
-                data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.material_name)
         total_record = data_in_db.count()
         if limit > 0:
             data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
