@@ -98,7 +98,7 @@ def insert(json_object={}, to_model=False):
             name=json_object["name"],
             description=json_object["description"],
             image_url=json_object['image_url'],
-            tag=json_object['tag'],
+            tag=json_object['tag']
         )
         commit()
         if to_model:

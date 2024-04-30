@@ -317,7 +317,6 @@ def update_profile(json_object=None, to_model=False):
             updated_user.signature = json_object['signature']
         if 'last_education' in json_object:
             updated_user.last_education = json_object['last_education']
-
         commit()
         if to_model:
             return updated_user.to_model()
