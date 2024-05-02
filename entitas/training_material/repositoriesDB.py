@@ -161,3 +161,10 @@ def insert(json_object={}, to_model=False):
     except Exception as e:
         print("error Room insert: ", e)
     return None
+
+@db_session
+def get_materials_by_training_id(training_id=0):
+    result = []
+    for data_in_db in select(s for s in TrainingMaterialDB if s.training_id == training_id):
+        result.append(data_in_db.to_model())
+    return result
