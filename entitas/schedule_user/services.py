@@ -1,4 +1,5 @@
 from entitas.schedule_user import repositoriesDB
+from entitas.schedule_user.repositoriesDB import get_user_and_schedule_user_with_pagination
 from util.other_util import raise_error
 from entitas.schedule.services import find_schedule_db_by_id
 from entitas.user.repositoriesDB import find_by_id
@@ -77,6 +78,11 @@ def get_schedule_user_by_schedule_id(schedule_id=0, page=1, limit=9, filters=[],
         raise_error(msg="schedule not found")
     return get_schedule_user_db_with_pagination(page=page, limit=limit, filters=filters, to_model=to_model)
 
+def get_schedule_user_by_schedule_id_user(schedule_id=0, page=1, limit=9, filters=[], to_model=False):
+    schedule = find_schedule_db_by_id(id=schedule_id, to_model=True)
+    if schedule is None:
+        raise_error(msg="schedule not found")
+    return get_user_and_schedule_user_with_pagination(page=page, limit=limit, filters=filters, to_model=to_model)
 
 def update_schedule_user_db(json_object={}):
     return repositoriesDB.update(json_object=json_object)

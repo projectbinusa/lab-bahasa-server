@@ -1,5 +1,6 @@
 from pony.orm import *
-from database.schema import ScheduleDB, TrainingDB
+from database.schema import ScheduleDB
+
 
 @db_session
 def get_all(to_model=False):
@@ -74,7 +75,10 @@ def get_all_by_time(year=0, month=0, ids=[]):
 
 @db_session
 def find_by_id(id=None):
+    from database.schema import UserDB
+    # data_in_db = select((s, u) for s in ScheduleDB for u in UserDB if s.id == id and u.user_id == u.id).first()
     data_in_db = select(s for s in ScheduleDB if s.id == id)
+    # data_in_db = select((an, ac) for an in ScheduleDB for ac in UserDB if an.user_id == ac.id)
     if data_in_db.first() is None:
         return None
     return data_in_db.first().to_model()

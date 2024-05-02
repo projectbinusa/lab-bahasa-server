@@ -193,3 +193,12 @@ class User:
             "picture": "",
             "description": self.description
         }
+    def to_response_participant_schedule(self):
+        return {
+            "name": self.name,
+            "email": self.email,
+            "hp": self.hp,
+            "position": self.position,
+            "work_unit": self.work_unit,
+            "city": self.city
+        }

@@ -29,7 +29,7 @@ class Schedule_User:
         self.updated_date= updated_date
 
     def to_json(self):
-        return  {
+        return {
             "id": self.id,
             "schedule_id": self.schedule_id,
             "user_id": self.user_id,
@@ -45,7 +45,7 @@ class Schedule_User:
         }
 
     def to_response(self):
-        return  {
+        return {
             "id": self.id,
             "schedule_id": self.schedule_id,
             "user_id": self.user_id,
@@ -61,7 +61,7 @@ class Schedule_User:
         }
 
     def to_response_participant(self):
-        return  {
+        return {
             "id": self.id,
             "schedule_id": self.schedule_id,
             "user_id": self.user_id,
