@@ -12,33 +12,33 @@ class UserResource:
     # auth = {
     #     'auth_disabled': True
     # }
-    
+
     def on_get(self, req, resp):
         page = int(req.get_param("page", required=False, default=1))
         limit = int(req.get_param("limit", required=False, default=9))
-        filters = generate_filters_resource(req=req, params_string=['first_name', 'last_name', 'email'])
+        filters = generate_filters_resource(req=req, params_string=['first_name', 'last_name', 'email',])
         data, pagination = services.get_user_db_with_pagination(
             page=page, limit=limit, filters=filters
         )
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 
-    
+
     def on_post(self, req, resp):
         resouce_response_api(resp=resp, data=services.insert_user_db(json_object=req.media))
 
 
 class UserWithIdResource:
-    
+
     def on_get(self, req, resp, id: int):
         resouce_response_api(resp=resp, data=services.find_user_db_by_id(id=int(id)))
 
-    
+
     def on_put(self, req, resp, id: int):
         body = req.media
         body["id"] = id
         resouce_response_api(resp=resp, data=services.update_user_db(json_object=body))
 
-    
+
     def on_delete(self, req, resp, id: int):
         resouce_response_api(resp=resp, data=services.delete_user_by_id(id=int(id)))
 
@@ -61,7 +61,7 @@ class UserSignupResource:
     def on_get(self, req, resp):
         page = int(req.get_param("page", required=False, default=1))
         limit = int(req.get_param("limit", required=False, default=9))
-        filters = generate_filters_resource(req=req, params_int=['id'], params_string=['name', 'email', 'role'])
+        filters = generate_filters_resource(req=req, params_int=['id'], params_string=['name', 'email', 'role', 'tag'])
         data, pagination = services.get_user_db_with_pagination(
             page=page, limit=limit, filters=filters
         )
@@ -71,7 +71,7 @@ class UserSignupResource:
 
 
 class UserUpdatePasswordWithResource:
-    
+
     def on_put(self, req, resp):
         body = req.media
         body["user"] = req.context["user"]
@@ -107,7 +107,7 @@ class AdminUserUpdateProfileWithIdResource:
         ))
 
 class UserLogoutWithIdResource:
-    
+
     def on_post(self, req, resp):
         resouce_response_api(resp=resp, data=services.logout_user_db(
             json_object={"token": req.context["user"]["token"]}
@@ -145,7 +145,7 @@ class UserResetPasswordWithResource:
 class UserActivationResource:
     auth = {"auth_disabled": True}
 
-    
+
     def on_get(self, req, resp, token: str):
         from user_agents import parse
 
@@ -169,7 +169,7 @@ class UserActivationResource:
 
 
 class UserUpdateProfileWithIdResourceAdmin:
-    
+
     def on_put(self, req, resp, id: int):
         body = req.media
         body["id"] = id
@@ -177,7 +177,7 @@ class UserUpdateProfileWithIdResourceAdmin:
             json_object=body
         ))
 
-    
+
     def on_get(self, req, resp, id: int):
         resouce_response_api(resp=resp, data=services.get_profile_id_user_db_admin(id=int(id)))
 
