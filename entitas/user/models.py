@@ -61,7 +61,7 @@ class User:
             "token": self.token,
             "description": self.description,
             "nip": self.nip,
-            "tag": self.tag,
+            "tag": self.tag.split(',') if self.tag is not in [None, ''] else [],
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
@@ -93,7 +93,7 @@ class User:
             "last_login": str(self.last_login) if self.last_login is not None else None,
             "hp": self.hp,
             "nip": self.nip,
-            "tag": self.tag
+            "tag": self.tag.split(',') if self.tag is not in [None, ''] else []
         }
 
     def to_response(self):
@@ -113,7 +113,7 @@ class User:
             "token": self.token,
             "description": self.description,
             "nip": self.nip,
-            "tag": self.tag,
+            "tag": self.tag.split(',') if self.tag is not in [None, ''] else [],
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }

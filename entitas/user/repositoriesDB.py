@@ -114,7 +114,7 @@ def update(json_object=None, to_model=False):
         if 'nip' in json_object:
             updated_user.nip = json_object['nip']
         if 'tag' in json_object:
-            updated_user.tag = json_object['tag']
+            updated_user.tag = ','.join(json_object['tag'])
         commit()
         if to_model:
             updated_user.to_model()
@@ -176,7 +176,7 @@ def insert(json_object={}, to_model=False):
             token=str(uuid.uuid4()),
             description=json_object['description'],
             nip=json_object['nip'],
-            tag=json_object['tag']
+            tag=','.join(json_object['tag'])
         )
         commit()
         if to_model:
@@ -207,7 +207,7 @@ def signup(json_object={}):
         token=str(uuid.uuid4()),
         description=json_object['description'],
         nip=json_object['nip'],
-        tag=json_object['tag']
+        tag=','.join(json_object['tag'])
     )
     commit()
     return True
@@ -274,7 +274,7 @@ def update_profile(json_object=None, to_model=False):
         if 'nip' in json_object:
             updated_user.nip = json_object['nip']
         if 'tag' in json_object:
-            updated_user.tag = json_object['tag']
+            updated_user.tag = ','.join(json_object['tag'])
 
         commit()
         if to_model:
