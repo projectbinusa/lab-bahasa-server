@@ -35,8 +35,8 @@ def find_schedule_user_db_by_id(id=0, to_model=False):
     return result
 
 
-def find_schedule_user_for_student_by_id(id=0, user_id=0, to_model=False):
-    result = repositoriesDB.find_by_id(id=id)
+def find_schedule_user_for_student_by_id(schedule_id=0, user_id=0, to_model=False):
+    result = repositoriesDB.find_by_schedule_id_and_user_id(schedule_id=schedule_id, user_id=user_id)
     if result is None:
         raise_error('data not found')
     if to_model:

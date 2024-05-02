@@ -18,7 +18,7 @@ class ScheduleUserResource:
 
 class ScheduleUserWithIdResource:
     def on_get(self, req, resp, schedule_user_id: int):
-        resouce_response_api(resp=resp, data=services.find_schedule_user_for_student_by_id(id=int(schedule_user_id), user_id=req.context['user']['id']))
+        resouce_response_api(resp=resp, data=services.find_schedule_user_for_student_by_id(schedule_id=int(schedule_user_id), user_id=req.context['user']['id']))
 
     def on_put(self, req, resp, schedule_user_id: int):
         body = req.media
