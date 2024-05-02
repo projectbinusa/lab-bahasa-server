@@ -97,6 +97,8 @@ def update(json_object={}, to_model=False):
         updated_schedule.other_link = json_object['other_link']
         updated_schedule.start_date = json_object["start_date"]
         updated_schedule.end_date = json_object["end_date"]
+        if 'pic_wa' in json_object:
+            updated_schedule.pic_wa = json_object['pic_wa']
         commit()
         if to_model:
             return updated_schedule.to_model()
@@ -144,7 +146,8 @@ def delete_by_id(id=None):
 @db_session
 def insert(json_object={}, to_model=False):
     try:
-        # training = TrainingDB[json_object["training_id"]]
+        if 'pic_wa' not in json_object:
+            json_object['pic_wa'] = ''
         new_schedule = ScheduleDB(
             name = json_object["name"],
             training_id = json_object["training_id"],
@@ -155,7 +158,8 @@ def insert(json_object={}, to_model=False):
             location = json_object["location"],
             active = json_object["active"],
             start_date = json_object["start_date"],
-            end_date = json_object["end_date"]
+            end_date = json_object["end_date"],
+            pic_wa=json_object['pic_wa']
         )
         commit()
         if to_model:
