@@ -7,7 +7,6 @@ dbName = os.environ["dbName"]
 dbDebug = False
 if os.environ["dbDebug"].strip().upper() == "TRUE":
     dbDebug = True
-
 secret_jwt = os.environ["secret_jwt"]
 driverDB = os.environ["driverDB"]
 TYPE_TOKEN_USER = 'user'

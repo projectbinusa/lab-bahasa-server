@@ -1,3 +1,4 @@
+# log book models
 class LogBook:
     def __init__(
             self,
