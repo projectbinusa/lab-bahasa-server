@@ -87,7 +87,7 @@ class User:
             "token": self.token,
             "description": self.description,
             "nip": self.nip,
-            "tag": self.tag,
+            "tag": self.tag.split(',') if self.tag is not in [None, ''] else [],
             "position": self.position,
             "agency": self.agency,
             "work_unit": self.work_unit,
@@ -132,7 +132,7 @@ class User:
             "last_login": str(self.last_login) if self.last_login is not None else None,
             "hp": self.hp,
             "nip": self.nip,
-            "tag": self.tag,
+            "tag": self.tag.split(',') if self.tag is not in [None, ''] else [],
             "position": self.position,
             "agency": self.agency,
             "work_unit": self.work_unit,
@@ -145,7 +145,7 @@ class User:
             "bank_book_photo": self.bank_photo_book,
             "id_card": self.id_card,
             "signature": self.signature,
-            "last_education": self.last_education,
+            "last_education": self.last_education
         }
 
     def to_response(self):
@@ -165,7 +165,7 @@ class User:
             "token": self.token,
             "description": self.description,
             "nip": self.nip,
-            "tag": self.tag,
+            "tag": self.tag.split(',') if self.tag is not in [None, ''] else [],
             "position": self.position,
             "agency": self.agency,
             "work_unit": self.work_unit,

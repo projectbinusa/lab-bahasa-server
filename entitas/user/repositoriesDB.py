@@ -117,7 +117,7 @@ def update(json_object=None, to_model=False):
         if 'nip' in json_object:
             updated_user.nip = json_object['nip']
         if 'tag' in json_object:
-            updated_user.tag = json_object['tag']
+            updated_user.tag = ','.join(json_object['tag'])
         commit()
         if to_model:
             updated_user.to_model()
@@ -179,7 +179,7 @@ def insert(json_object={}, to_model=False):
             token=str(uuid.uuid4()),
             description=json_object['description'],
             nip=json_object['nip'],
-            tag=json_object['tag']
+            tag=','.join(json_object['tag'])
         )
         commit()
         if to_model:
@@ -210,7 +210,7 @@ def signup(json_object={}):
         token=str(uuid.uuid4()),
         description=json_object['description'],
         nip=json_object['nip'],
-        tag=json_object['tag'],
+        tag=','.join(json_object['tag']),
         position=json_object['position'],
         agency=json_object['agency'],
         work_unit=json_object['work_unit'],
@@ -223,7 +223,7 @@ def signup(json_object={}):
         bank_book_photo=json_object['bank_book_photo'],
         id_card=json_object['id_card'],
         signature=json_object['signature'],
-        last_education=json_object['last_education'],
+        last_education=json_object['last_education']
     )
     commit()
     return True
@@ -290,7 +290,7 @@ def update_profile(json_object=None, to_model=False):
         if 'nip' in json_object:
             updated_user.nip = json_object['nip']
         if 'tag' in json_object:
-            updated_user.tag = json_object['tag']
+            updated_user.tag = ','.join(json_object['tag'])
         if 'position' in json_object:
             updated_user.position = json_object['position']
         if 'agency' in json_object:
@@ -317,6 +317,7 @@ def update_profile(json_object=None, to_model=False):
             updated_user.signature = json_object['signature']
         if 'last_education' in json_object:
             updated_user.last_education = json_object['last_education']
+
         commit()
         if to_model:
             return updated_user.to_model()
