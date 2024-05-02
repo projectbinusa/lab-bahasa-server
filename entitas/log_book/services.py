@@ -6,6 +6,7 @@ from entitas.user.repositoriesDB import find_by_id
 from util.other_util import raise_error
 from config.config import LOG_BOOK_FOLDER, DOMAIN_FILE_URL
 
+# ervices
 def get_log_book_db_with_pagination(page=1, limit=9, filters=[], to_model=False):
     return repositoriesDB.get_all_with_pagination(
         page=page, limit=limit, filters=filters, to_model=to_model

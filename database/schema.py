@@ -632,7 +632,7 @@ class TrainingUserDB(db2.Entity):
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
-
+ # log book
 class LogBookDB(db2.Entity):
     _table_ = "logbook"
     id = PrimaryKey(int, auto=True)
