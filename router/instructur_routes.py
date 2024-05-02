@@ -42,6 +42,5 @@ def instructur_routes(api):
     api.add_route("/api/instructur/mytraining/{schedule_id}/participant/{schedule_user_id}/score",
                   InstructurCalendarScheduleParticipantScoreResource())
     api.add_route("/api/instructur/announcement", AnnouncementInstructurResource())
-    # log book EP
     api.add_route("/api/instructur/schedule/{schedule_id}/logbook", LogBookResource())
     api.add_route("/api/instructur/schedule/{schedule_id}/logbook/{log_book_id}", LogBookWithIdResource())
