@@ -1,7 +1,6 @@
 from entitas.log_book import services
 from util.entitas_util import generate_filters_resource, resouce_response_api
 
-# Log Book resources
 class LogBookResource:
     def on_get(self, req, resp, schedule_id):
         filters = generate_filters_resource(req=req, params_int=['id'], params_string=['user_name'])
