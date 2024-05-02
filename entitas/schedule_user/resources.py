@@ -32,12 +32,12 @@ class ScheduleUserWithIdResource:
 class ScheduleUserByScheduleResource:
     def on_get(self, req, resp, schedule_id):
         filters = generate_filters_resource(req=req, params_int=['id'], params_string=['name'])
-        filters.append({'field': 'schedule_id', 'value': schedule_id})
-        filters.append({'field': 'is_deleted', 'value': False})
+        filters.append({"field": "schedule_id", "value": int(schedule_id)})
+        filters.append({"field": "is_deleted", "value": False})
 
         page = int(req.get_param("page", required=False, default=1))
         limit = int(req.get_param("limit", required=False, default=9))
-        data, pagination = services.get_schedule_user_by_schedule_id(
+        data, pagination = services.get_schedule_user_by_schedule_id_user(
             schedule_id=schedule_id, page=page, limit=limit, filters=filters
         )
         resouce_response_api(resp=resp, data=data, pagination=pagination)

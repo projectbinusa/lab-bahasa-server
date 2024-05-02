@@ -109,10 +109,10 @@ class MaterialDB(db2.Entity):
     id = PrimaryKey(int, auto=True)
     name = Optional(str, nullable=True)
     user_id = Optional(int, nullable=True)
-    name = Optional(str, nullable=True)
     filename = Optional(str, nullable=True)
     description = Optional(str, nullable=True)
     url_file = Optional(str, nullable=True)
+    other_link = Optional(str, nullable=True)
     tag = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
@@ -126,6 +126,7 @@ class MaterialDB(db2.Entity):
         item.filename = self.filename
         item.description = self.description
         item.url_file = self.url_file
+        item.other_link = self.other_link
         item.tag = self.tag
         item.created_date = self.created_date
         item.updated_date = self.updated_date
