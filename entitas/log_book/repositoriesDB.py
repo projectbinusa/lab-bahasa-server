@@ -2,7 +2,6 @@ from pony.orm import *
 
 from database.schema import LogBookDB
 
-# repositoriesDB
 @db_session
 def get_all(to_model=True):
     result = []
