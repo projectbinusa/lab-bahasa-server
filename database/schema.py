@@ -1,5 +1,7 @@
 from datetime import date, datetime
 from pony.orm import *
+
+from entitas.log_book.models import LogBook
 from entitas.material.models import Material
 from entitas.absent.models import Absent
 from entitas.assignment.models import Assignment
@@ -636,7 +638,7 @@ class LogBookDB(db2.Entity):
     schedule_id = Optional(int, nullable=True)
     user_id = Optional(int, nullable=True)
     user_name = Optional(str, nullable=True)
-    periode_date = Optional(datetime, nullable=True)
+    periode_date = Optional(date, nullable=True)
     periode_start_time = Optional(str, nullable=True)
     periode_end_time = Optional(str, nullable=True)
     topic = Optional(str, nullable=True)
@@ -648,7 +650,7 @@ class LogBookDB(db2.Entity):
     updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
-        item = Training_user()
+        item = LogBook()
         item.id = self.id
         item.schedule_id = self.schedule_id
         item.user_id = self.user_id

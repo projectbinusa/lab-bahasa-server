@@ -133,6 +133,7 @@ def insert_material_by_instructur(json_object={}, file=None, training_id=0):
     json_object['is_user_access'] = True
     insert_training_material_db(json_object=json_object)
     return True
+
 def delete_material_by_id(id=0):
     return repositoriesDB.delete_by_id(id=id)
 

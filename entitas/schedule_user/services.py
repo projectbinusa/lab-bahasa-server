@@ -92,7 +92,6 @@ def update_schedule_user_for_feeback(id=0, user_id=0, kritik='', saran=''):
 def insert_schedule_user_db(json_object={}):
     return repositoriesDB.insert(json_object=json_object)
 
-
 def insert_schedule_user_db_by_schedule_id(schedule_id=0, json_object={}):
     schedule_user = repositoriesDB.find_by_schedule_id_and_user_id(schedule_id=schedule_id, user_id=json_object['user_id'])
     user_name = find_by_id(id=json_object['user_id'])
