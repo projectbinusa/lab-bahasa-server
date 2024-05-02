@@ -5,9 +5,10 @@ import os
 import random
 import uuid
 import bleach
-from bleach.css_sanitizer import CSSSanitizer
+
 
 def check_attribute(value):
+    from bleach.css_sanitizer import CSSSanitizer
     print(value, 'before')
     # allowed_tags = {'a'}
     # allowed_attributes = {'a': ['href']}
