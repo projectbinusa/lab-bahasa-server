@@ -35,8 +35,8 @@ def find_schedule_user_db_by_id(id=0, to_model=False):
     return result
 
 
-def find_schedule_user_for_student_by_id(id=0, user_id=0, to_model=False):
-    result = repositoriesDB.find_by_id(id=id)
+def find_schedule_user_for_student_by_id(schedule_id=0, user_id=0, to_model=False):
+    result = repositoriesDB.find_by_schedule_id_and_user_id(schedule_id=schedule_id, user_id=user_id)
     if result is None:
         raise_error('data not found')
     if to_model:
@@ -65,6 +65,11 @@ def find_schedule_user_for_student_by_id(id=0, user_id=0, to_model=False):
             continue
         if user.role == 'instructur':
             result['instructur'] = user.to_response_simple()
+    from entitas.training_material.services import get_materials_by_training_id
+    result['materials'] = []
+
+    if result['schedule'] is not None:
+        result['materials'] = get_materials_by_training_id(training_id=result['schedule']['training_id'])
     return result
 
 

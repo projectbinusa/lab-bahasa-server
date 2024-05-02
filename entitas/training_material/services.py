@@ -56,3 +56,12 @@ def insert_training_material_db(json_object={}):
 def delete_training_material_by_id(id=0):
     return repositoriesDB.delete_by_id(id=id)
 
+def get_materials_by_training_id(training_id=0):
+    result = []
+    from entitas.material.services import find_material_db_by_id
+    for item in repositoriesDB.get_materials_by_training_id(training_id=training_id):
+        material = find_material_db_by_id(id=item.material_id, to_model=False)
+        if material is not None:
+            result.append(material)
+
+    return result
