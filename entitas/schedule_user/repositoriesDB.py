@@ -35,15 +35,17 @@ def is_found_user_id_and_schedule_id(user_id=0, schedule_id=0):
 
 @db_session
 def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
+    from database.schema import UserDB
     result = []
     total_record = 0
     # try:
     data_in_db = select(s for s in ScheduleUserDB).order_by(desc(ScheduleUserDB.id))
+    # data_in_db = select((s, u) for s in ScheduleUserDB for u in UserDB if s.id == id and s.user_id == u.id)
     for item in filters:
         if item["field"] == "id":
             data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
         elif item["field"] == "name":
-            data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
+            data_in_db = data_in_db.filter(lambda d: item["value"] in d.user_name)
         elif item["field"] == "schedule_id":
             data_in_db = data_in_db.filter(lambda d: item["value"] == d.schedule_id)
         # elif item["field"] == "instructur_id":
@@ -68,6 +70,44 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
 
+@db_session
+def get_user_and_schedule_user_with_pagination(page=1, limit=9, filters=[], to_model=False):
+    from database.schema import UserDB
+    result = []
+    total_record = 0
+    # try:
+    # data_in_db = select(s for s in ScheduleUserDB).order_by(desc(ScheduleUserDB.id))
+    schedule_id = next((x["value"] for x in filters if x.get("field") == "schedule_id"), 0)
+    data_in_db = select((s, u) for s in ScheduleUserDB for u in UserDB if s.schedule_id == schedule_id and s.user_id == u.id)
+    for item in filters:
+        if item["field"] == "id":
+            data_in_db = data_in_db.filter(lambda d, i: item["value"] in d.id)
+        elif item["field"] == "name":
+            data_in_db = data_in_db.filter(lambda d, i: item["value"] in d.user_name)
+        elif item["field"] == "schedule_id":
+            data_in_db = data_in_db.filter(lambda d, i: item["value"] == d.schedule_id)
+
+    total_record = data_in_db.count()
+    if limit > 0:
+        data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
+    else:
+        data_in_db = data_in_db
+    for item, user in data_in_db:
+        # if to_model:
+        #     result.append(item.to_model())
+        # else:
+        data = item.to_model().to_response_participant()
+        data['user_profile'] = user.to_model().to_response_participant_schedule()
+        result.append(data)
+
+
+    # except Exception as e:
+    #     print("error ScheduleUser getAllWithPagination: ", e)
+    return result, {
+        "total": total_record,
+        "page": page,
+        "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
+    }
 
 @db_session
 def find_by_id(id=None):

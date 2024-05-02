@@ -1,5 +1,7 @@
 from datetime import date, datetime
 from pony.orm import *
+
+from entitas.log_book.models import LogBook
 from entitas.material.models import Material
 from entitas.absent.models import Absent
 from entitas.assignment.models import Assignment
@@ -46,6 +48,19 @@ class UserDB(db2.Entity):
     description = Optional(str, 100000, nullable=True)
     nip = Optional(str, nullable=True)
     tag = Optional(str, nullable=True)
+    position= Optional(str, nullable=True)
+    agency= Optional(str, nullable=True)
+    work_unit= Optional(str, nullable=True)
+    city= Optional(str, nullable=True)
+    rank= Optional(str, nullable=True)
+    npwp= Optional(str, nullable=True)
+    bank_name= Optional(str, nullable=True)
+    bank_account= Optional(str, nullable=True)
+    bank_in_name= Optional(str, nullable=True)
+    bank_book_photo= Optional(str, nullable=True)
+    id_card= Optional(str, nullable=True)
+    signature= Optional(str, nullable=True)
+    last_education= Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -69,6 +84,17 @@ class UserDB(db2.Entity):
         item.description = self.description
         item.nip = self.nip
         item.tag = self.tag
+        item.position = self.position
+        item.agency = self.agency
+        item.work_unit = self.work_unit
+        item.city = self.city
+        item.rank = self.rank
+        item.npwp = self.npwp
+        item.bank_name = self.bank_name
+        item.bank_book_photo = self.bank_book_photo
+        item.id_card = self.id_card
+        item.signature = self.signature
+        item.last_education = self.last_education
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
@@ -76,16 +102,18 @@ class UserDB(db2.Entity):
 
 # end User
 
+
 # start Material
 class MaterialDB(db2.Entity):
     _table_ = "material"
     id = PrimaryKey(int, auto=True)
     name = Optional(str, nullable=True)
     user_id = Optional(int, nullable=True)
-    name = Optional(str, nullable=True)
     filename = Optional(str, nullable=True)
     description = Optional(str, nullable=True)
     url_file = Optional(str, nullable=True)
+    other_link = Optional(str, nullable=True)
+    tag = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -98,6 +126,8 @@ class MaterialDB(db2.Entity):
         item.filename = self.filename
         item.description = self.description
         item.url_file = self.url_file
+        item.other_link = self.other_link
+        item.tag = self.tag
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
@@ -465,6 +495,7 @@ class ScheduleDB(db2.Entity):
     active = Optional(int, nullable=True)
     is_finish = Optional(bool, nullable=True)
     start_date = Optional(datetime, nullable=True)
+    end_date = Optional(datetime, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -481,6 +512,7 @@ class ScheduleDB(db2.Entity):
         item.location = self.location
         item.active = self.active
         item.start_date = self.start_date
+        item.end_date = self.end_date
         item.is_finish = self.is_finish
         item.created_date = self.created_date
         item.updated_date = self.updated_date
@@ -597,6 +629,41 @@ class TrainingUserDB(db2.Entity):
         item.training_id = self.training_id
         item.user_id = self.user_id
         item.is_active = self.is_active
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
+class LogBookDB(db2.Entity):
+    _table_ = "logbook"
+    id = PrimaryKey(int, auto=True)
+    schedule_id = Optional(int, nullable=True)
+    user_id = Optional(int, nullable=True)
+    user_name = Optional(str, nullable=True)
+    periode_date = Optional(date, nullable=True)
+    periode_start_time = Optional(str, nullable=True)
+    periode_end_time = Optional(str, nullable=True)
+    topic = Optional(str, nullable=True)
+    materi = Optional(str, nullable=True)
+    training_proof_start = Optional(str, nullable=True)
+    bukti_start = Optional(str, nullable=True)
+    bukti_end = Optional(str, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = LogBook()
+        item.id = self.id
+        item.schedule_id = self.schedule_id
+        item.user_id = self.user_id
+        item.user_name = self.user_name
+        item.periode_date = self.periode_date
+        item.periode_start_time = self.periode_start_time
+        item.periode_end_time = self.periode_end_time
+        item.topic = self.topic
+        item.materi = self.materi
+        item.training_proof_start = self.training_proof_start
+        item.bukti_start = self.bukti_start
+        item.bukti_end = self.bukti_end
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item

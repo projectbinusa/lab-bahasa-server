@@ -38,7 +38,7 @@ class TrainingMaterialWithTrainingIdResource:
         )
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 
-class dInstructurTrainingMaterialWithTrainingIdResource:
+class InstructurTrainingMaterialWithTrainingIdResource:
     def on_get(self, req, resp, training_id: int):
         filters = generate_filters_resource(req=req, params_int=['id'], params_string=['name'])
         page = int(req.get_param('page', required=False, default=1))

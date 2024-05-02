@@ -69,6 +69,7 @@ def update(json_object={}, to_model=False):
         updated_training.name = json_object["name"]
         updated_training.description = json_object["description"]
         updated_training.image_url = json_object["image_url"]
+        updated_training.tag = json_object["tag"]
         commit()
         if to_model:
             return updated_training.to_model()
@@ -96,7 +97,8 @@ def insert(json_object={}, to_model=False):
         new_training = TrainingDB(
             name=json_object["name"],
             description=json_object["description"],
-            image_url=json_object['image_url']
+            image_url=json_object['image_url'],
+            tag=json_object['tag']
         )
         commit()
         if to_model:

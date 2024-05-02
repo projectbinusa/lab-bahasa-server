@@ -19,6 +19,19 @@ class User:
             description='',
             nip='',
             tag='',
+            position='',
+            agency='',
+            work_unit='',
+            city='',
+            rank='',
+            npwp='',
+            bank_name='',
+            bank_account='',
+            bank_in_name='',
+            bank_photo_book='',
+            id_card='',
+            signature='',
+            last_education='',
             created_date=None,
             updated_date=None,
     ):
@@ -40,6 +53,19 @@ class User:
         self.description = description
         self.nip = nip
         self.tag = tag
+        self.position = position
+        self.agency = agency
+        self.work_unit = work_unit
+        self.city = city
+        self.rank = rank
+        self.npwp = npwp
+        self.bank_name = bank_name
+        self.bank_account = bank_account
+        self.bank_in_name = bank_in_name
+        self.bank_photo_book = bank_photo_book
+        self.id_card = id_card
+        self.signature = signature
+        self.last_education = last_education
         self.created_date = created_date
         self.updated_date = updated_date
 
@@ -62,6 +88,19 @@ class User:
             "description": self.description,
             "nip": self.nip,
             "tag": self.tag.split(',') if self.tag is not in [None, ''] else [],
+            "position": self.position,
+            "agency": self.agency,
+            "work_unit": self.work_unit,
+            "city": self.city,
+            "rank": self.rank,
+            "npwp": self.npwp,
+            "bank_name": self.bank_name,
+            "bank_account": self.bank_account,
+            "bank_in_name": self.bank_in_name,
+            "bank_book_photo": self.bank_photo_book,
+            "id_card": self.id_card,
+            "signature": self.signature,
+            "last_education": self.last_education,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
@@ -93,7 +132,20 @@ class User:
             "last_login": str(self.last_login) if self.last_login is not None else None,
             "hp": self.hp,
             "nip": self.nip,
-            "tag": self.tag.split(',') if self.tag is not in [None, ''] else []
+            "tag": self.tag.split(',') if self.tag is not in [None, ''] else [],
+            "position": self.position,
+            "agency": self.agency,
+            "work_unit": self.work_unit,
+            "city": self.city,
+            "rank": self.rank,
+            "npwp": self.npwp,
+            "bank_name": self.bank_name,
+            "bank_account": self.bank_account,
+            "bank_in_name": self.bank_in_name,
+            "bank_book_photo": self.bank_photo_book,
+            "id_card": self.id_card,
+            "signature": self.signature,
+            "last_education": self.last_education
         }
 
     def to_response(self):
@@ -114,6 +166,19 @@ class User:
             "description": self.description,
             "nip": self.nip,
             "tag": self.tag.split(',') if self.tag is not in [None, ''] else [],
+            "position": self.position,
+            "agency": self.agency,
+            "work_unit": self.work_unit,
+            "city": self.city,
+            "rank": self.rank,
+            "npwp": self.npwp,
+            "bank_name": self.bank_name,
+            "bank_account": self.bank_account,
+            "bank_in_name": self.bank_in_name,
+            "bank_book_photo": self.bank_photo_book,
+            "id_card": self.id_card,
+            "signature": self.signature,
+            "last_education": self.last_education,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
@@ -127,4 +192,13 @@ class User:
             "email": self.email,
             "picture": "",
             "description": self.description
+        }
+    def to_response_participant_schedule(self):
+        return {
+            "name": self.name,
+            "email": self.email,
+            "hp": self.hp,
+            "position": self.position,
+            "work_unit": self.work_unit,
+            "city": self.city
         }

@@ -41,21 +41,24 @@ def get_all_with_pagination(
     result = []
     total_record = 0
     try:
-        data_in_db = select(s for s in UserDB)
+        data_in_db = select(s for s in UserDB).order_by(desc(UserDB.id))
         for item in filters:
             if item["field"] == "email":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.email)
-            if item["field"] == "name":
+            elif item["field"] == "name":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
-            if item["field"] == "hp":
+            elif item["field"] == "hp":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.hp)
-            if item["field"] == "role":
-                data_in_db = data_in_db.filter(role=item["value"])
+            elif item["field"] == "role":
+                data_in_db = data_in_db.filter(lambda d: d.role == item["value"])
         if name:
             data_in_db = data_in_db.filter(lambda d: d.name == name)
         total_record = count(data_in_db)
-        if limit != 0:
+        total_record = data_in_db.count()
+        if limit > 0:
             data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
+        else:
+            data_in_db = data_in_db
         for item in data_in_db:
             if to_model:
                 result.append(item.to_model())
@@ -207,7 +210,20 @@ def signup(json_object={}):
         token=str(uuid.uuid4()),
         description=json_object['description'],
         nip=json_object['nip'],
-        tag=','.join(json_object['tag'])
+        tag=','.join(json_object['tag']),
+        position=json_object['position'],
+        agency=json_object['agency'],
+        work_unit=json_object['work_unit'],
+        city=json_object['city'],
+        rank=json_object['rank'],
+        npwp=json_object['npwp'],
+        bank_name=json_object['bank_name'],
+        bank_account=json_object['bank_account'],
+        bank_in_name=json_object['bank_in_name'],
+        bank_book_photo=json_object['bank_book_photo'],
+        id_card=json_object['id_card'],
+        signature=json_object['signature'],
+        last_education=json_object['last_education']
     )
     commit()
     return True
@@ -275,6 +291,32 @@ def update_profile(json_object=None, to_model=False):
             updated_user.nip = json_object['nip']
         if 'tag' in json_object:
             updated_user.tag = ','.join(json_object['tag'])
+        if 'position' in json_object:
+            updated_user.position = json_object['position']
+        if 'agency' in json_object:
+            updated_user.agency = json_object['agency']
+        if 'work_unit' in json_object:
+            updated_user.work_unit = json_object['work_unit']
+        if 'city' in json_object:
+            updated_user.city = json_object['city']
+        if 'rank' in json_object:
+            updated_user.rank = json_object['rank']
+        if 'npwp' in json_object:
+            updated_user.npwp = json_object['npwp']
+        if 'bank_name' in json_object:
+            updated_user.bank_name = json_object['bank_name']
+        if 'bank_account' in json_object:
+            updated_user.bank_account = json_object['bank_account']
+        if 'bank_in_name' in json_object:
+            updated_user.bank_in_name = json_object['bank_in_name']
+        if 'bank_book_photo' in json_object:
+            updated_user.bank_book_photo = json_object['bank_book_photo']
+        if 'id_card' in json_object:
+            updated_user.id_card = json_object['id_card']
+        if 'signature' in json_object:
+            updated_user.signature = json_object['signature']
+        if 'last_education' in json_object:
+            updated_user.last_education = json_object['last_education']
 
         commit()
         if to_model:

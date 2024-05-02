@@ -81,7 +81,6 @@ def delete_material_for_instructur_by_id(id=0, training_id=0, user_id=0):
     if training_material is None:
         raise_error("have no access")
 
-
     delete_training_material_by_material_id(material_id=id)
     return repositoriesDB.delete_by_id(id=id)
 
@@ -100,23 +99,31 @@ def get_material_by_training_id_for_instructur(page=1, limit=9, filters=[], trai
         page=page, limit=limit, filters=filters, to_model=to_model
     )
 def update_material_db(json_object={}, file=None):
-    if file is None:
-        raise_error('File not found')
-    temp_file = str(uuid.uuid4()) + file.filename.replace(" ", "")
-    json_object["filename"] = temp_file
-    with open(MATERIAL_FOLDER+temp_file, "wb") as f:
-        f.write(file.file.read())
-    json_object["url_file"] = DOMAIN_FILE_URL + '/files/' + json_object["filename"]
+    if not json_object.get("other_link"):
+        if file is None:
+            raise_error('File not found')
+        temp_file = str(uuid.uuid4()) + file.filename.replace(" ", "")
+        json_object["filename"] = temp_file
+        with open(MATERIAL_FOLDER+temp_file, "wb") as f:
+            f.write(file.file.read())
+        json_object["url_file"] = DOMAIN_FILE_URL + '/files/' + json_object["filename"]
+    else:
+        json_object["filename"] = json_object["other_link"]
+        json_object["url_file"] = ""
     return repositoriesDB.update(json_object=json_object)
 
 def insert_material_db(json_object={}, file=None):
-    if file is None:
-        raise_error('File not found')
-    temp_file = str(uuid.uuid4()) + file.filename.replace(" ", "")
-    json_object["filename"] = temp_file
-    with open(MATERIAL_FOLDER+temp_file, "wb") as f:
-        f.write(file.file.read())
-    json_object["url_file"] = DOMAIN_FILE_URL + '/files/' + json_object["filename"]
+    if not json_object.get("other_link"):
+        if file in [None, "", "null"]:
+            raise_error('File not found')
+        temp_file = str(uuid.uuid4()) + file.filename.replace(" ", "")
+        json_object["filename"] = temp_file
+        with open(MATERIAL_FOLDER+temp_file, "wb") as f:
+            f.write(file.file.read())
+        json_object["url_file"] = DOMAIN_FILE_URL + '/files/' + json_object["filename"]
+    else:
+        json_object["filename"] = json_object["other_link"]
+        json_object["url_file"] = ""
     return repositoriesDB.insert(json_object=json_object)
 
 def insert_material_by_instructur(json_object={}, file=None, training_id=0):
@@ -134,6 +141,7 @@ def insert_material_by_instructur(json_object={}, file=None, training_id=0):
     json_object['is_user_access'] = True
     insert_training_material_db(json_object=json_object)
     return True
+
 def delete_material_by_id(id=0):
     return repositoriesDB.delete_by_id(id=id)
 
