@@ -1,6 +1,6 @@
 from pony.orm import *
 
-from database.schema import ScheduleUserDB
+from database.schema import ScheduleUserDB, ScheduleInstructurDB
 
 
 @db_session
@@ -20,7 +20,7 @@ def get_all(to_model=True):
 def get_schedule_ids_by_user_id(user_id=0):
     result = []
     try:
-        for item in select(s for s in ScheduleUserDB if s.user_id == user_id and not s.is_deleted):
+        for item in select(s for s in ScheduleInstructurDB if s.user_id == user_id and not s.is_deleted):
             result.append(item.schedule_id)
     except Exception as e:
         print("error get_schedule_ids_by_user_id: ", e)

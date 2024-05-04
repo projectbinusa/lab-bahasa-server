@@ -16,7 +16,6 @@ def get_training_material_by_training_id_for_instructur(page=1, limit=9, filters
     from entitas.schedule.services import get_training_ids_by_schedule_ids
     schedule_ids = get_schedule_ids_by_user_id(user_id=user_id)
     training_ids = get_training_ids_by_schedule_ids(schedule_ids=schedule_ids)
-    # print('user_id ',user_id ,' schedule_ids ',schedule_ids ,' training_ids',training_ids, 'training_id ',training_id)
     if training_id not in training_ids:
         raise_error("have no access")
 
@@ -63,5 +62,4 @@ def get_materials_by_training_id(training_id=0):
         material = find_material_db_by_id(id=item.material_id, to_model=False)
         if material is not None:
             result.append(material)
-
     return result
