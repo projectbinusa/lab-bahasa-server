@@ -59,6 +59,6 @@ class ScheduleInstructurByIdWithScheduleIdResource:
         resouce_response_api(resp=resp,
                              data=services.update_schedule_instructur_by_schedule_id(schedule_id=schedule_id, id=user_id, json_object=body))
 
-    def on_delete(self, req, resp, schedule_id: int, instructur_id: int):
+    def on_delete(self, req, resp, schedule_id: int, user_id: int):
         resouce_response_api(resp=resp,
-                             data=services.delete_schedule_instructur_by_schedule_id(schedule_id, instructur_id))
+                             data=services.delete_schedule_instructur_by_schedule_id(schedule_id, user_id))
