@@ -103,7 +103,6 @@ def insert(json_object={}, to_model=False):
         commit()
         if to_model:
             return new_training.to_model()
-        print('fdsss',new_training.to_model().to_response())
         return new_training.to_model().to_response()
 
     except Exception as e:
