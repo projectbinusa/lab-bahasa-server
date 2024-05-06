@@ -39,6 +39,8 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.url_file)
             if item["field"] == "other_link":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.other_link)
+            if item["field"] == "user_id":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.user_id)
             if item["field"] == "material_ids":
                 data_in_db = data_in_db.filter(lambda d: d.id in item["value"])
 

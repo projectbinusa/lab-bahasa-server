@@ -150,7 +150,7 @@ def insert(json_object={}, to_model=False):
         new_training_material = TrainingMaterialDB(
             training_id=json_object["training_id"],
             material_id=json_object["material_id"],
-            material_name=material['name'],
+            material_name=json_object['name'],
             is_user_access=json_object["is_user_access"],
         )
         commit()
