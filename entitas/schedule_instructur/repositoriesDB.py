@@ -58,7 +58,6 @@ def get_all_with_pagination(
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
 
-
 @db_session
 def get_schedule_instructur_by_schedule_id(schedule_id, page=1, limit=9, filters=[], to_model=False):
     result = []
