@@ -53,7 +53,7 @@ def admin_routes(api):
     api.add_route("/api/admin/absent", AdminAbsentResource())
     api.add_route("/api/admin/training/{training_id}/material", TrainingMaterialWithTrainingIdResource())
     api.add_route("/api/admin/training/{training_id}/material/{material_id}", MaterialWithIdResource())
-    api.add_route("/api/admin/schedule/{schedule_id}/instructur/{schedule_user_id}", ScheduleInstructurByIdWithScheduleIdResource())
+    api.add_route("/api/admin/schedule/{schedule_id}/instructur/{user_id}", ScheduleInstructurByIdWithScheduleIdResource())
     api.add_route("/api/admin/schedule/{schedule_id}/instructur", ScheduleInstructurByScheduleResource())
     api.add_route("/api/admin/schedule/{schedule_id}/user", ScheduleUserByScheduleResource())
     api.add_route("/api/admin/schedule_instructur/{schedule_instructur_id}", ScheduleInstructurWithIdResource())
