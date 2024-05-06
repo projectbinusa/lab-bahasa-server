@@ -145,7 +145,6 @@ def delete_by_id(id=None):
 
 @db_session
 def insert(json_object={}, to_model=False):
-    material = find_material_db_by_id(id=json_object['material_id'])
     try:
         new_training_material = TrainingMaterialDB(
             training_id=json_object["training_id"],
