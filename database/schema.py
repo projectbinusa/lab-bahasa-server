@@ -580,6 +580,7 @@ class TrainingDB(db2.Entity):
     name = Optional(str, nullable=True)
     description = Optional(str, nullable=True)
     image_url = Optional(str, nullable=True)
+    tag = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -589,6 +590,7 @@ class TrainingDB(db2.Entity):
         item.name = self.name
         item.description = self.description
         item.image_url = self.image_url
+        item.tag = self.tag
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item

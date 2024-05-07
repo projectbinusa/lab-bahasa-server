@@ -28,6 +28,17 @@ class AssignmentWithIdResource:
     def on_delete(self, req, resp, assignment_id: int):
         resouce_response_api(resp=resp, data=services.delete_assignment_by_id(id=int(assignment_id)))
 
+class AdminCalendarScheduleAssignmentResource:
+    def on_get(self, req, resp, schedule_id: int):
+        filters = generate_filters_resource(req=req, params_int=['id'], params_string=['name'])
+        page = int(req.get_param("page", required=False, default=1))
+        limit = int(req.get_param("limit", required=False, default=9))
+        filters.append({'field': 'schedule_id', 'value': int(schedule_id)})
+        data, pagination = services.get_assignment_by_schedule_id_with_pagination(
+            page=page, limit=limit, filters=filters, schedule_id=schedule_id
+        )
+        resouce_response_api(resp=resp, data=data, pagination=pagination)
+
 class InstructurCalendarScheduleAssignmentResource:
     def on_get(self, req, resp, schedule_id: int):
         filters = generate_filters_resource(req=req, params_int=['id'], params_string=['name'])

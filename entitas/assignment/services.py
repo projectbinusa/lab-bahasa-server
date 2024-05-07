@@ -6,6 +6,10 @@ def get_assignment_db_with_pagination(page=1, limit=9, filters=[], to_model=Fals
         page=page, limit=limit, filters=filters, to_model=to_model
     )
 
+def get_assignment_by_schedule_id_with_pagination(page=1, limit=9, filters=[], schedule_id=0, to_model=False):
+    return repositoriesDB.find_by_schedule_id_with_pagination(
+        page=page, limit=limit, filters=filters, schedule_id=schedule_id, to_model=to_model
+    )
 
 def find_assignment_db_by_id(id=0, to_model=False):
     result = repositoriesDB.find_by_id(id=id)

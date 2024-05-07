@@ -31,7 +31,7 @@ class ScheduleUserWithIdResource:
 
 class ScheduleUserByScheduleResource:
     def on_get(self, req, resp, schedule_id):
-        filters = generate_filters_resource(req=req, params_int=['id'], params_string=['name'])
+        filters = generate_filters_resource(req=req, params_int=['id'], params_string=['name', 'confirmed'])
         filters.append({"field": "schedule_id", "value": int(schedule_id)})
         filters.append({"field": "is_deleted", "value": False})
 

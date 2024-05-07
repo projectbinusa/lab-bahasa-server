@@ -61,7 +61,7 @@ class InstructurTrainingMaterialWithTrainingIdResource:
         filters = generate_filters_resource(req=req, params_int=['id'], params_string=['name'])
         page = int(req.get_param('page', required=False, default=1))
         limit = int(req.get_param('limit', required=False, default=9))
-        data, pagination = services.get_material_by_training_id_for_instructur(
+        data, pagination = services.get_material_by_training_id_for_instructor(
             page=page, limit=limit, filters=filters, training_id=int(training_id), user_id=req.context['user']['id']
         )
         resouce_response_api(resp=resp, data=data, pagination=pagination)
@@ -71,5 +71,6 @@ class InstructurTrainingMaterialWithTrainingIdResource:
         body = {}
         body['name'] = req.get_param("name")
         body['description'] = req.get_param("description")
+        body['tag'] = req.get_param("tag")
         body["user_id"] = req.context["user"]["id"]
         resouce_response_api(resp=resp, data=services.insert_material_by_instructur(json_object=body, file=file, training_id=int(training_id)))

@@ -26,7 +26,7 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
         data_in_db = select(s for s in MaterialDB).order_by(desc(MaterialDB.id))
         for item in filters:
             if item["field"] == "id":
-                data_in_db = data_in_db.filter(lambda d: item['value'] in d.id)
+                data_in_db = data_in_db.filter(lambda d: d.id in item["value"])
             if item["field"] == "name":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
             if item["field"] == "description":

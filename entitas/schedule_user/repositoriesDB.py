@@ -86,6 +86,8 @@ def get_user_and_schedule_user_with_pagination(page=1, limit=9, filters=[], to_m
             data_in_db = data_in_db.filter(lambda d, i: item["value"] in d.user_name)
         elif item["field"] == "schedule_id":
             data_in_db = data_in_db.filter(lambda d, i: item["value"] == d.schedule_id)
+        elif item["field"] == "confirmed":
+            data_in_db = data_in_db.filter(lambda d, i: item["value"] == d.confirmed)
 
     total_record = data_in_db.count()
     if limit > 0:
