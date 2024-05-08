@@ -51,6 +51,8 @@ def get_all_with_pagination(
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.hp)
             elif item["field"] == "role":
                 data_in_db = data_in_db.filter(lambda d: d.role == item["value"])
+            elif item["field"] == "tag":
+                data_in_db = data_in_db.filter(lambda d: d.tag == item["value"])
         if name:
             data_in_db = data_in_db.filter(lambda d: d.name == name)
         total_record = count(data_in_db)
