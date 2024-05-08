@@ -47,6 +47,10 @@ class ScheduleUserByScheduleResource:
         resouce_response_api(resp=resp,
                              data=services.insert_schedule_user_db_by_schedule_id(schedule_id, json_object=body))
 
+class ScheduleUserByIdWithScheduleIdResource:
+    def on_delete(self, req, resp, schedule_id: int, user_id: int):
+        resouce_response_api(resp=resp,
+                             data=services.delete_schedule_user_by_schedule_id(schedule_id, user_id))
 
 class InstructurCalendarScheduleParticipantResource:
     def on_get(self, req, resp, schedule_id: int):
@@ -92,33 +96,21 @@ class ScheduleUserWithIdFeedbackResource:
     def on_put(self, req, resp, schedule_user_id: int):
         body = req.media
         resouce_response_api(resp=resp, data=services.update_schedule_user_for_feeback(id=int(schedule_user_id), user_id=req.context['user']['id'], kritik=body['kritik'], saran=body['saran']))
-
-class AdminScheduleUserWithIdFeedbackResource:
-
-    def on_get(self, req, resp, schedule_id: int, user_id: int):
-        resouce_response_api(resp=resp,
-                             data=services.find_schedule_user_by_schedule_id(schedule_id=int(schedule_id), user_id=int(user_id)))
-
-    def on_put(self, req, resp, schedule_id: int, user_id: int):
-        body = req.media
-        # body["schedule_id"] = int(schedule_id)
-        # body["user_id"] = int(user_id)
-        resouce_response_api(resp=resp,
-                             data=services.update_schedule_instructur_by_schedule_id(schedule_id=schedule_id, id=user_id, json_object=body))
-
-    def on_delete(self, req, resp, schedule_id: int, user_id: int):
-        resouce_response_api(resp=resp,
-                             data=services.delete_schedule_instructur_by_schedule_id(schedule_id, user_id))
-
-
-    def on_get(self, req, resp, schedule_id: int, schedule_user_id: int):
-        resouce_response_api(resp=resp, data=services.find_schedule_user_db_by_id(id=schedule_user_id))
-
-    def on_put(self, req, resp, schedule_id: int, schedule_user_id: int):
-        body = req.media
-        body["id"] = int(schedule_user_id)
-        resouce_response_api(resp=resp, data=services.update_schedule_user_db(json_object=body))
-
-    def on_delete(self, req, resp, schedule_id: int, schedule_user_id: int):
-        resouce_response_api(resp=resp, data=services.delete_schedule_user_by_id(id=int(schedule_user_id)))
-
+#
+# class AdminScheduleUserWithIdFeedbackResource:
+#
+#     def on_get(self, req, resp, schedule_id: int, user_id: int):
+#         resouce_response_api(resp=resp,
+#                              data=services.find_schedule_user_by_schedule_id(schedule_id=int(schedule_id), user_id=int(user_id)))
+#
+#     def on_put(self, req, resp, schedule_id: int, user_id: int):
+#         body = req.media
+#         # body["schedule_id"] = int(schedule_id)
+#         # body["user_id"] = int(user_id)
+#         resouce_response_api(resp=resp,
+#                              data=services.update_schedule_instructur_by_schedule_id(schedule_id=schedule_id, id=user_id, json_object=body))
+#
+#     def on_delete(self, req, resp, schedule_id: int, user_id: int):
+#         resouce_response_api(resp=resp,
+#                              data=services.delete_schedule_instructur_by_schedule_id(schedule_id, user_id))
+#

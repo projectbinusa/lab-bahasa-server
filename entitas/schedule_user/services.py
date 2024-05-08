@@ -166,3 +166,11 @@ def schedule_user_generate_certificate(filters=[]):
         repositoriesDB.update_certificate(id=data['id'], certificate_url=imageUtil.write(text=data['user_name']))
     return True
 
+def delete_schedule_user_by_schedule_id(schedule_id=0, id=0):
+    schedule_user = find_schedule_user_db_by_id(id=id, to_model=True)
+    if schedule_user is None:
+        raise_error(msg="Schedule Instructur not found")
+    delete_schedule_user = delete_schedule_user_by_id(id=id)
+    if delete_schedule_user is None:
+        raise_error(msg="Failed to delete")
+    return True

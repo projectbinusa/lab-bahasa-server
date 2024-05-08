@@ -66,6 +66,7 @@ class UserSignupResource:
             page=page, limit=limit, filters=filters
         )
         resouce_response_api(resp=resp, data=data, pagination=pagination)
+
     def on_post(self, req, resp):
         resouce_response_api(resp=resp, data=services.signup_user_db(json_object=req.media))
 
