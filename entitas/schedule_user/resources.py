@@ -48,6 +48,10 @@ class ScheduleUserByScheduleResource:
                              data=services.insert_schedule_user_db_by_schedule_id(schedule_id, json_object=body))
 
 class ScheduleUserByIdWithScheduleIdResource:
+    def on_put(self,req,resp, schedule_id: int, user_id: int):
+        body = req.media
+        resouce_response_api(resp=resp, data=services.update_schedule_user_by_schedule_id(schedule_id= schedule_id, user_id= user_id, json_object=body))
+
     def on_delete(self, req, resp, schedule_id: int, user_id: int):
         resouce_response_api(resp=resp,
                              data=services.delete_schedule_user_by_schedule_id(schedule_id, user_id))

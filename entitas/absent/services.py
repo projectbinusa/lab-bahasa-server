@@ -38,6 +38,7 @@ def upload_signature_user(file=None, user_id=0):
 def insert_absent_db(json_object={}):
     from entitas.schedule.services import find_schedule_db_by_id
     from entitas.user.services import find_user_db_by_id
+    from entitas.schedule_user.services import update_schedule_user_by_schedule_id
     schedule = find_schedule_db_by_id(id=json_object['schedule_id'], to_model=True)
     if schedule is None:
         raise_error("schedule not found")
@@ -46,12 +47,19 @@ def insert_absent_db(json_object={}):
     json_object['absent_date'] = datetime.datetime.now()
 
     user = find_user_db_by_id(id=json_object['user_id'], to_model=True)
+    schedule_user = {}
     if user is None:
         raise_error("user not found")
     json_object['user_name'] = user.name
     if 'signature' not in json_object:
         json_object['signature'] = ''
-    return repositoriesDB.insert(json_object=json_object)
+    schedule_user['in_absent'] = json_object['in_absent']
+    schedule_user['out_absent'] = json_object['out_absent']
+
+    repositoriesDB.insert(json_object=json_object)
+    update_schedule_user_by_schedule_id(schedule_id=schedule.id, user_id=user.id, json_object=schedule_user)
+
+    return True
 
 
 def delete_absent_by_id(id=0):
