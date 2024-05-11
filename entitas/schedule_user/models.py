@@ -6,6 +6,8 @@ class Schedule_User:
             schedule_id= 0,
             user_id= 0,
             user_name='',
+            in_absent= 0,
+            out_absent=0,
             is_deleted=False,
             score=0,
             certificate_url='',
@@ -19,6 +21,8 @@ class Schedule_User:
         self.schedule_id= schedule_id
         self.user_id= user_id
         self.user_name= user_name
+        self.in_absent= in_absent
+        self.out_absent = out_absent
         self.is_deleted= is_deleted
         self.score = score
         self.certificate_url = certificate_url
@@ -34,6 +38,8 @@ class Schedule_User:
             "schedule_id": self.schedule_id,
             "user_id": self.user_id,
             "user_name": self.user_name,
+            "in_absent": self.in_absent,
+            "out_absent": self.out_absent,
             "is_deleted": self.is_deleted,
             "score": self.score,
             "certificate_url": self.certificate_url,
@@ -50,6 +56,8 @@ class Schedule_User:
             "schedule_id": self.schedule_id,
             "user_id": self.user_id,
             "user_name": self.user_name,
+            "in_absent": self.in_absent,
+            "out_absent": self.out_absent,
             "is_deleted": self.is_deleted,
             "score": self.score,
             "certificate_url": DOMAIN_FILE_URL + '/files/' + self.certificate_url if self.certificate_url not in [None, ''] else self.certificate_url,

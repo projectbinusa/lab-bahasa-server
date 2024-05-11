@@ -548,6 +548,8 @@ class ScheduleUserDB(db2.Entity):
     schedule_id = Optional(int, nullable=True)
     user_id = Optional(int, nullable=True)
     user_name = Optional(str, nullable=True)
+    in_absent = Optional(str, nullable=True)
+    out_absent = Optional(str, nullable=True)
     is_deleted = Optional(bool, nullable=True)
     score = Optional(int, nullable=True)
     certificate_url = Optional(str, nullable=True)
@@ -563,6 +565,8 @@ class ScheduleUserDB(db2.Entity):
         item.schedule_id = self.schedule_id
         item.user_id = self.user_id
         item.user_name = self.user_name
+        item.in_absent = self.in_absent
+        item.out_absent = self.out_absent
         item.is_deleted = self.is_deleted
         item.score = self.score
         item.certificate_url = self.certificate_url

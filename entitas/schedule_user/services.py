@@ -93,6 +93,7 @@ def get_schedule_user_by_schedule_id_user(schedule_id=0, page=1, limit=9, filter
     return get_user_and_schedule_user_with_pagination(page=page, limit=limit, filters=filters, to_model=to_model)
 
 def update_schedule_user_db(json_object={}):
+    print('ini json objectnya kakak ---------->', json_object)
     return repositoriesDB.update(json_object=json_object)
 
 def update_schedule_user_for_feeback(id=0, user_id=0, kritik='', saran=''):
@@ -174,3 +175,12 @@ def delete_schedule_user_by_schedule_id(schedule_id=0, id=0):
     if delete_schedule_user is None:
         raise_error(msg="Failed to delete")
     return True
+
+def update_schedule_user_by_schedule_id(schedule_id=0, user_id=0, json_object={}):
+    schedule_user = find_schedule_user_for_student_by_id(schedule_id=schedule_id, user_id=user_id, to_model=True)
+    print(json_object)
+    if schedule_user is None:
+        raise_error(msg="Schedule User not found")
+    json_object["in_absent"] = json_object["in_absent"]
+    json_object["out_absent"] = json_object["out"]
+    return repositoriesDB.update_absent(user_id=user_id, json_object=json_object)
