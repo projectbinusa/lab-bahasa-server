@@ -99,11 +99,10 @@ def insert_schedule_db(json_object={}):
     json_object['training_name'] = training.name
     json_object['training_image_url'] = training.image_url
     data = repositoriesDB.insert(json_object=json_object)
-    serviceShorter = ServiceShorter(salt_shorter=SALT_SORTER, url_id=data['id'])
-    data['link'] = serviceShorter.encode()
-    repositoriesDB.update_link(id=data['id'], link=data['link'])
+    # serviceShorter = ServiceShorter(salt_shorter=SALT_SORTER, url_id=data['id'])
+    # data['link'] = serviceShorter.encode()
+    # repositoriesDB.update_link(id=data['id'], link=data['link'])
     return data
-
 
 def delete_schedule_by_id(id=0):
     return repositoriesDB.delete_by_id(id=id)

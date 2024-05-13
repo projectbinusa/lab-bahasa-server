@@ -148,17 +148,19 @@ def insert(json_object={}, to_model=False):
     try:
         if 'pic_wa' not in json_object:
             json_object['pic_wa'] = ''
+            json_object['is_online'] = 0
+            json_object['other_link'] = ''
         new_schedule = ScheduleDB(
-            name = json_object["name"],
-            training_id = json_object["training_id"],
+            name=json_object["name"],
+            training_id=json_object["training_id"],
             training_name=json_object["training_name"],
             training_image_url=json_object['training_image_url'],
-            other_link = json_object["other_link"],
-            is_online = json_object["is_online"],
-            location = json_object["location"],
-            active = json_object["active"],
-            start_date = json_object["start_date"],
-            end_date = json_object["end_date"],
+            other_link=json_object["other_link"],
+            is_online=json_object["is_online"],
+            location=json_object["location"],
+            active=json_object["active"],
+            start_date=json_object["start_date"],
+            end_date=json_object["end_date"],
             pic_wa=json_object['pic_wa']
         )
         commit()
