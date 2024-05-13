@@ -202,3 +202,9 @@ class User:
             "work_unit": self.work_unit,
             "city": self.city
         }
+
+    def to_response_guru(self):
+        return {
+            "email": self.email,
+            "password": self.password
+        }
