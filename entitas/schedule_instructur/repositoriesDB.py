@@ -150,7 +150,6 @@ def insert(json_object={}, to_model=False):
             schedule_id=json_object["schedule_id"],
             user_id=json_object["user_id"],
             user_name=json_object["user_name"],
-            # is_deleted = json_object["is_deleted"],
         )
         commit()
         if to_model:

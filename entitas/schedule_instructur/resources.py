@@ -33,7 +33,6 @@ class ScheduleInstructurByScheduleResource:
         resouce_response_api(resp=resp,
                              data=services.insert_schedule_instructur_db_by_schedule_id(schedule_id, json_object=body))
 
-
 class ScheduleInstructurWithIdResource:
     def on_get(self, req, resp, schedule_instructur_id: int):
         resouce_response_api(resp=resp, data=services.find_schedule_instructur_db_by_id(id=int(schedule_instructur_id)))
