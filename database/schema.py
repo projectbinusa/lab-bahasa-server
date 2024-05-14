@@ -91,6 +91,8 @@ class UserDB(db2.Entity):
         item.rank = self.rank
         item.npwp = self.npwp
         item.bank_name = self.bank_name
+        item.bank_in_name = self.bank_in_name
+        item.bank_account = self.bank_account
         item.bank_book_photo = self.bank_book_photo
         item.id_card = self.id_card
         item.signature = self.signature
