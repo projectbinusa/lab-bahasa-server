@@ -1,6 +1,7 @@
 from datetime import date, datetime
 from pony.orm import *
 
+from entitas.kelas_user.models import KelasUser
 from entitas.log_book.models import LogBook
 from entitas.material.models import Material
 from entitas.absent.models import Absent
@@ -61,6 +62,11 @@ class UserDB(db2.Entity):
     id_card= Optional(str, nullable=True)
     signature= Optional(str, nullable=True)
     last_education= Optional(str, nullable=True)
+    clientID= Optional(str, nullable=True)
+    class_id= Optional(int, nullable=True)
+    sex= Optional(str, nullable=True)
+    departement= Optional(str, nullable=True)
+    password_prompt= Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -97,6 +103,11 @@ class UserDB(db2.Entity):
         item.id_card = self.id_card
         item.signature = self.signature
         item.last_education = self.last_education
+        item.clientID = self.clientID
+        item.class_id = self.class_id
+        item.departement = self.departement
+        item.sex = self.sex
+        item.password_prompt = self.password_prompt
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
@@ -674,6 +685,25 @@ class LogBookDB(db2.Entity):
         item.training_proof_start = self.training_proof_start
         item.bukti_start = self.bukti_start
         item.bukti_end = self.bukti_end
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
+class KelasUserDB(db2.Entity):
+    _table_ = "class_user"
+    id = PrimaryKey(int, auto=True)
+    user_id = Optional(int, nullable=True)
+    name = Optional(str, nullable=True)
+    is_active = Optional(int, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = KelasUser()
+        item.id = self.id
+        item.user_id = self.user_id
+        item.is_active = self.is_active
+        item.name = self.name
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
