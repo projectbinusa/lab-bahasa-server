@@ -24,7 +24,35 @@ class UserResource:
 
 
     def on_post(self, req, resp):
-        resouce_response_api(resp=resp, data=services.insert_user_db(json_object=req.media))
+        picture = req.get_param("picture", default=None)
+        print('halo ---------->', picture)
+        # signature = req.get_param("signature", default=None)
+        bank_book_photo = req.get_param("bank_book_photo", default=None)
+        id_card = req.get_param("id_card", default=None)
+        body = {}
+        body['name'] = req.get_param("name")
+        body['email'] = req.get_param("email")
+        body['hp'] = req.get_param("hp")
+        body['password'] = req.get_param("password")
+        body['address'] = req.get_param("address")
+        body['agency'] = req.get_param("agency")
+        body['bank_account'] = req.get_param("bank_account")
+        # body['bank_book_photo'] = req.get_param("bank_book_photo")
+        body['bank_in_name'] = req.get_param("bank_in_name")
+        body['bank_name'] = req.get_param("bank_name")
+        body['birth_date'] = req.get_param("birth_date")
+        body['birth_place'] = req.get_param("birth_place")
+        body['city'] = req.get_param("city")
+        # body['id_card'] = req.get_param("id_card")
+        body['last_education'] = req.get_param("last_education")
+        body['nip'] = req.get_param("nip")
+        body['npwp'] = req.get_param("npwp")
+        body['position'] = req.get_param("position")
+        body['rank'] = req.get_param("rank")
+        body['signature'] = req.get_param("signature")
+        body['tag'] = req.get_param("tag")
+        body['work_unit'] = req.get_param("work_unit")
+        resouce_response_api(resp=resp, data=services.insert_user_db(json_object=body, picture=picture, bank_book_photo=bank_book_photo, id_card=id_card))
 
 
 class UserWithIdResource:
@@ -68,7 +96,33 @@ class UserSignupResource:
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 
     def on_post(self, req, resp):
-        resouce_response_api(resp=resp, data=services.signup_user_db(json_object=req.media))
+        picture = req.get_param("picture", default=None)
+        # signature = req.get_param("signature", default=None)
+        bank_book_photo = req.get_param("bank_book_photo", default=None)
+        id_card = req.get_param("id_card", default=None)
+        body = {}
+        body['name'] = req.get_param("name")
+        body['email'] = req.get_param("email")
+        body['hp'] = req.get_param("hp")
+        body['password'] = req.get_param("password")
+        body['address'] = req.get_param("address")
+        body['agency'] = req.get_param("agency")
+        body['bank_account'] = req.get_param("bank_account")
+        body['bank_in_name'] = req.get_param("bank_in_name")
+        body['bank_name'] = req.get_param("bank_name")
+        body['birth_date'] = req.get_param("birth_date")
+        body['birth_place'] = req.get_param("birth_place")
+        body['city'] = req.get_param("city")
+        body['last_education'] = req.get_param("last_education")
+        body['nip'] = req.get_param("nip")
+        body['npwp'] = req.get_param("npwp")
+        body['position'] = req.get_param("position")
+        body['rank'] = req.get_param("rank")
+        body['signature'] = req.get_param("signature")
+        body['tag'] = req.get_param("tag")
+        body['work_unit'] = req.get_param("work_unit")
+        print(body)
+        resouce_response_api(resp=resp, data=services.signup_user_db(json_object=body, picture=picture, bank_book_photo=bank_book_photo, id_card=id_card))
 
 
 class UserUpdatePasswordWithResource:
