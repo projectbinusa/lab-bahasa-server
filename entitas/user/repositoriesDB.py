@@ -310,7 +310,9 @@ def update_profile(json_object=None, to_model=False):
         if 'nip' in json_object:
             updated_user.nip = json_object['nip']
         if 'tag' in json_object:
-            updated_user.tag = ','.join(json_object['tag'])
+            tag = ",".join(json_object.get("tag").split(","))
+            json_object['tag'] = tag
+            updated_user.tag = json_object['tag']
         if 'position' in json_object:
             updated_user.position = json_object['position']
         if 'agency' in json_object:

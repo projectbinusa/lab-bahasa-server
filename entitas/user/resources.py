@@ -121,7 +121,6 @@ class UserSignupResource:
         body['signature'] = req.get_param("signature")
         body['tag'] = req.get_param("tag")
         body['work_unit'] = req.get_param("work_unit")
-        print(body)
         resouce_response_api(resp=resp, data=services.signup_user_db(json_object=body, picture=picture, bank_book_photo=bank_book_photo, id_card=id_card))
 
 
@@ -150,10 +149,34 @@ class UserUpdateProfileWithIdResource:
 
 class AdminUserUpdateProfileWithIdResource:
     def on_put(self, req, resp, user_id: int):
-        body = req.media
+        picture = req.get_param("picture", default=None)
+        # signature = req.get_param("signature", default=None)
+        bank_book_photo = req.get_param("bank_book_photo", default=None)
+        id_card = req.get_param("id_card", default=None)
+        body = {}
         body["id"] = int(user_id)
-        resouce_response_api(resp=resp, data=services.update_profile_id_user_db(
-            json_object=body
+        body['name'] = req.get_param("name")
+        body['email'] = req.get_param("email")
+        body['hp'] = req.get_param("hp")
+        body['password'] = req.get_param("password")
+        body['address'] = req.get_param("address")
+        body['agency'] = req.get_param("agency")
+        body['bank_account'] = req.get_param("bank_account")
+        body['bank_in_name'] = req.get_param("bank_in_name")
+        body['bank_name'] = req.get_param("bank_name")
+        body['birth_date'] = req.get_param("birth_date")
+        body['birth_place'] = req.get_param("birth_place")
+        body['city'] = req.get_param("city")
+        body['last_education'] = req.get_param("last_education")
+        body['nip'] = req.get_param("nip")
+        body['npwp'] = req.get_param("npwp")
+        body['position'] = req.get_param("position")
+        body['rank'] = req.get_param("rank")
+        body['signature'] = req.get_param("signature")
+        body['tag'] = req.get_param("tag")
+        body['work_unit'] = req.get_param("work_unit")
+        resouce_response_api(resp=resp, data=services.update_profile_id_user_by_admin(
+            json_object=body, picture=picture, bank_book_photo=bank_book_photo, id_card=id_card
         ))
 
     def on_get(self, req, resp, user_id: int):
