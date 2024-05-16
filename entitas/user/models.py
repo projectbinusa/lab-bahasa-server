@@ -34,13 +34,13 @@ class User:
             last_education='',
             url_file='',
             filename='',
-            clientID='',
-            class_id=0,
-            class_name='',
-            departement='',
-            sex='',
-            password_prompt='',
-            comment='',
+            # clientID='',
+            # class_id=0,
+            # class_name='',
+            # departement='',
+            # sex='',
+            # password_prompt='',
+            # comment='',
             created_date=None,
             updated_date=None,
     ):
@@ -77,13 +77,13 @@ class User:
         self.last_education = last_education
         self.url_file = url_file
         self.filename = filename
-        self.clientID = clientID
-        self.class_id = class_id
-        self.class_name = class_name
-        self.sex = sex
-        self.departement = departement
-        self.password_prompt = password_prompt
-        self.comment = comment
+        # self.clientID = clientID
+        # self.class_id = class_id
+        # self.class_name = class_name
+        # self.sex = sex
+        # self.departement = departement
+        # self.password_prompt = password_prompt
+        # self.comment = comment
         self.created_date = created_date
         self.updated_date = updated_date
 
@@ -121,13 +121,13 @@ class User:
             "last_education": self.last_education,
             "filename": self.filename,
             "url_file": self.url_file,
-            "clientID": self.clientID,
-            "class_id": self.class_id,
-            "class_name": self.class_name,
-            "departement": self.departement,
-            "sex": self.sex,
-            "comment": self.comment,
-            "password_prompt": self.password_prompt,
+            # "clientID": self.clientID,
+            # "class_id": self.class_id,
+            # "class_name": self.class_name,
+            # "departement": self.departement,
+            # "sex": self.sex,
+            # "comment": self.comment,
+            # "password_prompt": self.password_prompt,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
@@ -210,13 +210,13 @@ class User:
             "last_education": self.last_education,
             "filename": self.filename,
             "url_file": self.url_file,
-            "clientID": self.clientID,
-            "class_id": self.class_id,
-            "class_name": self.class_name,
-            "departement": self.departement,
-            "sex": self.sex,
-            "password_prompt": self.password_prompt,
-            "comment": self.comment,
+            # "clientID": self.clientID,
+            # "class_id": self.class_id,
+            # "class_name": self.class_name,
+            # "departement": self.departement,
+            # "sex": self.sex,
+            # "password_prompt": self.password_prompt,
+            # "comment": self.comment,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }

@@ -62,11 +62,11 @@ class UserDB(db2.Entity):
     id_card= Optional(str, nullable=True)
     signature= Optional(str, nullable=True)
     last_education= Optional(str, nullable=True)
-    clientID= Optional(str, nullable=True)
-    class_id= Optional(int, nullable=True)
-    sex= Optional(str, nullable=True)
-    departement= Optional(str, nullable=True)
-    password_prompt= Optional(str, nullable=True)
+    # clientID= Optional(str, nullable=True)
+    # class_id= Optional(int, nullable=True)
+    # sex= Optional(str, nullable=True)
+    # departement= Optional(str, nullable=True)
+    # password_prompt= Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -103,11 +103,11 @@ class UserDB(db2.Entity):
         item.id_card = self.id_card
         item.signature = self.signature
         item.last_education = self.last_education
-        item.clientID = self.clientID
-        item.class_id = self.class_id
-        item.departement = self.departement
-        item.sex = self.sex
-        item.password_prompt = self.password_prompt
+        # item.clientID = self.clientID
+        # item.class_id = self.class_id
+        # item.departement = self.departement
+        # item.sex = self.sex
+        # item.password_prompt = self.password_prompt
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
