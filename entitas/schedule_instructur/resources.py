@@ -18,10 +18,9 @@ class ScheduleInstructurResource:
 
 class ScheduleInstructurByScheduleResource:
     def on_get(self, req, resp, schedule_id):
-        filters = generate_filters_resource(req=req, params_int=['id'], params_string=['name'])
+        filters = generate_filters_resource(req=req, params_int=['id'], params_string=['user_name'])
         filters.append({'field': 'schedule_id', 'value': schedule_id})
         filters.append({'field': 'is_deleted', 'value': False})
-
         page = int(req.get_param("page", required=False, default=1))
         limit = int(req.get_param("limit", required=False, default=9))
         data, pagination = services.get_schedule_instructur_by_schedule_id(
@@ -33,7 +32,6 @@ class ScheduleInstructurByScheduleResource:
         body = req.media
         resouce_response_api(resp=resp,
                              data=services.insert_schedule_instructur_db_by_schedule_id(schedule_id, json_object=body))
-
 
 class ScheduleInstructurWithIdResource:
     def on_get(self, req, resp, schedule_instructur_id: int):

@@ -31,7 +31,6 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
             elif item["field"] == "description":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.description)
             elif item["field"] == "training_ids":
-                print('training_ids ',item["value"])
                 data_in_db = data_in_db.filter(lambda d: d.id in item["value"])
 
         data_in_db.order_by(desc(TrainingDB.id))
@@ -69,6 +68,8 @@ def update(json_object={}, to_model=False):
         updated_training = TrainingDB[json_object["id"]]
         updated_training.name = json_object["name"]
         updated_training.description = json_object["description"]
+        updated_training.image_url = json_object["image_url"]
+        updated_training.tag = json_object["tag"]
         commit()
         if to_model:
             return updated_training.to_model()
@@ -95,12 +96,13 @@ def insert(json_object={}, to_model=False):
     try:
         new_training = TrainingDB(
             name=json_object["name"],
-            description=json_object["description"]
+            description=json_object["description"],
+            image_url=json_object['image_url'],
+            tag=json_object['tag']
         )
         commit()
         if to_model:
             return new_training.to_model()
-        print('fdsss',new_training.to_model().to_response())
         return new_training.to_model().to_response()
 
     except Exception as e:

@@ -29,7 +29,10 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
             elif item["field"] == "name":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
-
+            elif item["field"] == "instructur_id":
+                data_in_db = data_in_db.filter(lambda d: item['value'] in d.instructur_id)
+            # elif item['field'] == "assignment_id":
+            #     data_in_db = data_in_db.filter(lambda d: d.assignment_id in item["value"])
 
         total_record = data_in_db.count()
         if limit > 0:
@@ -63,22 +66,36 @@ def find_by_id(id=None):
 def update(json_object={}, to_model=False):
     try:
         updated_assignment_user = Assignment_UserDB[json_object["id"]]
-        updated_assignment_user.assignment_id = json_object["assignment_id"]
-        updated_assignment_user.user_id = json_object["user_id"]
-        updated_assignment_user.training_id = json_object["training_id"]
-        updated_assignment_user.instructur_id = json_object["instructur_id"]
+        # updated_assignment_user.assignment_id = json_object["assignment_id"]
+        # updated_assignment_user.user_id = json_object["user_id"]
+        # updated_assignment_user.training_id = json_object["training_id"]
+        # updated_assignment_user.instructur_id = json_object["instructur_id"]
         updated_assignment_user.url_file = json_object["url_file"]
         updated_assignment_user.description = json_object["description"]
-        updated_assignment_user.score = json_object["score"]
-        updated_assignment_user.comment = json_object["comment"]
+        # updated_assignment_user.score = json_object["score"]
+        # updated_assignment_user.comment = json_object["comment"]
         commit()
         if to_model:
             return updated_assignment_user.to_model()
         else:
             return updated_assignment_user.to_model().to_response()
     except Exception as e:
-        print("error Material update: ", e)
+        print("error AssignmentUser update: ", e)
         return None
+
+
+@db_session
+def update_score(id=0, score=0, comment=''):
+    try:
+        updated_assignment_user = Assignment_UserDB[id]
+        updated_assignment_user.score = score
+        updated_assignment_user.comment = comment
+        commit()
+        return True
+    except Exception as e:
+        print("error AssignmentUser update_score: ", e)
+        return None
+
 
 @db_session
 def delete_by_id(id=None):
@@ -87,7 +104,7 @@ def delete_by_id(id=None):
         commit()
         return True
     except Exception as e:
-        print("error Material deleteById: ", e)
+        print("error AssignmentUser deleteById: ", e)
     return
 
 
@@ -100,9 +117,9 @@ def insert(json_object={}, to_model=False):
             training_id=json_object["training_id"],
             instructur_id=json_object["instructur_id"],
             url_file=json_object["url_file"],
-            description=json_object["description"],
-            score=json_object["score"],
-            comment=json_object["comment"],
+            description=json_object["description"]
+            # score=json_object["score"],
+            # comment=json_object["comment"],
         )
         commit()
         if to_model:
@@ -110,5 +127,13 @@ def insert(json_object={}, to_model=False):
         else:
             return new_assignment_user.to_model().to_response()
     except Exception as e:
-        print("error Material insert: ", e)
+        print("error AssignmentUser insert: ", e)
         return None
+
+
+@db_session
+def find_by_assignment_id_and_user_id(assignment_id=0, user_id=0):
+    data_in_db = select(s for s in Assignment_UserDB if s.assignment_id == assignment_id and s.user_id == user_id)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()

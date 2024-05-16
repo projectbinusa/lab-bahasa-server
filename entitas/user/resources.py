@@ -12,33 +12,61 @@ class UserResource:
     # auth = {
     #     'auth_disabled': True
     # }
-    
+
     def on_get(self, req, resp):
         page = int(req.get_param("page", required=False, default=1))
         limit = int(req.get_param("limit", required=False, default=9))
-        filters = generate_filters_resource(req=req, params_string=['first_name', 'last_name', 'email'])
+        filters = generate_filters_resource(req=req, params_string=['first_name', 'last_name', 'email',])
         data, pagination = services.get_user_db_with_pagination(
             page=page, limit=limit, filters=filters
         )
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 
-    
+
     def on_post(self, req, resp):
-        resouce_response_api(resp=resp, data=services.insert_user_db(json_object=req.media))
+        picture = req.get_param("picture", default=None)
+        print('halo ---------->', picture)
+        # signature = req.get_param("signature", default=None)
+        bank_book_photo = req.get_param("bank_book_photo", default=None)
+        id_card = req.get_param("id_card", default=None)
+        body = {}
+        body['name'] = req.get_param("name")
+        body['email'] = req.get_param("email")
+        body['hp'] = req.get_param("hp")
+        body['password'] = req.get_param("password")
+        body['address'] = req.get_param("address")
+        body['agency'] = req.get_param("agency")
+        body['bank_account'] = req.get_param("bank_account")
+        # body['bank_book_photo'] = req.get_param("bank_book_photo")
+        body['bank_in_name'] = req.get_param("bank_in_name")
+        body['bank_name'] = req.get_param("bank_name")
+        body['birth_date'] = req.get_param("birth_date")
+        body['birth_place'] = req.get_param("birth_place")
+        body['city'] = req.get_param("city")
+        # body['id_card'] = req.get_param("id_card")
+        body['last_education'] = req.get_param("last_education")
+        body['nip'] = req.get_param("nip")
+        body['npwp'] = req.get_param("npwp")
+        body['position'] = req.get_param("position")
+        body['rank'] = req.get_param("rank")
+        body['signature'] = req.get_param("signature")
+        body['tag'] = req.get_param("tag")
+        body['work_unit'] = req.get_param("work_unit")
+        resouce_response_api(resp=resp, data=services.insert_user_db(json_object=body, picture=picture, bank_book_photo=bank_book_photo, id_card=id_card))
 
 
 class UserWithIdResource:
-    
+
     def on_get(self, req, resp, id: int):
         resouce_response_api(resp=resp, data=services.find_user_db_by_id(id=int(id)))
 
-    
+
     def on_put(self, req, resp, id: int):
         body = req.media
         body["id"] = id
         resouce_response_api(resp=resp, data=services.update_user_db(json_object=body))
 
-    
+
     def on_delete(self, req, resp, id: int):
         resouce_response_api(resp=resp, data=services.delete_user_by_id(id=int(id)))
 
@@ -61,17 +89,44 @@ class UserSignupResource:
     def on_get(self, req, resp):
         page = int(req.get_param("page", required=False, default=1))
         limit = int(req.get_param("limit", required=False, default=9))
-        filters = generate_filters_resource(req=req, params_string=['name'])
+        filters = generate_filters_resource(req=req, params_int=['id'], params_string=['name', 'email', 'role', 'tag'])
         data, pagination = services.get_user_db_with_pagination(
             page=page, limit=limit, filters=filters
         )
         resouce_response_api(resp=resp, data=data, pagination=pagination)
+
     def on_post(self, req, resp):
-        resouce_response_api(resp=resp, data=services.signup_user_db(json_object=req.media))
+        picture = req.get_param("picture", default=None)
+        # signature = req.get_param("signature", default=None)
+        bank_book_photo = req.get_param("bank_book_photo", default=None)
+        id_card = req.get_param("id_card", default=None)
+        body = {}
+        body['name'] = req.get_param("name")
+        body['email'] = req.get_param("email")
+        body['hp'] = req.get_param("hp")
+        body['password'] = req.get_param("password")
+        body['address'] = req.get_param("address")
+        body['agency'] = req.get_param("agency")
+        body['bank_account'] = req.get_param("bank_account")
+        body['bank_in_name'] = req.get_param("bank_in_name")
+        body['bank_name'] = req.get_param("bank_name")
+        body['birth_date'] = req.get_param("birth_date")
+        body['birth_place'] = req.get_param("birth_place")
+        body['city'] = req.get_param("city")
+        body['last_education'] = req.get_param("last_education")
+        body['nip'] = req.get_param("nip")
+        body['npwp'] = req.get_param("npwp")
+        body['position'] = req.get_param("position")
+        body['rank'] = req.get_param("rank")
+        body['signature'] = req.get_param("signature")
+        body['tag'] = req.get_param("tag")
+        body['work_unit'] = req.get_param("work_unit")
+        print(body)
+        resouce_response_api(resp=resp, data=services.signup_user_db(json_object=body, picture=picture, bank_book_photo=bank_book_photo, id_card=id_card))
 
 
 class UserUpdatePasswordWithResource:
-    
+
     def on_put(self, req, resp):
         body = req.media
         body["user"] = req.context["user"]
@@ -107,7 +162,7 @@ class AdminUserUpdateProfileWithIdResource:
         ))
 
 class UserLogoutWithIdResource:
-    
+
     def on_post(self, req, resp):
         resouce_response_api(resp=resp, data=services.logout_user_db(
             json_object={"token": req.context["user"]["token"]}
@@ -145,7 +200,7 @@ class UserResetPasswordWithResource:
 class UserActivationResource:
     auth = {"auth_disabled": True}
 
-    
+
     def on_get(self, req, resp, token: str):
         from user_agents import parse
 
@@ -169,7 +224,7 @@ class UserActivationResource:
 
 
 class UserUpdateProfileWithIdResourceAdmin:
-    
+
     def on_put(self, req, resp, id: int):
         body = req.media
         body["id"] = id
@@ -177,7 +232,7 @@ class UserUpdateProfileWithIdResourceAdmin:
             json_object=body
         ))
 
-    
+
     def on_get(self, req, resp, id: int):
         resouce_response_api(resp=resp, data=services.get_profile_id_user_db_admin(id=int(id)))
 

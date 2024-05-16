@@ -33,7 +33,7 @@ def get_all_with_pagination(
             if item["field"] == "id":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
             elif item["field"] == "user_name":
-                data_in_db = data_in_db.filter(user_id=item["value"])
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.user_name)
             elif item["field"] == "schedule_id":
                 data_in_db = data_in_db.filter(schedule_id=item["value"])
             elif item["field"] == "is_deleted":
@@ -57,7 +57,6 @@ def get_all_with_pagination(
         "page": page,
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
-
 
 @db_session
 def get_schedule_instructur_by_schedule_id(schedule_id, page=1, limit=9, filters=[], to_model=False):
@@ -151,7 +150,6 @@ def insert(json_object={}, to_model=False):
             schedule_id=json_object["schedule_id"],
             user_id=json_object["user_id"],
             user_name=json_object["user_name"],
-            # is_deleted = json_object["is_deleted"],
         )
         commit()
         if to_model:
@@ -226,7 +224,17 @@ def get_schedule_ids_by_user_id(user_id=0):
     result = []
     try:
         for item in select(s for s in ScheduleInstructurDB if s.user_id == user_id and not s.is_deleted):
-            result.append(item.user_id)
+            result.append(item.schedule_id)
     except Exception as e:
         print("error get_schedule_ids_by_user_id: ", e)
+    return result
+
+@db_session
+def get_user_ids_by_schedule_id(schedule_id=0):
+    result = []
+    try:
+        for item in select(s for s in ScheduleInstructurDB if s.schedule_id == schedule_id and not s.is_deleted):
+            result.append(item.user_id)
+    except Exception as e:
+        print("error get_user_ids_by_schedule_id: ", e)
     return result

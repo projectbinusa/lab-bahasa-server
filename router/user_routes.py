@@ -6,7 +6,7 @@ from entitas.notification.resources import *
 from entitas.pathway.resources import *
 from entitas.pathway_training.resources import *
 from entitas.pathway_user.resources import *
-from entitas.room.resources import *
+from entitas.announcement.resources import *
 from entitas.room_user.resources import *
 from entitas.schedule.resources import *
 from entitas.schedule_instructur.resources import *
@@ -29,6 +29,7 @@ def user_routes(api):
     api.add_route("/api/user/reset_password/{token}", UserResetPasswordWithResource())
     api.add_route("/api/user/activation/{token}", UserActivationResource())
     api.add_route("/api/user/absent/{absent_id}", AbsentWithIdResource())
+    api.add_route("/api/user/absent/signature", AbsentWithIdSignatureResource())
     api.add_route("/api/user/absent", AbsentResource())
     api.add_route("/api/user/assignment_user/{assignment_user_id}", AssignmentUserWithIdResource())
     api.add_route("/api/user/assignment_user", AssignmentUserResource())
@@ -40,8 +41,20 @@ def user_routes(api):
     api.add_route("/api/user/pathway_user", UserPathwayUserResource())
     api.add_route("/api/user/pathway_user/{pathway_user_id}", UserPathwayByIdResuorce())
     api.add_route("/api/user/schedule_user/{schedule_user_id}", ScheduleUserWithIdResource())
+    api.add_route("/api/user/mytraining/{schedule_user_id}", ScheduleUserWithIdResource())
+    api.add_route("/api/user/mytraining/{schedule_user_id}/feedback", ScheduleUserWithIdFeedbackResource())
     api.add_route("/api/user/schedule_user", ScheduleUserResource())
     api.add_route("/api/user/calendar", UserCalendarResource())
+    api.add_route("/api/user/mytraining", UserMyTrainingResource())
+    api.add_route("/api/user/calendar/{schedule_id}/assignment/{assignment_id}",
+                  UserCalendarScheduleAssignmentByAssignmentIdResource())
     api.add_route("/api/user/training_user/{training_user_id}", TrainingUserWithIdResource())
     api.add_route("/api/user/training_user", TrainingUserResource())
     api.add_route("/api/user/pathway_training", PathwayTrainingResource())
+    api.add_route("/api/user/calendar/{schedule_id}/confirmed",
+                  InstructurCalendarScheduleParticipantConfirmedResource())
+    api.add_route("/api/user/mytrain/{schedule_id}/confirmed",
+                  InstructurCalendarScheduleParticipantConfirmedResource())
+    api.add_route("/api/api/user/mytrain/{schedule_id}/confirmed",
+                  InstructurCalendarScheduleParticipantConfirmedResource())
+    api.add_route("/api/user/announcement", AnnouncementStudentResource())

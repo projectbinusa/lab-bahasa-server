@@ -1,5 +1,8 @@
 from datetime import date, datetime
 from pony.orm import *
+
+from entitas.kelas_user.models import KelasUser
+from entitas.log_book.models import LogBook
 from entitas.material.models import Material
 from entitas.absent.models import Absent
 from entitas.assignment.models import Assignment
@@ -12,6 +15,7 @@ from entitas.pathway.models import Pathway
 from entitas.pathway_user.models import Pathway_User
 from entitas.pathway_training.models import Pathway_Training
 from entitas.room.models import Room
+from entitas.announcement.models import Announcement
 from entitas.room_user.models import Room_User
 from entitas.schedule.models import Schedule
 from entitas.schedule_instructur.models import Schedule_instuctur
@@ -42,6 +46,27 @@ class UserDB(db2.Entity):
     active = Optional(int, nullable=True)
     picture = Optional(str, 1000, nullable=True)
     role = Optional(str, nullable=True)
+    description = Optional(str, 100000, nullable=True)
+    nip = Optional(str, nullable=True)
+    tag = Optional(str, nullable=True)
+    position= Optional(str, nullable=True)
+    agency= Optional(str, nullable=True)
+    work_unit= Optional(str, nullable=True)
+    city= Optional(str, nullable=True)
+    rank= Optional(str, nullable=True)
+    npwp= Optional(str, nullable=True)
+    bank_name= Optional(str, nullable=True)
+    bank_account= Optional(str, nullable=True)
+    bank_in_name= Optional(str, nullable=True)
+    bank_book_photo= Optional(str, nullable=True)
+    id_card= Optional(str, nullable=True)
+    signature= Optional(str, nullable=True)
+    last_education= Optional(str, nullable=True)
+    clientID= Optional(str, nullable=True)
+    class_id= Optional(int, nullable=True)
+    sex= Optional(str, nullable=True)
+    departement= Optional(str, nullable=True)
+    password_prompt= Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -62,6 +87,27 @@ class UserDB(db2.Entity):
         item.active = self.active
         item.picture = self.picture
         item.role = self.role
+        item.description = self.description
+        item.nip = self.nip
+        item.tag = self.tag
+        item.position = self.position
+        item.agency = self.agency
+        item.work_unit = self.work_unit
+        item.city = self.city
+        item.rank = self.rank
+        item.npwp = self.npwp
+        item.bank_name = self.bank_name
+        item.bank_in_name = self.bank_in_name
+        item.bank_account = self.bank_account
+        item.bank_book_photo = self.bank_book_photo
+        item.id_card = self.id_card
+        item.signature = self.signature
+        item.last_education = self.last_education
+        item.clientID = self.clientID
+        item.class_id = self.class_id
+        item.departement = self.departement
+        item.sex = self.sex
+        item.password_prompt = self.password_prompt
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
@@ -69,16 +115,18 @@ class UserDB(db2.Entity):
 
 # end User
 
+
 # start Material
 class MaterialDB(db2.Entity):
     _table_ = "material"
     id = PrimaryKey(int, auto=True)
     name = Optional(str, nullable=True)
     user_id = Optional(int, nullable=True)
-    name = Optional(str, nullable=True)
     filename = Optional(str, nullable=True)
     description = Optional(str, nullable=True)
     url_file = Optional(str, nullable=True)
+    other_link = Optional(str, nullable=True)
+    tag = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -91,6 +139,8 @@ class MaterialDB(db2.Entity):
         item.filename = self.filename
         item.description = self.description
         item.url_file = self.url_file
+        item.other_link = self.other_link
+        item.tag = self.tag
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
@@ -133,6 +183,8 @@ class AbsentDB(db2.Entity):
     user_name = Optional(str, nullable=True)
     status = Optional(int, nullable=True)
     description = Optional(str, nullable=True)
+    location = Optional(str, nullable=True)
+    signature = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -147,6 +199,8 @@ class AbsentDB(db2.Entity):
         item.user_name = self.user_name
         item.status = self.status
         item.description = self.description
+        item.location = self.location
+        item.signature = self.signature
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
@@ -169,9 +223,9 @@ class AssignmentDB(db2.Entity):
     def to_model(self):
         item = Assignment()
         item.id = self.id
-        schedule_id = self.schedule_id
-        training_id = self.training_id
-        instructur_id = self.instructur_id
+        item.schedule_id = self.schedule_id
+        item.training_id = self.training_id
+        item.instructur_id = self.instructur_id
         item.name = self.name
         item.description = self.description
         item.max_date = self.max_date
@@ -395,6 +449,25 @@ class RoomDB(db2.Entity):
         item.updated_date = self.updated_date
         return item
 
+class AnnouncementDB(db2.Entity):
+    _table_ = "announcement"
+    id = PrimaryKey(int, auto=True)
+    name = Optional(str, nullable=True)
+    is_published = Optional(bool, nullable=True)
+    description = Optional(str, 10000, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = Announcement()
+        item.id = self.id
+        item.name = self.name
+        item.is_published = self.is_published
+        item.description = self.description
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
 
 class RoomUserDB(db2.Entity):
     _table_ = "room_user"
@@ -427,11 +500,16 @@ class ScheduleDB(db2.Entity):
     name = Optional(str, nullable=True)
     training_id = Optional(int, nullable=True)
     training_name = Optional(str, nullable=True)
+    training_image_url = Optional(str, nullable=True)
     link = Optional(str, nullable=True)
+    other_link = Optional(str, nullable=True)
     is_online = Optional(int, nullable=True)
     location = Optional(str, nullable=True)
     active = Optional(int, nullable=True)
+    is_finish = Optional(bool, nullable=True)
     start_date = Optional(datetime, nullable=True)
+    end_date = Optional(datetime, nullable=True)
+    pic_wa = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -441,11 +519,16 @@ class ScheduleDB(db2.Entity):
         item.name = self.name
         item.training_id = self.training_id
         item.training_name = self.training_name
+        item.training_image_url = self.training_image_url
         item.link = self.link
+        item.other_link = self.other_link
         item.is_online = self.is_online
         item.location = self.location
         item.active = self.active
         item.start_date = self.start_date
+        item.end_date = self.end_date
+        item.is_finish = self.is_finish
+        item.pic_wa = self.pic_wa
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
@@ -478,9 +561,14 @@ class ScheduleUserDB(db2.Entity):
     schedule_id = Optional(int, nullable=True)
     user_id = Optional(int, nullable=True)
     user_name = Optional(str, nullable=True)
+    in_absent = Optional(str, nullable=True)
+    out_absent = Optional(str, nullable=True)
     is_deleted = Optional(bool, nullable=True)
     score = Optional(int, nullable=True)
     certificate_url = Optional(str, nullable=True)
+    confirmed = Optional(bool, nullable=True)
+    kritik = Optional(str, nullable=True)
+    saran = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -490,9 +578,14 @@ class ScheduleUserDB(db2.Entity):
         item.schedule_id = self.schedule_id
         item.user_id = self.user_id
         item.user_name = self.user_name
+        item.in_absent = self.in_absent
+        item.out_absent = self.out_absent
         item.is_deleted = self.is_deleted
         item.score = self.score
         item.certificate_url = self.certificate_url
+        item.confirmed = self.confirmed
+        item.kritik = self.kritik
+        item.saran = self.saran
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
@@ -503,6 +596,8 @@ class TrainingDB(db2.Entity):
     id = PrimaryKey(int, auto=True)
     name = Optional(str, nullable=True)
     description = Optional(str, nullable=True)
+    image_url = Optional(str, nullable=True)
+    tag = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -511,6 +606,8 @@ class TrainingDB(db2.Entity):
         item.id = self.id
         item.name = self.name
         item.description = self.description
+        item.image_url = self.image_url
+        item.tag = self.tag
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
@@ -553,6 +650,60 @@ class TrainingUserDB(db2.Entity):
         item.training_id = self.training_id
         item.user_id = self.user_id
         item.is_active = self.is_active
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
+class LogBookDB(db2.Entity):
+    _table_ = "logbook"
+    id = PrimaryKey(int, auto=True)
+    schedule_id = Optional(int, nullable=True)
+    user_id = Optional(int, nullable=True)
+    user_name = Optional(str, nullable=True)
+    periode_date = Optional(date, nullable=True)
+    periode_start_time = Optional(str, nullable=True)
+    periode_end_time = Optional(str, nullable=True)
+    topic = Optional(str, nullable=True)
+    materi = Optional(str, nullable=True)
+    training_proof_start = Optional(str, nullable=True)
+    bukti_start = Optional(str, nullable=True)
+    bukti_end = Optional(str, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = LogBook()
+        item.id = self.id
+        item.schedule_id = self.schedule_id
+        item.user_id = self.user_id
+        item.user_name = self.user_name
+        item.periode_date = self.periode_date
+        item.periode_start_time = self.periode_start_time
+        item.periode_end_time = self.periode_end_time
+        item.topic = self.topic
+        item.materi = self.materi
+        item.training_proof_start = self.training_proof_start
+        item.bukti_start = self.bukti_start
+        item.bukti_end = self.bukti_end
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
+class KelasUserDB(db2.Entity):
+    _table_ = "class_user"
+    id = PrimaryKey(int, auto=True)
+    user_id = Optional(int, nullable=True)
+    name = Optional(str, nullable=True)
+    is_active = Optional(int, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = KelasUser()
+        item.id = self.id
+        item.user_id = self.user_id
+        item.is_active = self.is_active
+        item.name = self.name
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item

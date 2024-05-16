@@ -15,6 +15,19 @@ def get_all(to_model=False):
     return result
 
 @db_session
+def get_all_by_user_id(user_id=0, to_model=False):
+    result = []
+    try:
+        for item in select(s for s in AbsentDB if s.user_id == user_id):
+            if to_model:
+                result.append(item.to_model())
+            else:
+                result.append(item.to_model().to_response())
+    except Exception as e:
+        print("error Absent get_all_by_user_id: ", e)
+    return result
+
+@db_session
 def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False ):
     result = []
     total_record = 0
@@ -93,15 +106,19 @@ def delete_by_id(id=None):
 @db_session
 def insert(json_object={}, to_model=[]):
     try:
+        if 'location' not in json_object:
+            json_object['location'] = ''
         new_absent = AbsentDB(
-            training_id = json_object["training_id"],
-            training_name = json_object["training_name"],
-            schedule_id = json_object["schedule_id"],
-            absent_date = json_object["absent_date"],
-            status = json_object["status"],
-            user_id = json_object["user_id"],
-            user_name = json_object["user_name"],
-            description = json_object["description"],
+            training_id=json_object["training_id"],
+            training_name=json_object["training_name"],
+            schedule_id=json_object["schedule_id"],
+            absent_date=json_object["absent_date"],
+            status=json_object["status"],
+            user_id=json_object["user_id"],
+            user_name=json_object["user_name"],
+            description=json_object["description"],
+            location=json_object['location'],
+            signature=json_object['signature']
         )
         commit()
         if to_model:

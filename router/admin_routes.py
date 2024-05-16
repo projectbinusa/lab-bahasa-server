@@ -1,6 +1,6 @@
 from entitas.absent.resources import *
 from entitas.assignment.resources import *
-from entitas.assignment_user.resources import *
+from entitas.announcement.resources import *
 from entitas.certificate.resources import *
 from entitas.notification.resources import *
 from entitas.pathway.resources import *
@@ -36,9 +36,15 @@ def admin_routes(api):
     api.add_route("/api/admin/pathway_traning", PathwayTrainingResource())
     api.add_route("/api/admin/room/{room_id}", RoomWithIdResource())
     api.add_route("/api/admin/room", RoomResource())
+    api.add_route("/api/admin/announcement/{announcement_id}", AnnouncementWithIdResource())
+    api.add_route("/api/admin/announcement/{announcement_id}/publish", AnnouncementWithIdPublishResource())
+    api.add_route("/api/admin/announcement/{announcement_id}/unpublish", AnnouncementWithIdUnPublishResource())
+    api.add_route("/api/admin/announcement", AnnouncementResource())
     api.add_route("/api/admin/room_user/{room_user_id}", RoomUserWithIdResource())
     api.add_route("/api/admin/room_user", RoomUserResource())
     api.add_route("/api/admin/schedule/{schedule_id}", ScheduleWithIdResource())
+    api.add_route("/api/admin/schedule/{schedule_id}/finish", ScheduleWithIdFinishResource())
+    api.add_route("/api/admin/schedule/{schedule_id}/unfinish", ScheduleWithIdUnFinishResource())
     api.add_route("/api/admin/schedule", ScheduleResource())
     api.add_route("/api/admin/training/{training_id}", TrainingWithIdResource())
     api.add_route("/api/admin/training", TrainingResource())
@@ -47,8 +53,12 @@ def admin_routes(api):
     api.add_route("/api/admin/absent", AdminAbsentResource())
     api.add_route("/api/admin/training/{training_id}/material", TrainingMaterialWithTrainingIdResource())
     api.add_route("/api/admin/training/{training_id}/material/{material_id}", MaterialWithIdResource())
-    api.add_route("/api/admin/schedule/{schedule_id}/instructur/{instructur_id}", ScheduleInstructurByIdWithScheduleIdResource())
+    api.add_route("/api/admin/schedule/{schedule_id}/instructur/{user_id}", ScheduleInstructurByIdWithScheduleIdResource())
     api.add_route("/api/admin/schedule/{schedule_id}/instructur", ScheduleInstructurByScheduleResource())
+    api.add_route("/api/admin/schedule/{schedule_id}/user", ScheduleUserByScheduleResource())
+    api.add_route("/api/admin/schedule/{schedule_id}/user/{user_id}", ScheduleUserByIdWithScheduleIdResource())
     api.add_route("/api/admin/schedule_instructur/{schedule_instructur_id}", ScheduleInstructurWithIdResource())
     api.add_route("/api/admin/schedule_instructur", ScheduleInstructurResource())
     api.add_route("/api/admin/calendar", AdminCalendarResource())
+    api.add_route("/api/admin/mytraining", AdminMytrainingResource())
+    api.add_route("/api/admin/schedule/{schedule_id}/assignment", AdminCalendarScheduleAssignmentResource())

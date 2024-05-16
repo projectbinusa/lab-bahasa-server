@@ -1,5 +1,6 @@
 from pony.orm import *
-from database.schema import ScheduleDB, TrainingDB
+from database.schema import ScheduleDB
+
 
 @db_session
 def get_all(to_model=False):
@@ -26,6 +27,8 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
             elif item["field"] == "name":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
+            elif item['field'] == "ids":
+                data_in_db = data_in_db.filter(lambda d: d.id in item["value"])
 
         total_record = data_in_db.count()
         if limit > 0:
@@ -72,7 +75,10 @@ def get_all_by_time(year=0, month=0, ids=[]):
 
 @db_session
 def find_by_id(id=None):
+    from database.schema import UserDB
+    # data_in_db = select((s, u) for s in ScheduleDB for u in UserDB if s.id == id and u.user_id == u.id).first()
     data_in_db = select(s for s in ScheduleDB if s.id == id)
+    # data_in_db = select((an, ac) for an in ScheduleDB for ac in UserDB if an.user_id == ac.id)
     if data_in_db.first() is None:
         return None
     return data_in_db.first().to_model()
@@ -84,10 +90,15 @@ def update(json_object={}, to_model=False):
         updated_schedule.name = json_object["name"]
         updated_schedule.training_id = json_object["training_id"]
         updated_schedule.training_name = json_object["training_name"]
+        updated_schedule.training_image_url = json_object['training_image_url']
         updated_schedule.is_online = json_object["is_online"]
         updated_schedule.location = json_object["location"]
         updated_schedule.active = json_object["active"]
+        updated_schedule.other_link = json_object['other_link']
         updated_schedule.start_date = json_object["start_date"]
+        updated_schedule.end_date = json_object["end_date"]
+        if 'pic_wa' in json_object:
+            updated_schedule.pic_wa = json_object['pic_wa']
         commit()
         if to_model:
             return updated_schedule.to_model()
@@ -111,6 +122,18 @@ def update_link(id=0, link=''):
     return
 
 @db_session
+def update_is_finish(id=0, is_finish=False):
+    try:
+        updated_schedule = ScheduleDB[id]
+        updated_schedule.is_finish = is_finish
+        commit()
+        return True
+
+    except Exception as e:
+        print("error Schedule update_is_finish: ", e)
+    return
+
+@db_session
 def delete_by_id(id=None):
     try:
         ScheduleDB[id].delete()
@@ -123,16 +146,22 @@ def delete_by_id(id=None):
 @db_session
 def insert(json_object={}, to_model=False):
     try:
-        # training = TrainingDB[json_object["training_id"]]
+        if 'pic_wa' not in json_object:
+            json_object['pic_wa'] = ''
+            json_object['is_online'] = 0
+            json_object['other_link'] = ''
         new_schedule = ScheduleDB(
-            name = json_object["name"],
-            training_id = json_object["training_id"],
+            name=json_object["name"],
+            training_id=json_object["training_id"],
             training_name=json_object["training_name"],
-            # link = json_object["link"],
-            is_online = json_object["is_online"],
-            location = json_object["location"],
-            active = json_object["active"],
-            start_date = json_object["start_date"]
+            training_image_url=json_object['training_image_url'],
+            other_link=json_object["other_link"],
+            is_online=json_object["is_online"],
+            location=json_object["location"],
+            active=json_object["active"],
+            start_date=json_object["start_date"],
+            end_date=json_object["end_date"],
+            pic_wa=json_object['pic_wa']
         )
         commit()
         if to_model:

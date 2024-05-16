@@ -12,7 +12,6 @@ def get_training_for_instructur(page=1, limit=9, filters=[], user_id=0, to_model
     schedule_ids = get_schedule_ids_by_user_id(user_id=user_id)
     training_ids = get_training_ids_by_schedule_ids(schedule_ids=schedule_ids)
     filters.append({'field': 'training_ids', 'value': training_ids})
-
     return repositoriesDB.get_all_with_pagination(
         page=page, limit=limit, filters=filters, to_model=to_model
     )

@@ -54,3 +54,12 @@ class Assignment_User:
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
+
+    def to_response_simple(self):
+        return {
+            "id": self.id,
+            "url_file": self.url_file,
+            "description": self.description,
+            "score": self.score,
+            "comment": self.comment
+        }

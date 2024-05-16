@@ -57,9 +57,9 @@ def find_by_training_id_with_pagination(page=1, limit=9, filters=[], training_id
         data_in_db = select(s for s in TrainingMaterialDB if s.training_id == training_id).order_by(desc(TrainingMaterialDB.id))
         for item in filters:
             if item["field"] == "id":
-                data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.material_id)
             elif item["field"] == "name":
-                data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.material_name)
         total_record = data_in_db.count()
         if limit > 0:
             data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
@@ -145,12 +145,11 @@ def delete_by_id(id=None):
 
 @db_session
 def insert(json_object={}, to_model=False):
-    material = find_material_db_by_id(id=json_object['material_id'])
     try:
         new_training_material = TrainingMaterialDB(
             training_id=json_object["training_id"],
             material_id=json_object["material_id"],
-            material_name=material['name'],
+            material_name=json_object['name'],
             is_user_access=json_object["is_user_access"],
         )
         commit()
@@ -161,3 +160,10 @@ def insert(json_object={}, to_model=False):
     except Exception as e:
         print("error Room insert: ", e)
     return None
+
+@db_session
+def get_materials_by_training_id(training_id=0):
+    result = []
+    for data_in_db in select(s for s in TrainingMaterialDB if s.training_id == training_id):
+        result.append(data_in_db.to_model())
+    return result

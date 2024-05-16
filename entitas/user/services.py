@@ -8,7 +8,7 @@ from util.entitas_util import *
 from util.jwt_util import jwt_encode, check_valid_email
 from util.other_util import encrypt_string, get_random_string, raise_error, raise_forbidden
 import datetime
-from config.config import TYPE_TOKEN_USER
+from config.config import TYPE_TOKEN_USER, PICTURE_FOLDER, DOMAIN_FILE_URL, BANK_FOLDER, CARD_FOLDER
 
 
 def get_user_db_with_pagination(
@@ -75,14 +75,26 @@ def update_password_user_db(json_object={}):
     return repositoriesDB.update_password(json_object=json_object), SUCCESS
 
 
-def insert_user_db(json_object={}, to_model=False):
-    if "picture" not in json_object:
-        json_object["picture"] = ''
-    data, status = repositoriesDB.insert(json_object=json_object, to_model=to_model)
-    return data, status
+def insert_user_db(json_object={}, picture=None, bank_book_photo=None, id_card=None):
+    print(json_object, picture)
+    # if "picture" not in json_object:
+    #     json_object["picture"] = ''
+    temp_picture = str(uuid.uuid4()) + picture.filename.replace(" ", "")
+    temp_bank = str(uuid.uuid4()) + bank_book_photo.filename.replace(" ", "")
+    temp_card = str(uuid.uuid4()) + id_card.filename.replace(" ", "")
+    with open(PICTURE_FOLDER + temp_picture, "wb") as f:
+        f.write(picture.file.read())
+        json_object["picture"] = DOMAIN_FILE_URL + '/files/' + json_object["picture"]
+    with open(BANK_FOLDER + temp_bank, "wb") as f:
+        f.write(bank_book_photo.file.read())
+        json_object["bank_book_photo"] = DOMAIN_FILE_URL + '/files/' + json_object["bank_book_photo"]
+    with open(CARD_FOLDER + temp_card, "wb") as f:
+        f.write(id_card.file.read())
+        json_object["id_card"] = DOMAIN_FILE_URL + '/files/' + json_object["id_card"]
+    return repositoriesDB.insert(json_object=json_object)
 
 
-def signup_user_db(json_object={}):
+def signup_user_db(json_object={}, picture=None, bank_book_photo=None, id_card=None):
     if "email" not in json_object:
         raise_error(str=EMAIL_MUST_FILL)
     if "password" not in json_object:
@@ -92,12 +104,25 @@ def signup_user_db(json_object={}):
     if 'role' not in json_object:
         json_object["role"] = 'student'
     json_object["token"] = str(uuid.uuid4())
-
     existing_account = repositoriesDB.find_by_email(email=json_object["email"], to_model=True)
 
     if existing_account is not None:
         raise_error(msg='Email sudah terdaftar')
-
+    if picture is not None:
+        temp_picture = str(uuid.uuid4()) + picture.filename.replace(" ", "")
+        with open(PICTURE_FOLDER + temp_picture, "wb") as f:
+            f.write(picture.file.read())
+            json_object["picture"] = DOMAIN_FILE_URL + '/files/' + temp_picture
+    if bank_book_photo is not None:
+        temp_bank = str(uuid.uuid4()) + bank_book_photo.filename.replace(" ", "")
+        with open(BANK_FOLDER + temp_bank, "wb") as f:
+            f.write(bank_book_photo.file.read())
+            json_object["bank_book_photo"] = DOMAIN_FILE_URL + '/files/' + temp_bank
+    if id_card is not None:
+        temp_card = str(uuid.uuid4()) + id_card.filename.replace(" ", "")
+        with open(CARD_FOLDER + temp_card, "wb") as f:
+            f.write(id_card.file.read())
+            json_object["id_card"] = DOMAIN_FILE_URL + '/files/' + temp_card
     json_object["new_password"] = json_object["password"]
     return repositoriesDB.signup(json_object=json_object)
 
@@ -126,12 +151,27 @@ def find_user_db_by_token(token="", to_model=False):
     return repositoriesDB.find_by_token(token=token, to_model=to_model)
 
 
-def update_profile_id_user_db(json_object={}):
+def update_profile_id_user_db(json_object={}, picture=None, bank_book_photo=None, id_card=None):
     if json_object is None:
         raise_error('payload data is empty')
     account = find_user_db_by_id(id=json_object["id"], to_model=True)
     if account is None:
         raise_error(msg="akun tidak ditemukan")
+    if picture is not None:
+        temp_picture = str(uuid.uuid4()) + picture.filename.replace(" ", "")
+        with open(PICTURE_FOLDER + temp_picture, "wb") as f:
+            f.write(picture.file.read())
+            json_object["picture"] = DOMAIN_FILE_URL + '/files/' + temp_picture
+    if bank_book_photo is not None:
+        temp_bank = str(uuid.uuid4()) + bank_book_photo.filename.replace(" ", "")
+        with open(BANK_FOLDER + temp_bank, "wb") as f:
+            f.write(bank_book_photo.file.read())
+            json_object["bank_book_photo"] = DOMAIN_FILE_URL + '/files/' + temp_bank
+    if id_card is not None:
+        temp_card = str(uuid.uuid4()) + id_card.filename.replace(" ", "")
+        with open(CARD_FOLDER + temp_card, "wb") as f:
+            f.write(id_card.file.read())
+            json_object["id_card"] = DOMAIN_FILE_URL + '/files/' + temp_card
     return repositoriesDB.update_profile(json_object=json_object, to_model=False)
 
 
@@ -150,7 +190,12 @@ def get_profile_id_user_db(json_object={}):
     account = repositoriesDB.find_by_id(id=json_object["id"])
     if account is None:
         return
-    return account.to_response_profile()
+    account = account.to_response_profile()
+    from entitas.schedule.services import get_mytraining_student
+    from entitas.absent.services import get_all_absent_by_user_id
+    account['trainings'], _ = get_mytraining_student(user_id=json_object["id"], limit=0)
+    account['absents'] = get_all_absent_by_user_id(user_id=json_object["id"])
+    return account
 
 
 def get_profile_id_user_db_admin(id=0):
