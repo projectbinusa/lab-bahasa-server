@@ -42,6 +42,8 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
             data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
         elif item["field"] == "name":
             data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
+        elif item["field"] == "user_id":
+            data_in_db = data_in_db.filter(lambda d: item["value"] == d.user_id)
 
     total_record = data_in_db.count()
     if limit > 0:
