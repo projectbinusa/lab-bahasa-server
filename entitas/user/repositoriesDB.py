@@ -181,7 +181,20 @@ def insert(json_object={}, to_model=False):
             token=str(uuid.uuid4()),
             description=json_object['description'],
             nip=json_object['nip'],
-            tag=','.join(json_object['tag'])
+            tag=','.join(json_object['tag']),
+            position=json_object['position'],
+            agency=json_object['agency'],
+            work_unit=json_object['work_unit'],
+            city=json_object['city'],
+            rank=json_object['rank'],
+            npwp=json_object['npwp'],
+            bank_name=json_object['bank_name'],
+            bank_account=json_object['bank_account'],
+            bank_in_name=json_object['bank_in_name'],
+            bank_book_photo=json_object['bank_book_photo'],
+            id_card=json_object['id_card'],
+            signature=json_object['signature'],
+            last_education=json_object['last_education']
         )
         commit()
         if to_model:
@@ -199,6 +212,9 @@ def signup(json_object={}):
         json_object['nip'] = ''
     if 'tag' not in json_object:
         json_object['tag'] = ''
+    else:
+        tag = ",".join(json_object.get("tag").split(","))
+        json_object['tag'] = tag
     UserDB(
         address=json_object["address"],
         name=json_object["name"],
@@ -210,9 +226,11 @@ def signup(json_object={}):
         active=1,
         password=encrypt_string(json_object["new_password"]),
         token=str(uuid.uuid4()),
+        picture=json_object['picture'],
         description=json_object['description'],
         nip=json_object['nip'],
-        tag=','.join(json_object['tag']),
+        # tag=','.join(json_object['tag']),
+        tag=json_object['tag'],
         position=json_object['position'],
         agency=json_object['agency'],
         work_unit=json_object['work_unit'],
