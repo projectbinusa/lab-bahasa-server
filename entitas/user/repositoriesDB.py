@@ -194,7 +194,12 @@ def insert(json_object={}, to_model=False):
             bank_book_photo=json_object['bank_book_photo'],
             id_card=json_object['id_card'],
             signature=json_object['signature'],
-            last_education=json_object['last_education']
+            last_education=json_object['last_education'],
+            client_ID=json_object['client_ID'],
+            departemen=json_object['departemen'],
+            class_id=json_object['class_id'],
+            password_prompt=json_object['password_prompt'],
+            gender=json_object['gender']
         )
         commit()
         if to_model:
@@ -243,7 +248,12 @@ def signup(json_object={}):
         bank_book_photo=json_object['bank_book_photo'],
         id_card=json_object['id_card'],
         signature=json_object['signature'],
-        last_education=json_object['last_education']
+        last_education=json_object['last_education'],
+        client_ID=json_object['client_ID'],
+        departemen=json_object['departemen'],
+        class_id=json_object['class_id'],
+        password_prompt=json_object['password_prompt'],
+        gender=json_object['gender']
     )
     commit()
     return True
@@ -339,6 +349,16 @@ def update_profile(json_object=None, to_model=False):
             updated_user.signature = json_object['signature']
         if 'last_education' in json_object:
             updated_user.last_education = json_object['last_education']
+        if 'client_ID' in json_object:
+            updated_user.client_ID = json_object['client_ID']
+        if 'departemen' in json_object:
+            updated_user.departemen = json_object['departemen']
+        if 'class_id' in json_object:
+            updated_user.class_id = json_object['class_id']
+        if 'password_prompt' in json_object:
+            updated_user.password_prompt = json_object['password_prompt']
+        if 'gender' in json_object:
+            updated_user.gender = json_object['gender']
 
         commit()
         if to_model:
