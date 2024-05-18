@@ -177,22 +177,30 @@ def update_score(id=0, score=0):
         print("error ScheduleUser update_score: ", e)
     return
 
+
 @db_session
-def update_absent(schedule_id=0, user_id=0, json_object={}, to_model=False):
-    try:
-        updated_schedule_user = ScheduleUserDB[user_id]
-        updated_schedule_user.in_absent = json_object["in_absent"]
-        updated_schedule_user.out_absent = json_object["out_absent"]
-        commit()
-        if to_model:
-            return updated_schedule_user.to_model()
-        else:
-            print(updated_schedule_user.in_absent)
-            print(updated_schedule_user.out_absent)
-            return updated_schedule_user.to_model().to_response()
-    except Exception as e:
-        print("error ScheduleUser update_absent: ", e)
-        return None
+def update_absent_in(schedule_id=0, user_id=0, in_absent=None):
+    if in_absent is None:
+        return
+    data_in_dbs = select(s for s in ScheduleUserDB if s.schedule_id == schedule_id and s.user_id == user_id and s.in_absent is None)
+    if len(data_in_dbs) == 0:
+        return
+    for data_in_db in data_in_dbs:
+        data_in_db.in_absent = in_absent
+    commit()
+    return True
+
+@db_session
+def update_absent_out(schedule_id=0, user_id=0, out_absent=None):
+    if out_absent is None:
+        return
+    data_in_dbs = select(s for s in ScheduleUserDB if s.schedule_id == schedule_id and s.user_id == user_id and s.out_absent is None)
+    if len(data_in_dbs) == 0:
+        return
+    for data_in_db in data_in_dbs:
+        data_in_db.out_absent = out_absent
+    commit()
+    return True
 
 @db_session
 def get_score_by_id_schedule(schedule_id=None, schedule_user_id=None):

@@ -96,8 +96,8 @@ def update_schedule_user_db(json_object={}):
     print('ini json objectnya kakak ---------->', json_object)
     return repositoriesDB.update(json_object=json_object)
 
-def update_schedule_user_for_feeback(id=0, user_id=0, kritik='', saran=''):
-    schedule_user = repositoriesDB.find_by_id(id=id)
+def update_schedule_user_for_feeback(schedule_id=0, user_id=0, kritik='', saran=''):
+    schedule_user = repositoriesDB.find_by_schedule_id_and_user_id(schedule_id=schedule_id, user_id=json_object['user_id'])
     if schedule_user is None:
         raise_error('ID not found')
     if schedule_user.user_id != user_id:
@@ -159,6 +159,7 @@ def get_schedule_user_for_instructur(schedule_id=0, schedule_user_id=0):
     return repositoriesDB.get_score_by_id_schedule(schedule_id=schedule_id, schedule_user_id=schedule_user_id)
 
 
+
 def schedule_user_generate_certificate(filters=[]):
     from util.image_util import ImageUtil
     datas, _ = repositoriesDB.get_all_with_pagination(page=1, limit=0, filters=filters)
@@ -184,3 +185,9 @@ def update_schedule_user_by_schedule_id(schedule_id=0, user_id=0, json_object={}
     json_object["in_absent"] = json_object["in_absent"]
     json_object["out_absent"] = json_object["out"]
     return repositoriesDB.update_absent(user_id=user_id, json_object=json_object)
+
+def update_schedule_user_for_in_absen(schedule_id=0, user_id=0, in_absent=None):
+    return repositoriesDB.update_absent_in(schedule_id=schedule_id, user_id=user_id, in_absent=in_absent)
+
+def update_schedule_user_for_out_absen(schedule_id=0, user_id=0, out_absent=None):
+    return repositoriesDB.update_absent_out(schedule_id=schedule_id, user_id=user_id, out_absent=out_absent)

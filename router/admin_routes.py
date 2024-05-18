@@ -56,7 +56,7 @@ def admin_routes(api):
     api.add_route("/api/admin/schedule/{schedule_id}/instructur/{user_id}", ScheduleInstructurByIdWithScheduleIdResource())
     api.add_route("/api/admin/schedule/{schedule_id}/instructur", ScheduleInstructurByScheduleResource())
     api.add_route("/api/admin/schedule/{schedule_id}/user", ScheduleUserByScheduleResource())
-    api.add_route("/api/admin/schedule/{schedule_id}/user/{user_id}", ScheduleUserByIdWithScheduleIdResource())
+    # api.add_route("/api/admin/schedule/{schedule_id}/user/{user_id}", ScheduleUserByIdWithScheduleIdResource())
     api.add_route("/api/admin/schedule_instructur/{schedule_instructur_id}", ScheduleInstructurWithIdResource())
     api.add_route("/api/admin/schedule_instructur", ScheduleInstructurResource())
     api.add_route("/api/admin/calendar", AdminCalendarResource())
