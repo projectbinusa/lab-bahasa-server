@@ -33,9 +33,9 @@ class User:
             signature='',
             last_education='',
             client_ID='',
-            departemen='',
+            departement='',
             class_id=0,
-            password_promt='',
+            password_prompt='',
             gender='',
             created_date=None,
             updated_date=None,
@@ -72,9 +72,9 @@ class User:
         self.signature = signature
         self.last_education = last_education
         self.client_ID = client_ID
-        self.departemen = departemen
+        self.departement = departement
         self.class_id = class_id
-        self.password_promt = password_promt
+        self.password_prompt = password_prompt
         self.gender = gender
         self.created_date = created_date
         self.updated_date = updated_date
@@ -112,9 +112,9 @@ class User:
             "signature": self.signature,
             "last_education": self.last_education,
             "client_ID": self.client_ID,
-            "departemen": self.departemen,
+            "departement": self.departement,
             "class_id": self.class_id,
-            "password_promt": self.password_promt,
+            "password_prompt": self.password_prompt,
             "gender": self.gender,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
@@ -161,9 +161,9 @@ class User:
             "signature": self.signature,
             "last_education": self.last_education,
             "client_ID": self.client_ID,
-            "departemen": self.departemen,
+            "departement": self.departement,
             "class_id": self.class_id,
-            "password_promt": self.password_promt,
+            "password_prompt": self.password_prompt,
             "gender": self.gender
         }
 
@@ -199,9 +199,9 @@ class User:
             "signature": self.signature,
             "last_education": self.last_education,
             "client_ID": self.client_ID,
-            "departemen": self.departemen,
+            "departement": self.departement,
             "class_id": self.class_id,
-            "password_promt": self.password_promt,
+            "password_prompt": self.password_prompt,
             "gender": self.gender,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
@@ -225,4 +225,16 @@ class User:
             "position": self.position,
             "work_unit": self.work_unit,
             "city": self.city
+        }
+
+    def to_response_managements_list(self):
+        return {
+            "id": self.id,
+            "client_ID": self.client_ID,
+            "gender": self.gender,
+            "name": self.name,
+            "departement": self.departement,
+            "class_id": self.class_id,
+            "password_prompt": self.password_prompt,
+            "password": self.password,
         }

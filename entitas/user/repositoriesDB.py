@@ -78,6 +78,50 @@ def get_all_with_pagination(
     }
 
 @db_session
+def get_all_with_pagination_managements(
+    page=1,
+    limit=9,
+    to_model=False,
+    filters=[],
+    to_response="to_response",
+    name=None,
+):
+    result = []
+    total_record = 0
+    try:
+        data_in_db = select(s for s in UserDB).order_by(desc(UserDB.id))
+        for item in filters:
+            if item["field"] == "client_ID":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.client_ID)
+            elif item["field"] == "name":
+                data_in_db = data_in_db.filter(lambda d: d.name in item["value"])
+            elif item["field"] == "class_id":
+                data_in_db = data_in_db.filter(lambda d: d.class_id == item["value"])
+        if name:
+            data_in_db = data_in_db.filter(lambda d: d.name == name)
+        total_record = count(data_in_db)
+        total_record = data_in_db.count()
+        if limit > 0:
+            data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
+        else:
+            data_in_db = data_in_db
+        for item in data_in_db:
+            if to_model:
+                result.append(item.to_model())
+            else:
+                if to_response == "to_response_profile":
+                    result.append(item.to_model().to_response_profile())
+                else:
+                    result.append(item.to_model().to_response_managements_list())
+    except Exception as e:
+        print("error UserDB getAllWithPagination: ", e)
+    return result, {
+        "total": total_record,
+        "page": page,
+        "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
+    }
+
+@db_session
 def find_by_id(id=None):
     data_in_db = select(s for s in UserDB if s.id == id)
     if data_in_db.first() is None:
@@ -196,7 +240,7 @@ def insert(json_object={}, to_model=False):
             signature=json_object['signature'],
             last_education=json_object['last_education'],
             client_ID=json_object['client_ID'],
-            departemen=json_object['departemen'],
+            departement=json_object['departement'],
             class_id=json_object['class_id'],
             password_prompt=json_object['password_prompt'],
             gender=json_object['gender']
@@ -250,7 +294,7 @@ def signup(json_object={}):
         signature=json_object['signature'],
         last_education=json_object['last_education'],
         client_ID=json_object['client_ID'],
-        departemen=json_object['departemen'],
+        departement=json_object['departement'],
         class_id=json_object['class_id'],
         password_prompt=json_object['password_prompt'],
         gender=json_object['gender']
@@ -351,8 +395,8 @@ def update_profile(json_object=None, to_model=False):
             updated_user.last_education = json_object['last_education']
         if 'client_ID' in json_object:
             updated_user.client_ID = json_object['client_ID']
-        if 'departemen' in json_object:
-            updated_user.departemen = json_object['departemen']
+        if 'departement' in json_object:
+            updated_user.departement = json_object['departement']
         if 'class_id' in json_object:
             updated_user.class_id = json_object['class_id']
         if 'password_prompt' in json_object:

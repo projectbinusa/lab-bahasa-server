@@ -296,3 +296,19 @@ class AdminUserUserIdResource:
 
     def on_get(self, req, resp, instructur_id: int):
         resouce_response_api(resp=resp, data=services.find_user_db_by_id(id=int(instructur_id)))
+
+class ManagementListResource:
+    # auth = {
+    #     'auth_disabled': True
+    # }
+
+    def on_get(self, req, resp):
+        filters = generate_filters_resource(req=req, params_int=['id', 'class_id'], params_string=['name'])
+        # filters.append({"field": "class_id", "value": int()})
+        page = int(req.get_param("page", required=False, default=1))
+        limit = int(req.get_param("limit", required=False, default=9))
+        # filters = generate_filters_resource(req=req, params_string=['first_name', 'last_name', 'email',])
+        data, pagination = services.get_user_db_with_pagination_manage_list(
+            page=page, limit=limit, filters=filters
+        )
+        resouce_response_api(resp=resp, data=data, pagination=pagination)

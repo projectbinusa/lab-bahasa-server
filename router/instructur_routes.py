@@ -7,6 +7,7 @@ from entitas.assignment_user.resources import *
 from entitas.announcement.resources import *
 from entitas.log_book.resources import *
 from entitas.kelas_user.resources import *
+from entitas.user.resources import *
 
 
 def instructur_routes(api):
@@ -47,3 +48,4 @@ def instructur_routes(api):
     api.add_route("/api/instructur/schedule/{schedule_id}/logbook/{log_book_id}", LogBookWithIdResource())
     api.add_route("/api/instructur/class", KelasUserResource())
     api.add_route("/api/instructur/class/{class_id}", KelasUserWithIdResource())
+    api.add_route("/api/instructur/management_name_list", ManagementListResource())
