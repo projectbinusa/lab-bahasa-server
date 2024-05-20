@@ -22,7 +22,7 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
     result = []
     total_record = 0
     try:
-        data_in_db = select(s for s in TrainingDB)
+        data_in_db = select(s for s in TrainingDB).order_by(desc(TrainingDB.id))
         for item in filters:
             if item["field"] == "id":
                 data_in_db = data_in_db.filter(id=item['value'])
@@ -33,7 +33,7 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
             elif item["field"] == "training_ids":
                 data_in_db = data_in_db.filter(lambda d: d.id in item["value"])
 
-        data_in_db.order_by(desc(TrainingDB.id))
+        # data_in_db.order_by(desc(TrainingDB.id))
         total_record = data_in_db.count()
         if limit > 0:
             data_in_db = data_in_db.page(pagenum=page, pagesize=limit)

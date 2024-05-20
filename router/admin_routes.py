@@ -18,6 +18,7 @@ from entitas.echo.resources import *
 from entitas.material.resources import *
 from entitas.training.resources import *
 from entitas.instructur.resources import *
+from entitas.log_book.resources import *
 
 
 def admin_routes(api):
@@ -51,14 +52,18 @@ def admin_routes(api):
     api.add_route("/api/admin/training_material/{training_material_id}", TrainingMaterialWithIdResource())
     api.add_route("/api/admin/training_material", TrainingMaterialResource())
     api.add_route("/api/admin/absent", AdminAbsentResource())
-    api.add_route("/api/admin/training/{training_id}/material", TrainingMaterialWithTrainingIdResource())
+    api.add_route("/api/admin/training/{training_id}/material", AdminTrainingMaterialWithTrainingIdResource())
+    # api.add_route("/api/admin/training/{training_id}/material", TrainingMaterialWithTrainingIdResource())
     api.add_route("/api/admin/training/{training_id}/material/{material_id}", MaterialWithIdResource())
     api.add_route("/api/admin/schedule/{schedule_id}/instructur/{user_id}", ScheduleInstructurByIdWithScheduleIdResource())
     api.add_route("/api/admin/schedule/{schedule_id}/instructur", ScheduleInstructurByScheduleResource())
     api.add_route("/api/admin/schedule/{schedule_id}/user", ScheduleUserByScheduleResource())
-    api.add_route("/api/admin/schedule/{schedule_id}/user/{user_id}", ScheduleUserByIdWithScheduleIdResource())
+    api.add_route("/api/admin/schedule/{schedule_id}/participant", ScheduleUserByScheduleResource())
+    # api.add_route("/api/admin/schedule/{schedule_id}/user/{user_id}", ScheduleUserByIdWithScheduleIdResource())
     api.add_route("/api/admin/schedule_instructur/{schedule_instructur_id}", ScheduleInstructurWithIdResource())
     api.add_route("/api/admin/schedule_instructur", ScheduleInstructurResource())
     api.add_route("/api/admin/calendar", AdminCalendarResource())
     api.add_route("/api/admin/mytraining", AdminMytrainingResource())
     api.add_route("/api/admin/schedule/{schedule_id}/assignment", AdminCalendarScheduleAssignmentResource())
+    api.add_route("/api/admin/schedule/{schedule_id}/logbook", LogBookResource())
+    api.add_route("/api/admin/schedule/{schedule_id}/logbook/{log_book_id}", LogBookWithIdResource())

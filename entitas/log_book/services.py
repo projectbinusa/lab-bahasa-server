@@ -92,15 +92,21 @@ def update_log_book_by_schedule_id(schedule_id=0, id=0, json_object={}, user_id=
     if bukti_start is None or bukti_end is None:
         raise raise_error('File not found')
     # Handle bukti_start file
-    temp_file_start = str(uuid.uuid4()) + bukti_start.filename.replace(" ", "")
-    with open(LOG_BOOK_FOLDER + temp_file_start, "wb") as f:
-        f.write(bukti_start.file.read())
-    json_object["bukti_start"] = DOMAIN_FILE_URL + '/files/' + temp_file_start
+    if type(bukti_start) != type('abc'):
+        temp_file_start = str(uuid.uuid4()) + bukti_start.filename.replace(" ", "")
+        with open(LOG_BOOK_FOLDER + temp_file_start, "wb") as f:
+            f.write(bukti_start.file.read())
+        json_object["bukti_start"] = DOMAIN_FILE_URL + '/files/' + temp_file_start
+    else:
+        json_object["bukti_start"] = bukti_start
     # Handle bukti_end file
-    temp_file_end = str(uuid.uuid4()) + bukti_end.filename.replace(" ", "")
-    with open(LOG_BOOK_FOLDER + temp_file_end, "wb") as f:
-        f.write(bukti_end.file.read())
-    json_object["bukti_end"] = DOMAIN_FILE_URL + '/files/' + temp_file_end
+    if type(bukti_end) != type('abc'):
+        temp_file_end = str(uuid.uuid4()) + bukti_end.filename.replace(" ", "")
+        with open(LOG_BOOK_FOLDER + temp_file_end, "wb") as f:
+            f.write(bukti_end.file.read())
+        json_object["bukti_end"] = DOMAIN_FILE_URL + '/files/' + temp_file_end
+    else:
+        json_object["bukti_end"] = bukti_end
     json_object["id"] = log_book.id
     json_object["schedule_id"] = schedule_id
     if log_book.user_id != user_id:
