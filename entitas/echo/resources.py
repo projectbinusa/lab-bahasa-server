@@ -7,7 +7,7 @@ def my_500_error_decorator(func):
         try:
             func(*args)
         except Exception as e:
-            print('halooooo ',e)
+            print('my_500_error_decorator ',e)
             # resp.status = falcon.HTTP_500
             # resp.body = json.dumps({'status': 0, 'message': 'Server Error'})
         return wrapper

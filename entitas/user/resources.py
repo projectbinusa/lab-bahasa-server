@@ -25,7 +25,6 @@ class UserResource:
 
     def on_post(self, req, resp):
         picture = req.get_param("picture", default=None)
-        print('halo ---------->', picture)
         # signature = req.get_param("signature", default=None)
         bank_book_photo = req.get_param("bank_book_photo", default=None)
         id_card = req.get_param("id_card", default=None)
