@@ -63,7 +63,7 @@ class UserDB(db2.Entity):
     signature= Optional(str, nullable=True)
     last_education= Optional(str, nullable=True)
     client_ID= Optional(str, nullable=True)
-    departemen= Optional(str, nullable=True)
+    departement= Optional(str, nullable=True)
     class_id= Optional(str, nullable=True)
     password_prompt= Optional(str, nullable=True)
     gender= Optional(str, nullable=True)
@@ -104,7 +104,7 @@ class UserDB(db2.Entity):
         item.signature = self.signature
         item.last_education = self.last_education
         item.client_ID = self.client_ID
-        item.departemen = self.departemen
+        item.departement = self.departement
         item.class_id = self.class_id
         item.password_prompt = self.password_prompt
         item.gender = self.gender
