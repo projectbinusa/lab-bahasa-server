@@ -51,8 +51,7 @@ def insert_absent_db(json_object={}):
         raise_error("user not found")
     json_object['user_name'] = user.name
     if 'signature' not in json_object:
-        json_object['signature'] = ''
-
+        json_object['signature'] = json_object['url_file']
     repositoriesDB.insert(json_object=json_object)
     if json_object['status'] in [0, '0']:
         update_schedule_user_for_in_absen(schedule_id=schedule.id, user_id=user.id, in_absent=str(json_object['absent_date']))

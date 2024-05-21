@@ -31,6 +31,8 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
             elif item["field"] == "instructur_id":
                 data_in_db = data_in_db.filter(lambda d: item['value'] in d.instructur_id)
+            elif item["field"] == "schedule_id":
+                data_in_db = data_in_db.filter(schedule_id=item["value"])
             # elif item['field'] == "assignment_id":
             #     data_in_db = data_in_db.filter(lambda d: d.assignment_id in item["value"])
 
@@ -117,8 +119,8 @@ def insert(json_object={}, to_model=False):
             training_id=json_object["training_id"],
             instructur_id=json_object["instructur_id"],
             url_file=json_object["url_file"],
-            description=json_object["description"]
-            # score=json_object["score"],
+            description=json_object["description"],
+            schedule_id=json_object["schedule_id"]
             # comment=json_object["comment"],
         )
         commit()

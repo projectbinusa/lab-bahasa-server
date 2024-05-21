@@ -75,6 +75,10 @@ class InstructurCalendarScheduleParticipantGenerateCertificateResource:
         filters.append({'field': 'instructur_id', 'value': req.context['user']['id']})
         resouce_response_api(resp=resp, data=services.schedule_user_generate_certificate(filters=filters))
 
+class AdminCalendarScheduleParticipantGenerateUndanganResource:
+    def on_post(self, req, resp, schedule_id: int):
+        resouce_response_api(resp=resp, data=services.schedule_user_generate_undangan(schedule_id=schedule_id))
+
 class InstructurCalendarScheduleParticipantScoreResource:
     def on_put(self, req, resp, schedule_id: int, schedule_user_id: int):
         body = req.media
