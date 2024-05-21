@@ -331,8 +331,11 @@ def refresh_token_authorization(authorization=None):
     return jwt_encode(user_info=auth, type_token=TYPE_TOKEN_USER)
 
 
-def update_menage_name_list_dbdb(json_object={}):
-    return repositoriesDB.update_profile_menage_student_list(json_object=json_object)
+def update_menage_name_list_db(json_object={}):
+    return repositoriesDB.update_profile_manage_student_list(json_object=json_object)
+
+def create_profile_manage_student_list_service(json_object={}):
+    return repositoriesDB.create_profile_manage_student_list(json_object=json_object)
 
 
 def delete_management_name_list_by_id(id=0):
