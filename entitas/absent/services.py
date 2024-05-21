@@ -35,6 +35,18 @@ def upload_signature_user(file=None, user_id=0):
     json_object["url_file"] = DOMAIN_FILE_URL + '/files/' + json_object["filename"]
     return json_object
 
+def upload_file_admin(file=None, user_id=0):
+    if file is None:
+        raise_error('File not found')
+    temp_file = 'file' + str(user_id) + '_'+ str(uuid.uuid4()) + file.filename.replace(" ", "")
+    json_object = {}
+    json_object["filename"] = temp_file
+    with open(SIGNATURE_FOLDER + json_object['filename'], "wb") as f:
+        f.write(file.file.read())
+    json_object['user_id'] = user_id
+    json_object["url_file"] = DOMAIN_FILE_URL + '/files/' + json_object["filename"]
+    return json_object
+
 def insert_absent_db(json_object={}):
     from entitas.schedule.services import find_schedule_db_by_id
     from entitas.user.services import find_user_db_by_id

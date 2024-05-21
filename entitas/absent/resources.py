@@ -48,3 +48,8 @@ class AbsentWithIdSignatureResource:
     def on_post(self, req, resp):
         file = req.get_param("file")
         resouce_response_api(resp=resp, data=services.upload_signature_user(file=file, user_id=req.context['user']['id']))
+
+class AdminFileResource:
+    def on_post(self, req, resp):
+        file = req.get_param("file")
+        resouce_response_api(resp=resp, data=services.upload_file_admin(file=file, user_id=req.context['user']['id']))

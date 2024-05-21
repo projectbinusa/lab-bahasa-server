@@ -37,6 +37,7 @@ class User:
             class_id=0,
             password_prompt='',
             gender='',
+            bank_book_photo='',
             created_date=None,
             updated_date=None,
     ):
@@ -76,6 +77,7 @@ class User:
         self.class_id = class_id
         self.password_prompt = password_prompt
         self.gender = gender
+        self.bank_book_photo = bank_book_photo
         self.created_date = created_date
         self.updated_date = updated_date
 
@@ -92,7 +94,7 @@ class User:
             "picture": self.picture,
             "firebase_token": self.firebase_token,
             "ws_id": self.ws_id,
-            "activate": self.activate,
+            # "activate": self.activate,
             "last_login": str(self.last_login) if self.last_login is not None else None,
             "token": self.token,
             "description": self.description,
@@ -141,7 +143,7 @@ class User:
             "role": self.role,
             "birth_place": self.birth_place,
             "picture": self.picture,
-            "activate": self.activate,
+            # "activate": self.activate,
             "description": self.description,
             "last_login": str(self.last_login) if self.last_login is not None else None,
             "hp": self.hp,
@@ -156,7 +158,7 @@ class User:
             "bank_name": self.bank_name,
             "bank_account": self.bank_account,
             "bank_in_name": self.bank_in_name,
-            "bank_book_photo": self.bank_photo_book,
+            # "bank_book_photo": self.bank_photo_book,
             "id_card": self.id_card,
             "signature": self.signature,
             "last_education": self.last_education,
@@ -178,7 +180,7 @@ class User:
             "role": self.role,
             "birth_place": self.birth_place,
             "picture": self.picture,
-            "activate": self.activate,
+            # "activate": self.activate,
             "last_login": str(self.last_login) if self.last_login is not None else None,
             "hp": self.hp,
             "token": self.token,
