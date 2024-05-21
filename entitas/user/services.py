@@ -329,3 +329,7 @@ def refresh_token_authorization(authorization=None):
             description="Signature has expired",
             challenges=None)
     return jwt_encode(user_info=auth, type_token=TYPE_TOKEN_USER)
+
+def update_menage_name_list_dbdb(json_object={}):
+    return repositoriesDB.update_profile_menage_student_list(json_object=json_object)
+
