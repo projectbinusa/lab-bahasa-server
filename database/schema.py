@@ -694,7 +694,8 @@ class LogBookDB(db2.Entity):
 class KelasUserDB(db2.Entity):
     _table_ = "class_user"
     id = PrimaryKey(int, auto=True)
-    user_id = Optional(int, nullable=True)
+    description = Optional(str, nullable=True)
+    file = Optional(str, nullable=True)
     name = Optional(str, nullable=True)
     is_active = Optional(int, nullable=True)
     created_date = Optional(datetime, nullable=True)
@@ -703,7 +704,8 @@ class KelasUserDB(db2.Entity):
     def to_model(self):
         item = KelasUser()
         item.id = self.id
-        item.user_id = self.user_id
+        item.description = self.description
+        item.file = self.file
         item.is_active = self.is_active
         item.name = self.name
         item.created_date = self.created_date

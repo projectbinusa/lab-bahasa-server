@@ -42,8 +42,8 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
             data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
         elif item["field"] == "name":
             data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
-        elif item["field"] == "user_id":
-            data_in_db = data_in_db.filter(lambda d: item["value"] == d.user_id)
+        # elif item["field"] == "user_id":
+        #     data_in_db = data_in_db.filter(lambda d: item["value"] == d.user_id)
 
     total_record = data_in_db.count()
     if limit > 0:
@@ -130,8 +130,9 @@ def find_by_kelas_user_id_and_user_id(id=None, user_id=0):
 def update(json_object={}, to_model={}):
     try:
         updated_kelas_user = KelasUserDB[json_object["id"]]
-        updated_kelas_user.user_id = json_object["user_id"]
         updated_kelas_user.name = json_object["name"]
+        updated_kelas_user.description = json_object["description"]
+        updated_kelas_user.file = json_object["file"]
         commit()
         if to_model:
             print(updated_kelas_user.to_model())
@@ -174,8 +175,9 @@ def delete_by_id(id=None):
 def insert(json_object={}, to_model=False):
     try:
         new_kelas_user = KelasUserDB(
-            user_id=json_object["user_id"],
             name=json_object["name"],
+            description=json_object["description"],
+            file=json_object["file"],
             is_active=json_object["is_active"]
             # is_deleted = json_object["is_deleted"],
         )
