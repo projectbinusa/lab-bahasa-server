@@ -312,3 +312,43 @@ class ManagementListResource:
             page=page, limit=limit, filters=filters
         )
         resouce_response_api(resp=resp, data=data, pagination=pagination)
+
+    class ManagementListResource:
+        # auth = {
+        #     'auth_disabled': True
+        # }
+
+        def on_put(self, req, resp):
+            user_id = req.context["user"]["id"]
+            body = req.media
+            resouce_response_api(resp=resp, data=services.update_profile_manage_student_list(
+                user_id=user_id,
+                name=body.get("name"),
+                gender=body.get("gender"),
+                departement=body.get("departement"),
+                client_ID=body.get("client_ID"),
+                class_id=body.get("class_id"),
+                password=body.get("password"),
+                password_prompt=body.get("password_prompt")
+            ))
+
+    class ManagementListWithByIdResources:
+        # auth = {
+        #     'auth_disabled': True
+        # }
+
+        # def on_get(self, req, resp, user_id: int):
+        #     resouce_response_api(resp=resp, data=services.update_menage_name_list_db(
+        #         json_object={"id": user_id}
+        #     ))
+
+        def on_put(self, req, resp, user_id: int):
+            body = req.media
+            resouce_response_api(resp=resp, data=services.update_menage_name_list_db(
+                user_id=req.context['user_id']['id'], json_object=body
+            ))
+
+        def on_delete(self, req, resp, user_id: int):
+            resouce_response_api(resp=resp, data=services.delete_user_by_id(id=user_id))
+
+
