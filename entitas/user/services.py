@@ -23,6 +23,17 @@ def get_user_db_with_pagination(
         to_response=to_response,
     )
 
+def get_user_db_with_pagination_manage_list(
+        page=1, limit=9, name="", to_model=False, filters=[], to_response="to_response"
+):
+    return repositoriesDB.get_all_with_pagination_managements(
+        page=page,
+        limit=limit,
+        name=name,
+        to_model=to_model,
+        filters=filters,
+        to_response=to_response,
+    )
 
 def find_user_db_by_id(id=0, to_model=False):
     account = repositoriesDB.find_by_id(id=id)
