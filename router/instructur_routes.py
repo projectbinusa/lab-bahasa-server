@@ -49,3 +49,4 @@ def instructur_routes(api):
     api.add_route("/api/instructur/class", KelasUserResource())
     api.add_route("/api/instructur/class/{class_id}", KelasUserWithIdResource())
     api.add_route("/api/instructur/management_name_list", ManagementListResource())
+    api.add_route("/api/instructur/management_name_list/{management_name_list_id}", ManagementListWithByIdResources())

@@ -593,10 +593,6 @@ def get_all_with_pagination_managements(
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
 
-
-
-
-
 @db_session
 def update_profile_manage_student_list(json_object=None, to_model=False):
     try:
@@ -625,3 +621,13 @@ def update_profile_manage_student_list(json_object=None, to_model=False):
     except Exception as e:
         print("error UserDB update_profile: " + str(e))
         return
+
+@db_session
+def delete_management_name_list_by_id(id=None):
+    try:
+        UserDB[id].delete()
+        commit()
+        return True
+    except Exception as e:
+        print("error User delete: ", e)
+    return
