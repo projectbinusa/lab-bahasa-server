@@ -245,6 +245,7 @@ class Assignment_UserDB(db2.Entity):
     description = Optional(str, nullable=True)
     score = Optional(int, nullable=True)
     comment = Optional(str, nullable=True)
+    schedule_id = Optional(int, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -259,6 +260,7 @@ class Assignment_UserDB(db2.Entity):
         item.description = self.description
         item.score = self.score
         item.comment = self.comment
+        item.schedule_id = self.schedule_id
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item

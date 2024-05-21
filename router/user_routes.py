@@ -45,7 +45,7 @@ def user_routes(api):
     api.add_route("/api/user/mytraining/{schedule_id}/feedback", ScheduleUserWithIdFeedbackResource())
     api.add_route("/api/user/schedule_user", ScheduleUserResource())
     api.add_route("/api/user/calendar", UserCalendarResource())
-    api.add_route("/api/user/mytraining", UserMyTrainingResource())
+    api.add_route("/api/user/mytraining", UserCalendarResource())
     api.add_route("/api/user/calendar/{schedule_id}/assignment/{assignment_id}",
                   UserCalendarScheduleAssignmentByAssignmentIdResource())
     api.add_route("/api/user/training_user/{training_user_id}", TrainingUserWithIdResource())

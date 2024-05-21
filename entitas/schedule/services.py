@@ -9,12 +9,11 @@ def get_schedule_db_with_pagination(page=1, limit=9, filters=[], to_model=False)
     )
 
 def get_calendar(year='', month='', user_id=0):
+    from entitas.schedule_user.services import get_schedule_ids_by_user_id
     year = int(year) if year not in ['', '0'] else datetime.now().year
     month = int(month) if month not in ['', '0'] else datetime.now().month
     ids = []
-
     if user_id not in [None, 0]:
-        from entitas.schedule_user.services import get_schedule_ids_by_user_id
         ids = get_schedule_ids_by_user_id(user_id=user_id)
     return repositoriesDB.get_all_by_time(year=year, month=month, ids=ids)
 

@@ -3,8 +3,8 @@ from entitas.schedule_user.repositoriesDB import get_user_and_schedule_user_with
 from util.other_util import raise_error
 from entitas.schedule.services import find_schedule_db_by_id
 from entitas.user.repositoriesDB import find_by_id
-
-
+from threading import Thread
+from util.image_util import ImageUtil
 def get_schedule_user_db_with_pagination(page=1, limit=9, filters=[], to_model=False):
     return repositoriesDB.get_all_with_pagination(
         page=page, limit=limit, filters=filters, to_model=to_model
@@ -168,6 +168,29 @@ def schedule_user_generate_certificate(filters=[]):
         repositoriesDB.update_certificate(id=data['id'], certificate_url=imageUtil.write(text=data['user_name']))
     return True
 
+def schedule_user_generate_undangan(schedule_id=0):
+    from entitas.schedule.services import find_schedule_db_by_id
+    schedule = find_schedule_db_by_id(id=schedule_id, to_model=False)
+    if schedule is None:
+        raise_error('Schedule not found')
+    Thread(target=send_email_undangan_bulk, kwargs={"schedule_id": schedule_id, "schedule": schedule}).start()
+    return True
+
+def send_email_undangan_bulk(schedule_id=0, schedule=None):
+    from util.mail_service import MailService
+    from entitas.user.services import find_user_db_by_id
+    filters=[]
+    filters.append({'field': 'schedule_id', 'value': int(schedule_id)})
+    datas, _ = repositoriesDB.get_all_with_pagination(page=1, limit=0, filters=filters, to_model=True)
+    mail_service = MailService()
+    for data in datas:
+        user = find_user_db_by_id(id=data.user_id, to_model=True)
+        if user is not None:
+            user.email = 'candra@g2academy.co'
+            print('schedule --> ',schedule)
+            mail_service.send_email_undangan(receiver_email=user.email, data=schedule, subject=schedule['name'])
+
+
 def delete_schedule_user_by_schedule_id(schedule_id=0, id=0):
     schedule_user = find_schedule_user_db_by_id(id=id, to_model=True)
     if schedule_user is None:
@@ -187,7 +210,20 @@ def update_schedule_user_by_schedule_id(schedule_id=0, user_id=0, json_object={}
     return repositoriesDB.update_absent(user_id=user_id, json_object=json_object)
 
 def update_schedule_user_for_in_absen(schedule_id=0, user_id=0, in_absent=None):
+
+    schedule_user = repositoriesDB.find_by_schedule_id_and_user_id(schedule_id=schedule_id, user_id=user_id)
+    if schedule_user is None:
+        raise_error('Schedul user tidak ditemukan')
+    if schedule_user.certificate_url in [None, '', '-', ' ']:
+        imageUtil = ImageUtil()
+        repositoriesDB.update_certificate(id=schedule_user.id, certificate_url=imageUtil.write(text=schedule_user.user_name))
     return repositoriesDB.update_absent_in(schedule_id=schedule_id, user_id=user_id, in_absent=in_absent)
 
 def update_schedule_user_for_out_absen(schedule_id=0, user_id=0, out_absent=None):
+    schedule_user = repositoriesDB.find_by_schedule_id_and_user_id(schedule_id=schedule_id, user_id=user_id)
+    if schedule_user is None:
+        raise_error('Schedul user tidak ditemukan')
+    if schedule_user.certificate_url in [None, '', '-', ' ']:
+        imageUtil = ImageUtil()
+        repositoriesDB.update_certificate(id=schedule_user.id, certificate_url=imageUtil.write(text=schedule_user.user_name))
     return repositoriesDB.update_absent_out(schedule_id=schedule_id, user_id=user_id, out_absent=out_absent)
