@@ -68,3 +68,4 @@ def admin_routes(api):
     api.add_route("/api/admin/schedule/{schedule_id}/assignment", AdminCalendarScheduleAssignmentResource())
     api.add_route("/api/admin/schedule/{schedule_id}/logbook", LogBookResource())
     api.add_route("/api/admin/schedule/{schedule_id}/logbook/{log_book_id}", LogBookWithIdResource())
+    api.add_route("/api/admin/file", AdminFileResource())
