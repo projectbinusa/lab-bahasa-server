@@ -586,6 +586,15 @@ def get_all_with_pagination_managements(
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
 
+@db_session
+def delete_management_name_list_by_id(id=None):
+    try:
+        UserDB[id].delete()
+        commit()
+        return True
+    except Exception as e:
+        print("error User delete: ", e)
+    return
 
 @db_session
 def update_profile_manage_student_list(json_object=None, to_model=False):
@@ -600,29 +609,49 @@ def update_profile_manage_student_list(json_object=None, to_model=False):
         if "client_ID" in json_object:
             updated_user.student_id = json_object["client_ID"]
         if "class_id" in json_object:
-            updated_user.class_id = json_object["class_ID"]
+            updated_user.class_id = json_object["class_id"]
         if "password" in json_object:
-            updated_user.class_id = json_object["password"]
+            updated_user.password = json_object["password"]
         if "password_prompt" in json_object:
-            updated_user.class_id = json_object["password_prompt"]
+            updated_user.password_prompt = json_object["password_prompt"]
 
         commit()
 
         if to_model:
             return updated_user.to_model()
         else:
-            return updated_user.to_model().to_response_profile()
+            return updated_user.to_model().to_response_managements_list()
     except Exception as e:
         print("error UserDB update_profile: " + str(e))
         return
 
-
 @db_session
-def delete_management_name_list_by_id(id=None):
+def create_profile_manage_student_list(json_object=None, to_model=False):
     try:
-        UserDB[id].delete()
+        name = json_object.get("name")
+        gender = json_object.get("gender")
+        departement = json_object.get("departement")
+        client_ID = json_object.get("client_ID")
+        class_id = json_object.get("class_ID")
+        password = json_object.get("password")
+        password_prompt = json_object.get("password_prompt")
+
+        new_user = UserDB(
+            name=name,
+            gender=gender,
+            departement=departement,
+            client_ID=client_ID,
+            class_id=class_id,
+            password=password,
+            password_prompt=password_prompt
+        )
+
         commit()
-        return True
+
+        if to_model:
+            return new_user.to_model()
+        else:
+            return new_user.to_model().to_response_managements_list()
     except Exception as e:
-        print("error User delete: ", e)
-    return
+        print("error creating profile: " + str(e))
+        return None

@@ -310,16 +310,41 @@ class ManagementListResource:
     #     'auth_disabled': True
     # }
 
-    def on_get(self, req, resp):
-        filters = generate_filters_resource(req=req, params_int=['id', 'class_id'], params_string=['name'])
-        # filters.append({"field": "class_id", "value": int()})
-        page = int(req.get_param("page", required=False, default=1))
-        limit = int(req.get_param("limit", required=False, default=9))
-        # filters = generate_filters_resource(req=req, params_string=['first_name', 'last_name', 'email',])
-        data, pagination = services.get_user_db_with_pagination_manage_list(
-            page=page, limit=limit, filters=filters
-        )
-        resouce_response_api(resp=resp, data=data, pagination=pagination)
+def on_get(self, req, resp):
+    filters = generate_filters_resource(req=req, params_int=['id', 'class_id'], params_string=['name'])
+    # filters.append({"field": "class_id", "value": int()})
+    page = int(req.get_param("page", required=False, default=1))
+    limit = int(req.get_param("limit", required=False, default=9))
+    # filters = generate_filters_resource(req=req, params_string=['first_name', 'last_name', 'email',])
+    data, pagination = services.get_user_db_with_pagination_manage_list(
+        page=page, limit=limit, filters=filters
+    )
+    resouce_response_api(resp=resp, data=data, pagination=pagination)
+
+    def on_post(self, req, resp):
+        resouce_response_api(resp=resp,
+                             data=services.create_profile_manage_student_list_service(json_object=req.media))
+
+
+class ManagementListWithByIdResources:
+    # auth = {
+    #     'auth_disabled': True
+    # }
+
+    # def on_get(self, req, resp, user_id: int):
+    #     resouce_response_api(resp=resp, data=services.update_menage_name_list_db(
+    #         json_object={"id": user_id}
+    #     ))
+
+    def on_put(self, req, resp, manage_student_list_id):
+        body = req.media
+        body["id"] = int(manage_student_list_id)
+        resouce_response_api(resp=resp, data=services.update_menage_name_list_db(json_object=body
+        ))
+
+    def on_delete(self, req, resp, management_name_list_id: int):
+        resouce_response_api(resp=resp, data=services.delete_management_name_list_by_id(id=int(management_name_list_id)))
+
 
     class ManagementListResource:
         # auth = {
