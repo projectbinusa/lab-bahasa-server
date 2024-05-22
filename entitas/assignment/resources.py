@@ -45,7 +45,7 @@ class InstructurCalendarScheduleAssignmentResource:
         page = int(req.get_param("page", required=False, default=1))
         limit = int(req.get_param("limit", required=False, default=9))
         filters.append({'field': 'schedule_id', 'value': int(schedule_id)})
-        filters.append({'field': 'instructur_id', 'value': req.context['user']['id']})
+        # filters.append({'field': 'instructur_id', 'value': req.context['user']['id']})
         data, pagination = services.get_assignment_db_with_pagination(
             page=page, limit=limit, filters=filters
         )

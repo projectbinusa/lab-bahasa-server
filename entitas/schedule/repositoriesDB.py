@@ -97,6 +97,9 @@ def update(json_object={}, to_model=False):
         updated_schedule.other_link = json_object['other_link']
         updated_schedule.start_date = json_object["start_date"]
         updated_schedule.end_date = json_object["end_date"]
+        if 'program' in json_object:
+            updated_schedule.program = json_object["program"]
+
         if 'pic_wa' in json_object:
             updated_schedule.pic_wa = json_object['pic_wa']
         commit()
@@ -150,6 +153,8 @@ def insert(json_object={}, to_model=False):
             json_object['pic_wa'] = ''
             json_object['is_online'] = 0
             json_object['other_link'] = ''
+        if 'program' not in json_object:
+            json_object['program'] = ''
         new_schedule = ScheduleDB(
             name=json_object["name"],
             training_id=json_object["training_id"],
@@ -161,7 +166,8 @@ def insert(json_object={}, to_model=False):
             active=json_object["active"],
             start_date=json_object["start_date"],
             end_date=json_object["end_date"],
-            pic_wa=json_object['pic_wa']
+            pic_wa=json_object['pic_wa'],
+            program=json_object['program']
         )
         commit()
         if to_model:

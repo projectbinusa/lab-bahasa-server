@@ -1,0 +1,71 @@
+body {
+    padding-top: 2%;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+.block {
+    display: flex;
+    justify-content: center;
+    line-height: 50%;
+    gap: 3%
+}
+
+.medium {
+    font-weight: normal;
+}
+
+.tebal {
+    font-weight: bold;
+}
+
+.alamat {
+    margin-top: -1%;
+    line-height: 100%;
+}
+
+.block1 {
+    text-align: center;
+    display: block;
+    /* width: 75%; */
+}
+
+.logo {
+    width: 10%;
+}
+
+.garis {
+    font-weight: bold;
+    height: 3px;
+    background-color: black;
+    margin-top: 1%;
+}
+
+.block2 {
+    display: flex;
+    justify-content: center;
+    gap: 33.8%;
+    width: auto;
+}
+
+.sisi-kiri {
+    display: flex;
+    justify-content: flex-start;
+    gap: 20%;
+}
+
+.isi {
+    text-align: left;
+}
+
+.Penggerak {
+    margin-left: 8px;
+}
+
+.kotak {
+    display: flex;
+    gap: 3%;
+}
+.ketentuan {
+    margin-left: 10px;
+}

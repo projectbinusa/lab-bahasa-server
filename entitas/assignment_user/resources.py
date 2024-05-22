@@ -37,12 +37,13 @@ class UserCalendarScheduleAssignmentByAssignmentIdResource:
         body = {}
         body["assignment_id"] = int(assignment_id)
         body['description'] = req.get_param("description")
+        body['schedule_id'] = int(schedule_id)
         resouce_response_api(resp=resp, data=services.update_assignment_user(file=file, json_object=body, user_id=req.context['user']['id'], assignment_id=int(assignment_id)))
 
 class InstructurCalendarScheduleAssignmentByAssignmentIdUserResource:
     def on_get(self, req, resp, schedule_id: int, assignment_id: int):
         filters = generate_filters_resource(req=req, params_int=['id'], params_string=['name'])
-        filters.append({'field': 'instructur_id', 'value': req.context['user']['id']})
+        filters.append({'field': 'schedule_id', 'value': int(schedule_id)})
         filters.append({'field': 'assignment_id', 'value': int(assignment_id)})
         page = int(req.get_param("page", required=False, default=1))
         limit = int(req.get_param("limit", required=False, default=9))

@@ -51,11 +51,14 @@ def update_material_for_instructur(json_object={}, file=None, training_id=0, use
     material = repositoriesDB.find_by_id(id=json_object['id'])
     if material is None:
         raise_error("Material not found")
-    temp_file = str(uuid.uuid4()) + file.filename.replace(" ", "")
-    json_object["filename"] = temp_file
-    with open(MATERIAL_FOLDER+temp_file, "wb") as f:
-        f.write(file.file.read())
-    json_object["url_file"] = DOMAIN_FILE_URL + '/files/' + json_object["filename"]
+    if type(file) != type('abc'):
+        temp_file = str(uuid.uuid4()) + file.filename.replace(" ", "")
+        json_object["filename"] = temp_file
+        with open(MATERIAL_FOLDER+temp_file, "wb") as f:
+            f.write(file.file.read())
+        json_object["url_file"] = DOMAIN_FILE_URL + '/files/' + json_object["filename"]
+    else:
+        json_object["url_file"] = DOMAIN_FILE_URL + '/files/' + file
     repositoriesDB.update(json_object=json_object)
     update_training_materia_for_material_name_by_material_id(material_id=json_object['id'],
                                                              material_name=json_object['name'])
@@ -98,18 +101,33 @@ def get_material_by_training_id_for_instructor(page=1, limit=9, filters=[], trai
         page=page, limit=limit, filters=filters, to_model=to_model
     )
 
+def get_material_by_training_id_for_admin(page=1, limit=9, filters=[], training_id=0, to_model=False):
+    from entitas.schedule_user.services import get_schedule_ids_by_user_id
+    from entitas.schedule.services import get_training_ids_by_schedule_ids
+    from entitas.training_material.services import get_material_ids_by_training_id
+    # schedule_ids = get_schedule_ids_by_user_id(user_id=user_id)
+    # training_ids = get_training_ids_by_schedule_ids(schedule_ids=schedule_ids)
+    material_ids = get_material_ids_by_training_id(training_id=training_id)
+    # if material_ids is None:
+    #     raise_error("training not found")
+    # if training_id not in training_ids:
+    #     raise_error("have no access")
+    filters.append({'field': 'id', 'value': material_ids})
+    return repositoriesDB.get_all_with_pagination(
+        page=page, limit=limit, filters=filters, to_model=to_model
+    )
+
 def update_material_db(json_object={}, file=None):
-    if not json_object.get("other_link"):
-        if file is None:
-            raise_error('File not found')
+    if file is None:
+        raise_error('File not found')
+    if type(file) != type('abc'):
         temp_file = str(uuid.uuid4()) + file.filename.replace(" ", "")
         json_object["filename"] = temp_file
         with open(MATERIAL_FOLDER+temp_file, "wb") as f:
             f.write(file.file.read())
         json_object["url_file"] = DOMAIN_FILE_URL + '/files/' + json_object["filename"]
     else:
-        json_object["filename"] = json_object["other_link"]
-        json_object["url_file"] = ""
+        json_object["url_file"] = file
     return repositoriesDB.update(json_object=json_object)
 
 def insert_material_db(json_object={}, file=None):
