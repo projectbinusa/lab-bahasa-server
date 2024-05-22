@@ -1,6 +1,7 @@
 from datetime import date, datetime
 from pony.orm import *
 
+from entitas.kelas_user.models import KelasUser
 from entitas.log_book.models import LogBook
 from entitas.material.models import Material
 from entitas.absent.models import Absent
@@ -61,6 +62,11 @@ class UserDB(db2.Entity):
     id_card= Optional(str, nullable=True)
     signature= Optional(str, nullable=True)
     last_education= Optional(str, nullable=True)
+    client_ID= Optional(str, nullable=True)
+    departement= Optional(str, nullable=True)
+    class_id= Optional(int, nullable=True)
+    password_prompt= Optional(str, nullable=True)
+    gender= Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -91,10 +97,17 @@ class UserDB(db2.Entity):
         item.rank = self.rank
         item.npwp = self.npwp
         item.bank_name = self.bank_name
+        item.bank_in_name = self.bank_in_name
+        item.bank_account = self.bank_account
         item.bank_book_photo = self.bank_book_photo
         item.id_card = self.id_card
         item.signature = self.signature
         item.last_education = self.last_education
+        item.client_ID = self.client_ID
+        item.departement = self.departement
+        item.class_id = self.class_id
+        item.password_prompt = self.password_prompt
+        item.gender = self.gender
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
@@ -232,6 +245,7 @@ class Assignment_UserDB(db2.Entity):
     description = Optional(str, nullable=True)
     score = Optional(int, nullable=True)
     comment = Optional(str, nullable=True)
+    schedule_id = Optional(int, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -246,6 +260,7 @@ class Assignment_UserDB(db2.Entity):
         item.description = self.description
         item.score = self.score
         item.comment = self.comment
+        item.schedule_id = self.schedule_id
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
@@ -548,8 +563,8 @@ class ScheduleUserDB(db2.Entity):
     schedule_id = Optional(int, nullable=True)
     user_id = Optional(int, nullable=True)
     user_name = Optional(str, nullable=True)
-    in_absent = Optional(str, nullable=True)
-    out_absent = Optional(str, nullable=True)
+    in_absent = Optional(datetime, nullable=True)
+    out_absent = Optional(datetime, nullable=True)
     is_deleted = Optional(bool, nullable=True)
     score = Optional(int, nullable=True)
     certificate_url = Optional(str, nullable=True)
@@ -672,6 +687,27 @@ class LogBookDB(db2.Entity):
         item.training_proof_start = self.training_proof_start
         item.bukti_start = self.bukti_start
         item.bukti_end = self.bukti_end
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
+class KelasUserDB(db2.Entity):
+    _table_ = "class_user"
+    id = PrimaryKey(int, auto=True)
+    description = Optional(str, nullable=True)
+    file = Optional(str, nullable=True)
+    name = Optional(str, nullable=True)
+    is_active = Optional(int, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = KelasUser()
+        item.id = self.id
+        item.description = self.description
+        item.file = self.file
+        item.is_active = self.is_active
+        item.name = self.name
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item

@@ -94,8 +94,8 @@ def find_by_id(id=None):
 def update(json_object={}, to_model=False):
     try:
         updated_assignment = AssignmentDB[json_object["id"]]
-        updated_assignment.schedule_id = json_object["schedule_id"]
-        updated_assignment.instructur_id = json_object["instructur_id"]
+        # updated_assignment.schedule_id = json_object["schedule_id"]
+        # updated_assignment.instructur_id = json_object["instructur_id"]
         updated_assignment.name = json_object["name"]
         updated_assignment.description = json_object["description"]
         updated_assignment.max_date = json_object["max_date"]

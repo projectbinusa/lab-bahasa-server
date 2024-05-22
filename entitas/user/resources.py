@@ -24,7 +24,39 @@ class UserResource:
 
 
     def on_post(self, req, resp):
-        resouce_response_api(resp=resp, data=services.insert_user_db(json_object=req.media))
+        picture = req.get_param("picture", default=None)
+        # signature = req.get_param("signature", default=None)
+        bank_book_photo = req.get_param("bank_book_photo", default=None)
+        id_card = req.get_param("id_card", default=None)
+        body = {}
+        body['name'] = req.get_param("name")
+        body['email'] = req.get_param("email")
+        body['hp'] = req.get_param("hp")
+        body['password'] = req.get_param("password")
+        body['address'] = req.get_param("address")
+        body['agency'] = req.get_param("agency")
+        body['bank_account'] = req.get_param("bank_account")
+        # body['bank_book_photo'] = req.get_param("bank_book_photo")
+        body['bank_in_name'] = req.get_param("bank_in_name")
+        body['bank_name'] = req.get_param("bank_name")
+        body['birth_date'] = req.get_param("birth_date")
+        body['birth_place'] = req.get_param("birth_place")
+        body['city'] = req.get_param("city")
+        # body['id_card'] = req.get_param("id_card")
+        body['last_education'] = req.get_param("last_education")
+        body['client_ID'] = req.get_param("client_ID")
+        body['departement'] = req.get_param("departement")
+        body['class_id'] = req.get_param("class_id")
+        body['password_prompt'] = req.get_param("password_prompt")
+        body['gender'] = req.get_param("gender")
+        body['nip'] = req.get_param("nip")
+        body['npwp'] = req.get_param("npwp")
+        body['position'] = req.get_param("position")
+        body['rank'] = req.get_param("rank")
+        body['signature'] = req.get_param("signature")
+        body['tag'] = req.get_param("tag")
+        body['work_unit'] = req.get_param("work_unit")
+        resouce_response_api(resp=resp, data=services.insert_user_db(json_object=body, picture=picture, bank_book_photo=bank_book_photo, id_card=id_card))
 
 
 class UserWithIdResource:
@@ -68,7 +100,37 @@ class UserSignupResource:
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 
     def on_post(self, req, resp):
-        resouce_response_api(resp=resp, data=services.signup_user_db(json_object=req.media))
+        picture = req.get_param("picture", default=None)
+        # signature = req.get_param("signature", default=None)
+        bank_book_photo = req.get_param("bank_book_photo", default=None)
+        id_card = req.get_param("id_card", default=None)
+        body = {}
+        body['name'] = req.get_param("name")
+        body['email'] = req.get_param("email")
+        body['hp'] = req.get_param("hp")
+        body['password'] = req.get_param("password")
+        body['address'] = req.get_param("address")
+        body['agency'] = req.get_param("agency")
+        body['bank_account'] = req.get_param("bank_account")
+        body['bank_in_name'] = req.get_param("bank_in_name")
+        body['bank_name'] = req.get_param("bank_name")
+        body['birth_date'] = req.get_param("birth_date")
+        body['birth_place'] = req.get_param("birth_place")
+        body['city'] = req.get_param("city")
+        body['last_education'] = req.get_param("last_education")
+        body['client_ID'] = req.get_param("client_ID")
+        body['departement'] = req.get_param("departement")
+        body['class_id'] = req.get_param("class_id")
+        body['password_prompt'] = req.get_param("password_prompt")
+        body['gender'] = req.get_param("gender")
+        body['nip'] = req.get_param("nip")
+        body['npwp'] = req.get_param("npwp")
+        body['position'] = req.get_param("position")
+        body['rank'] = req.get_param("rank")
+        body['signature'] = req.get_param("signature")
+        body['tag'] = req.get_param("tag")
+        body['work_unit'] = req.get_param("work_unit")
+        resouce_response_api(resp=resp, data=services.signup_user_db(json_object=body, picture=picture, bank_book_photo=bank_book_photo, id_card=id_card))
 
 
 class UserUpdatePasswordWithResource:
@@ -96,10 +158,39 @@ class UserUpdateProfileWithIdResource:
 
 class AdminUserUpdateProfileWithIdResource:
     def on_put(self, req, resp, user_id: int):
-        body = req.media
+        picture = req.get_param("picture", default=None)
+        # signature = req.get_param("signature", default=None)
+        bank_book_photo = req.get_param("bank_book_photo", default=None)
+        id_card = req.get_param("id_card", default=None)
+        body = {}
         body["id"] = int(user_id)
-        resouce_response_api(resp=resp, data=services.update_profile_id_user_db(
-            json_object=body
+        body['name'] = req.get_param("name")
+        body['email'] = req.get_param("email")
+        body['hp'] = req.get_param("hp")
+        body['password'] = req.get_param("password")
+        body['address'] = req.get_param("address")
+        body['agency'] = req.get_param("agency")
+        body['bank_account'] = req.get_param("bank_account")
+        body['bank_in_name'] = req.get_param("bank_in_name")
+        body['bank_name'] = req.get_param("bank_name")
+        body['birth_date'] = req.get_param("birth_date")
+        body['birth_place'] = req.get_param("birth_place")
+        body['city'] = req.get_param("city")
+        body['last_education'] = req.get_param("last_education")
+        body['client_ID'] = req.get_param("client_ID")
+        body['departement'] = req.get_param("departement")
+        body['class_id'] = req.get_param("class_id")
+        body['password_prompt'] = req.get_param("password_prompt")
+        body['gender'] = req.get_param("gender")
+        body['nip'] = req.get_param("nip")
+        body['npwp'] = req.get_param("npwp")
+        body['position'] = req.get_param("position")
+        body['rank'] = req.get_param("rank")
+        body['signature'] = req.get_param("signature")
+        body['tag'] = req.get_param("tag")
+        body['work_unit'] = req.get_param("work_unit")
+        resouce_response_api(resp=resp, data=services.update_profile_id_user_by_admin(
+            json_object=body, picture=picture, bank_book_photo=bank_book_photo, id_card=id_card
         ))
 
     def on_get(self, req, resp, user_id: int):
@@ -205,3 +296,47 @@ class AdminUserUserIdResource:
 
     def on_get(self, req, resp, instructur_id: int):
         resouce_response_api(resp=resp, data=services.find_user_db_by_id(id=int(instructur_id)))
+
+class ManagementListResource:
+    # auth = {
+    #     'auth_disabled': True
+    # }
+
+def on_get(self, req, resp):
+    filters = generate_filters_resource(req=req, params_int=['id', 'class_id'], params_string=['name'])
+    # filters.append({"field": "class_id", "value": int()})
+    page = int(req.get_param("page", required=False, default=1))
+    limit = int(req.get_param("limit", required=False, default=9))
+    # filters = generate_filters_resource(req=req, params_string=['first_name', 'last_name', 'email',])
+    data, pagination = services.get_user_db_with_pagination_manage_list(
+        page=page, limit=limit, filters=filters
+    )
+    resouce_response_api(resp=resp, data=data, pagination=pagination)
+
+    def on_post(self, req, resp):
+        resouce_response_api(resp=resp,
+                             data=services.create_profile_manage_student_list_service(json_object=req.media))
+
+
+class ManagementListWithByIdResources:
+    # auth = {
+    #     'auth_disabled': True
+    # }
+
+    # def on_get(self, req, resp, user_id: int):
+    #     resouce_response_api(resp=resp, data=services.update_menage_name_list_db(
+    #         json_object={"id": user_id}
+    #     ))
+
+    def on_put(self, req, resp, manage_student_list_id):
+        body = req.media
+        body["id"] = int(manage_student_list_id)
+        resouce_response_api(resp=resp, data=services.update_menage_name_list_db(json_object=body
+        ))
+
+    def on_delete(self, req, resp, management_name_list_id: int):
+        resouce_response_api(resp=resp, data=services.delete_management_name_list_by_id(id=int(management_name_list_id)))
+
+
+
+

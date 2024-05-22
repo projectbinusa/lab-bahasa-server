@@ -9,12 +9,12 @@ class ImageUtil:
         self.location_name = (1039, 2033)
         self.location_date = (1080, 3033)
         self.fontScale = 9
-        self.color = (255, 0, 0)
-        self.thickness = 2
+        self.color = (0, 0, 0)
+        self.thickness = 10
         self.font = cv2.FONT_HERSHEY_SIMPLEX
 
 
-    def write(self, text = "Candra"):
+    def write(self, text = "-"):
         img = cv2.imread('./certificates/cert01.jpeg')
         add_space = ''
         for i in range(round((17-len(text))/2)):
