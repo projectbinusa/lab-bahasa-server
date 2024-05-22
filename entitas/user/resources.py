@@ -44,11 +44,11 @@ class UserResource:
         body['city'] = req.get_param("city")
         # body['id_card'] = req.get_param("id_card")
         body['last_education'] = req.get_param("last_education")
-        body['client_ID'] = req.get_param("client_ID")
-        body['departement'] = req.get_param("departement")
-        body['class_id'] = req.get_param("class_id")
-        body['password_prompt'] = req.get_param("password_prompt")
-        body['gender'] = req.get_param("gender")
+        # body['client_ID'] = req.get_param("client_ID")
+        # body['departemen'] = req.get_param("departemen")
+        # body['class_id'] = req.get_param("class_id")
+        # body['password_prompt'] = req.get_param("password_prompt")
+        # body['gender'] = req.get_param("gender")
         body['nip'] = req.get_param("nip")
         body['npwp'] = req.get_param("npwp")
         body['position'] = req.get_param("position")
@@ -118,11 +118,11 @@ class UserSignupResource:
         body['birth_place'] = req.get_param("birth_place")
         body['city'] = req.get_param("city")
         body['last_education'] = req.get_param("last_education")
-        body['client_ID'] = req.get_param("client_ID")
-        body['departement'] = req.get_param("departement")
-        body['class_id'] = req.get_param("class_id")
-        body['password_prompt'] = req.get_param("password_prompt")
-        body['gender'] = req.get_param("gender")
+        # body['client_ID'] = req.get_param("client_ID")
+        # body['departemen'] = req.get_param("departemen")
+        # body['class_id'] = req.get_param("class_id")
+        # body['password_prompt'] = req.get_param("password_prompt")
+        # body['gender'] = req.get_param("gender")
         body['nip'] = req.get_param("nip")
         body['npwp'] = req.get_param("npwp")
         body['position'] = req.get_param("position")
@@ -302,16 +302,16 @@ class ManagementListResource:
     #     'auth_disabled': True
     # }
 
-def on_get(self, req, resp):
-    filters = generate_filters_resource(req=req, params_int=['id', 'class_id'], params_string=['name'])
-    # filters.append({"field": "class_id", "value": int()})
-    page = int(req.get_param("page", required=False, default=1))
-    limit = int(req.get_param("limit", required=False, default=9))
-    # filters = generate_filters_resource(req=req, params_string=['first_name', 'last_name', 'email',])
-    data, pagination = services.get_user_db_with_pagination_manage_list(
-        page=page, limit=limit, filters=filters
-    )
-    resouce_response_api(resp=resp, data=data, pagination=pagination)
+    def on_get(self, req, resp):
+        filters = generate_filters_resource(req=req, params_int=['id', 'class_id'], params_string=['name'])
+        # filters.append({"field": "class_id", "value": int()})
+        page = int(req.get_param("page", required=False, default=1))
+        limit = int(req.get_param("limit", required=False, default=9))
+        # filters = generate_filters_resource(req=req, params_string=['first_name', 'last_name', 'email',])
+        data, pagination = services.get_user_db_with_pagination_manage_list(
+            page=page, limit=limit, filters=filters
+        )
+        resouce_response_api(resp=resp, data=data, pagination=pagination)
 
     def on_post(self, req, resp):
         resouce_response_api(resp=resp,

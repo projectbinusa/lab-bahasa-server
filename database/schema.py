@@ -512,6 +512,7 @@ class ScheduleDB(db2.Entity):
     start_date = Optional(datetime, nullable=True)
     end_date = Optional(datetime, nullable=True)
     pic_wa = Optional(str, nullable=True)
+    program = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -531,6 +532,7 @@ class ScheduleDB(db2.Entity):
         item.end_date = self.end_date
         item.is_finish = self.is_finish
         item.pic_wa = self.pic_wa
+        item.program = self.program
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item

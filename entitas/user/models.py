@@ -28,7 +28,6 @@ class User:
             bank_name='',
             bank_account='',
             bank_in_name='',
-            bank_photo_book='',
             id_card='',
             signature='',
             last_education='',
@@ -68,7 +67,7 @@ class User:
         self.bank_name = bank_name
         self.bank_account = bank_account
         self.bank_in_name = bank_in_name
-        self.bank_photo_book = bank_photo_book
+        self.bank_book_photo = bank_book_photo
         self.id_card = id_card
         self.signature = signature
         self.last_education = last_education
@@ -109,7 +108,7 @@ class User:
             "bank_name": self.bank_name,
             "bank_account": self.bank_account,
             "bank_in_name": self.bank_in_name,
-            "bank_book_photo": self.bank_photo_book,
+            "bank_book_photo": self.bank_book_photo,
             "id_card": self.id_card,
             "signature": self.signature,
             "last_education": self.last_education,
@@ -158,7 +157,7 @@ class User:
             "bank_name": self.bank_name,
             "bank_account": self.bank_account,
             "bank_in_name": self.bank_in_name,
-            # "bank_book_photo": self.bank_photo_book,
+            # "bank_book_photo": self.bank_book_photo,
             "id_card": self.id_card,
             "signature": self.signature,
             "last_education": self.last_education,
@@ -196,7 +195,7 @@ class User:
             "bank_name": self.bank_name,
             "bank_account": self.bank_account,
             "bank_in_name": self.bank_in_name,
-            "bank_book_photo": self.bank_photo_book,
+            "bank_book_photo": self.bank_book_photo,
             "id_card": self.id_card,
             "signature": self.signature,
             "last_education": self.last_education,
