@@ -239,3 +239,8 @@ class User:
             "password_prompt": self.password_prompt,
             "password": self.password,
         }
+    def to_response_guru(self):
+        return {
+            "email": self.email,
+            "password": self.password
+        }
