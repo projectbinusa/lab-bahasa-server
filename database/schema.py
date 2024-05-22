@@ -64,7 +64,7 @@ class UserDB(db2.Entity):
     last_education= Optional(str, nullable=True)
     client_ID= Optional(str, nullable=True)
     departement= Optional(str, nullable=True)
-    class_id= Optional(str, nullable=True)
+    class_id= Optional(int, nullable=True)
     password_prompt= Optional(str, nullable=True)
     gender= Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
