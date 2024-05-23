@@ -341,3 +341,7 @@ def create_profile_manage_student_list_service(json_object={}):
 def delete_management_name_list_by_id(id=0):
     return repositoriesDB.delete_management_name_list_by_id(id=id)
 
+
+def delete_management_name_list_by_id(id=0):
+    return repositoriesDB.delete_management_name_list_by_id(id=id)
+

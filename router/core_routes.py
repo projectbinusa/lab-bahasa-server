@@ -8,4 +8,4 @@ def core_routes(api):
     api.add_route("/api/test_error", TesstErrorResource())
     api.add_route("/api/test_env", TestEnvResource())
     api.add_route("/api/user/login", UserLoginResource())
-    api.add_route("/api/user/signup", UserSignupResource())
+    api.add_route("/api/user/signup", RegisterStudentResource())
