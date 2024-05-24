@@ -746,6 +746,7 @@ class QuestionDB(db2.Entity):
     score = Optional(int, nullable=True)
     answer_time_client = Optional(str, nullable=True)
     answer = Optional(str, 100000, nullable=True)
+    type = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -760,6 +761,7 @@ class QuestionDB(db2.Entity):
         item.score = self.score
         item.answer_time_client = self.answer_time_client
         item.answer = self.answer
+        item.type = self.type
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
