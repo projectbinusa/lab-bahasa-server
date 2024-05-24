@@ -3,6 +3,7 @@ from pony.orm import *
 
 from entitas.kelas_user.models import KelasUser
 from entitas.log_book.models import LogBook
+from entitas.login_limit.models import LoginLimits
 from entitas.material.models import Material
 from entitas.absent.models import Absent
 from entitas.assignment.models import Assignment
@@ -713,6 +714,23 @@ class KelasUserDB(db2.Entity):
         item.file = self.file
         item.is_active = self.is_active
         item.name = self.name
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
+class LoginLimitsDB(db2.Entity):
+    _table_ = "login_limits"
+    id = PrimaryKey(int, auto=True)
+    class_id = Optional(int, nullable=True)
+    end_time = Optional(str, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = LoginLimits()
+        item.id = self.id
+        item.class_id = self.class_id
+        item.end_time = self.end_time
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item

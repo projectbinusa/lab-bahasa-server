@@ -58,6 +58,11 @@ class UserResource:
         resouce_response_api(resp=resp, data=services.insert_user_db(json_object=body, picture=picture,
                                                                      bank_book_photo=bank_book_photo, id_card=id_card))
 
+class RegisterGuruResource:
+    auth = {"auth_disabled": True}
+    def on_post(self, req, resp):
+        resouce_response_api(resp=resp, data=services.register_guru(json_object=req.media))
+
 
 class UserWithIdResource:
 
