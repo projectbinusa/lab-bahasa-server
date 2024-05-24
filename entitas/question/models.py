@@ -10,6 +10,7 @@ class Question:
             score='',
             answer_time_client='',
             answer='',
+            type='',
             created_date=None,
             updated_date=None
     ):
@@ -22,6 +23,7 @@ class Question:
         self.score = score
         self.answer_time_client = answer_time_client
         self.answer = answer
+        self.type = type
         self.created_date = created_date
         self.updated_date = updated_date
 
@@ -36,6 +38,7 @@ class Question:
             "score": self.score,
             "answer_time_client": self.answer_time_client,
             "answer": self.answer,
+            "type": self.type,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None
         }
@@ -51,6 +54,7 @@ class Question:
             "score": self.score,
             "answer_time_client": self.answer_time_client,
             "answer": self.answer,
+            "type": self.type,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None
         }

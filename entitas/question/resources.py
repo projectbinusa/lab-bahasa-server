@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from entitas.question import services
 from util.entitas_util import generate_filters_resource, resouce_response_api
 
@@ -12,13 +14,23 @@ class QuestionResource:
         )
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 
+    # def on_post(self, req, resp):
+    #     resouce_response_api(resp=resp, data=services.insert_question_db(json_object=req.media))
+
     def on_post(self, req, resp):
-        resouce_response_api(resp=resp, data=services.insert_question_db(json_object=req.media))
+        json_object = req.media
+        resouce_response_api(resp=resp, data=services.insert_question_db(json_object=json_object))
 
 class QuestionWithIdResource:
     def on_put(self, req, resp, response_competition_id: int):
         body = req.media
         body["id"] = int(response_competition_id)
+        resouce_response_api(resp=resp, data=services.update_question_db(json_object=body))
+
+    def on_post(self, req, resp, response_competition_id: int):
+        body = req.media
+        body["id"] = int(response_competition_id)
+        body["updated_date"] = datetime.now()
         resouce_response_api(resp=resp, data=services.update_question_db(json_object=body))
 
     def on_delete(self, req, resp, response_competition_id: int):
