@@ -8,6 +8,7 @@ from entitas.announcement.resources import *
 from entitas.log_book.resources import *
 from entitas.kelas_user.resources import *
 from entitas.user.resources import *
+from entitas.question.resources import *
 
 
 def instructur_routes(api):
@@ -50,3 +51,5 @@ def instructur_routes(api):
     api.add_route("/api/instructur/class/{class_id}", KelasUserWithIdResource())
     api.add_route("/api/instructur/management_name_list", ManagementListResource())
     api.add_route("/api/instructur/management_name_list/{management_name_list_id}", ManagementListWithByIdResources())
+    api.add_route("/api/instructur/response_competition", QuestionResource())
+    api.add_route("/api/instructur/response_competition/{response_competition_id}", QuestionWithIdResource())
