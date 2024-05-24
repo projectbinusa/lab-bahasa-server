@@ -24,6 +24,7 @@ from entitas.training.models import Training
 from entitas.training_user.models import Training_user
 from entitas.user.models import User
 from entitas.training_material.models import Training_Material
+from entitas.question.models import Question
 from util.db_util import db2
 from config.config import DOMAIN_FILE_URL
 
@@ -712,6 +713,35 @@ class KelasUserDB(db2.Entity):
         item.file = self.file
         item.is_active = self.is_active
         item.name = self.name
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
+class QuestionDB(db2.Entity):
+    _table_ = "question"
+    id = PrimaryKey(int, auto=True)
+    think_time = Optional(str, nullable=True)
+    answer_time = Optional(str, nullable=True)
+    class_id = Optional(int, nullable=True)
+    user_id = Optional(int, nullable=True)
+    user_name = Optional(str, nullable=True)
+    score = Optional(int, nullable=True)
+    answer_time_client = Optional(str, nullable=True)
+    answer = Optional(str, 100000, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = Question()
+        item.id = self.id
+        item.think_time = self.think_time
+        item.answer_time = self.answer_time
+        item.class_id = self.class_id
+        item.user_id = self.user_id
+        item.user_name = self.user_name
+        item.score = self.score
+        item.answer_time_client = self.answer_time_client
+        item.answer = self.answer
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
