@@ -2,12 +2,13 @@ import uuid
 
 import falcon
 
+from entitas.login_limit.repositoriesDB import find_by_login_limits_id_and_class_id
 from entitas.user import repositoriesDB
 from util.constant import EMAIL_MUST_FILL, PASSWORD_MUST_FILL
 from util.entitas_util import *
 from util.jwt_util import jwt_encode, check_valid_email
 from util.other_util import encrypt_string, get_random_string, raise_error, raise_forbidden
-import datetime
+from datetime import datetime
 from config.config import TYPE_TOKEN_USER, PICTURE_FOLDER, DOMAIN_FILE_URL, BANK_FOLDER, CARD_FOLDER
 
 
@@ -143,20 +144,56 @@ def delete_user_by_id(id=0):
 
 
 def login_db(json_object={}, domain=""):
-    from util.jwt_util import jwt_encode
-
+    # Dapatkan informasi akun dari database
     account_info = repositoriesDB.post_login(json_object=json_object)
     if account_info is None:
         raise_forbidden('Email atau password tidak sesuai')
-
     if account_info.active == 0:
         raise_error("Email belum di aktivasi")
+    login_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    login_status = check_login_status(account_info, login_time)
+    account_info.last_login = login_time
     domain_result = ""
 
+    # Kemas informasi akun dan status login dalam respons
     account = account_info.to_response_login()
     account["domain"] = domain_result
+    account["comment"] = login_status
+
+    # Encode respons menggunakan JWT sebelum dikirimkan kembali ke pengguna
     return jwt_encode(account, TYPE_TOKEN_USER)
 
+
+def register_guru(json_object={}):
+    if "email" not in json_object:
+        raise_error(str=EMAIL_MUST_FILL)
+    if "password" not in json_object:
+        raise_error(str=PASSWORD_MUST_FILL)
+    if not check_valid_email(email=json_object["email"]):
+        raise_error(msg='Email tidak valid')
+    json_object["role"] = 'instructur'
+    json_object["token"] = str(uuid.uuid4())
+    existing_account = repositoriesDB.find_by_email(email=json_object["email"], to_model=True)
+    if existing_account is not None:
+        raise_error(msg='Email sudah terdaftar')
+
+    json_object["new_password"] = json_object["password"]
+    # json_object['parent_user_id'] = 0
+    return repositoriesDB.register(json_object=json_object)
+
+
+def check_login_status(user, last_login):
+    class_limit = find_by_login_limits_id_and_class_id(user.class_id)
+    if not class_limit:
+        return "No login limit set for this class"
+
+    end_time = class_limit.end_time
+    # Konversi login_time menjadi objek datetime
+    last_login = datetime.strptime(last_login, '%Y-%m-%d %H:%M:%S')
+    if last_login <= end_time:
+        return "Tepat waktu"
+    else:
+        return "Terlambat"
 
 def find_user_db_by_token(token="", to_model=False):
     return repositoriesDB.find_by_token(token=token, to_model=to_model)

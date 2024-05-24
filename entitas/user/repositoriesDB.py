@@ -308,27 +308,47 @@ def signup(json_object={}):
 
 @db_session
 def post_login(json_object={}):
-    # try:
-        print('encrypt_string(json_object["password"]) ------>',encrypt_string(json_object["password"]))
-        if json_object["email"] not in ["", "-"]:
-            account_db = UserDB.get(
-                email=json_object["email"],
-                password=encrypt_string(json_object["password"]),
-            )
-        else:
-            account_db = UserDB.get(
-                hp=json_object["hp"], password=encrypt_string(json_object["password"])
-            )
-        if account_db is not None:
-            account_db.token = str(uuid.uuid4())
-            account_db.last_login = datetime.now()
-            commit()
-            return account_db.to_model()
+    if json_object["email"] not in ["", "-"]:
+        account_db = UserDB.get(
+            email=json_object["email"],
+            password=encrypt_string(json_object["password"]),
+        )
+    else:
+        account_db = UserDB.get(
+            hp=json_object["hp"], password=encrypt_string(json_object["password"])
+        )
+
+    if account_db is not None:
+        account_db.token = str(uuid.uuid4())
+        account_db.last_login = datetime.now()
+        commit()
+        return account_db.to_model()
+
+    return None
+
 
     # except Exception as e:
     #     print("error UserDB post_login: ", e)
     # return None
 
+@db_session
+def register(json_object={}, to_model=False):
+    # try:
+    UserDB(
+        role=json_object["role"],
+        email=json_object["email"],
+        password=encrypt_string(json_object["new_password"]),
+        token=str(uuid.uuid4())
+    )
+    commit()
+    return True
+    #     commit()
+    #     if to_model:
+    #         return new_user.to_model()
+    #     else:
+    #         return new_user.to_model().to_response_guru_and_student()
+    # except Exception as e:
+    #     return None, "error Register insert: " + str(e)
 
 @db_session
 def find_by_token(token="", to_model=False):
@@ -448,7 +468,7 @@ def reset_token_by_token(token=None):
         commit()
         return True
     return
-
+#
 @db_session
 def find_by_email(email="", to_model=False):
     try:
@@ -527,14 +547,14 @@ def update_email_by_id(id=0, email=""):
     return
 
 
-@db_session
-def find_by_email(email="", to_model=False):
-    data_in_db = select(s for s in UserDB if s.email == email)
-    if data_in_db.first() is None:
-        return
-    if to_model:
-        return data_in_db.first().to_model()
-    return data_in_db.first().to_model().to_response()
+# @db_session
+# def find_by_email(email="", to_model=False):
+#     data_in_db = select(s for s in UserDB if s.email == email).first()
+#     if data_in_db.first() is None:
+#         return
+#     if to_model:
+#         return data_in_db.first().to_model()
+#     return data_in_db.first().to_model().to_response()
 
 @db_session
 def is_email_has_user(email=""):
