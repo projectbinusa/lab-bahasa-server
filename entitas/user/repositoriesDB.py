@@ -4,6 +4,7 @@ import uuid
 from datetime import datetime, timedelta
 
 from pony.orm import *
+from select import select
 
 from database.schema import UserDB
 from util.other_util import  raise_error
@@ -244,6 +245,7 @@ def insert(json_object={}, to_model=False):
             # class_id=json_object['class_id'],
             # password_prompt=json_object['password_prompt'],
             # gender=json_object['gender']
+            signed_time=json_object['signed_time']
         )
         commit()
         if to_model:
@@ -297,7 +299,8 @@ def signup(json_object={}):
         # departement=json_object['departement'],
         # class_id=json_object['class_id'],
         # password_prompt=json_object['password_prompt'],
-        # gender=json_object['gender']
+        # gender=json_object['gender'],
+        # signed_up=json_object['signed_up'],
     )
     commit()
     return True
@@ -305,27 +308,47 @@ def signup(json_object={}):
 
 @db_session
 def post_login(json_object={}):
-    # try:
-        print('encrypt_string(json_object["password"]) ------>',encrypt_string(json_object["password"]))
-        if json_object["email"] not in ["", "-"]:
-            account_db = UserDB.get(
-                email=json_object["email"],
-                password=encrypt_string(json_object["password"]),
-            )
-        else:
-            account_db = UserDB.get(
-                hp=json_object["hp"], password=encrypt_string(json_object["password"])
-            )
-        if account_db is not None:
-            account_db.token = str(uuid.uuid4())
-            account_db.last_login = datetime.now()
-            commit()
-            return account_db.to_model()
+    if json_object["email"] not in ["", "-"]:
+        account_db = UserDB.get(
+            email=json_object["email"],
+            password=encrypt_string(json_object["password"]),
+        )
+    else:
+        account_db = UserDB.get(
+            hp=json_object["hp"], password=encrypt_string(json_object["password"])
+        )
+
+    if account_db is not None:
+        account_db.token = str(uuid.uuid4())
+        account_db.last_login = datetime.now()
+        commit()
+        return account_db.to_model()
+
+    return None
+
 
     # except Exception as e:
     #     print("error UserDB post_login: ", e)
     # return None
 
+@db_session
+def register(json_object={}, to_model=False):
+    # try:
+    UserDB(
+        role=json_object["role"],
+        email=json_object["email"],
+        password=encrypt_string(json_object["new_password"]),
+        token=str(uuid.uuid4())
+    )
+    commit()
+    return True
+    #     commit()
+    #     if to_model:
+    #         return new_user.to_model()
+    #     else:
+    #         return new_user.to_model().to_response_guru_and_student()
+    # except Exception as e:
+    #     return None, "error Register insert: " + str(e)
 
 @db_session
 def find_by_token(token="", to_model=False):
@@ -393,16 +416,6 @@ def update_profile(json_object=None, to_model=False):
             updated_user.signature = json_object['signature']
         if 'last_education' in json_object:
             updated_user.last_education = json_object['last_education']
-        # if 'client_ID' in json_object:
-        #     updated_user.client_ID = json_object['client_ID']
-        # if 'departement' in json_object:
-        #     updated_user.departement = json_object['departement']
-        # if 'class_id' in json_object:
-        #     updated_user.class_id = json_object['class_id']
-        # if 'password_prompt' in json_object:
-        #     updated_user.password_prompt = json_object['password_prompt']
-        # if 'gender' in json_object:
-        #     updated_user.gender = json_object['gender']
 
         commit()
         if to_model:
@@ -455,7 +468,7 @@ def reset_token_by_token(token=None):
         commit()
         return True
     return
-
+#
 @db_session
 def find_by_email(email="", to_model=False):
     try:
@@ -534,14 +547,14 @@ def update_email_by_id(id=0, email=""):
     return
 
 
-@db_session
-def find_by_email(email="", to_model=False):
-    data_in_db = select(s for s in UserDB if s.email == email)
-    if data_in_db.first() is None:
-        return
-    if to_model:
-        return data_in_db.first().to_model()
-    return data_in_db.first().to_model().to_response()
+# @db_session
+# def find_by_email(email="", to_model=False):
+#     data_in_db = select(s for s in UserDB if s.email == email).first()
+#     if data_in_db.first() is None:
+#         return
+#     if to_model:
+#         return data_in_db.first().to_model()
+#     return data_in_db.first().to_model().to_response()
 
 @db_session
 def is_email_has_user(email=""):
@@ -593,6 +606,15 @@ def get_all_with_pagination_managements(
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
 
+@db_session
+def delete_management_name_list_by_id(id=None):
+    try:
+        UserDB[id].delete()
+        commit()
+        return True
+    except Exception as e:
+        print("error User delete: ", e)
+    return
 
 @db_session
 def update_profile_manage_student_list(json_object=None, to_model=False):
@@ -607,18 +629,49 @@ def update_profile_manage_student_list(json_object=None, to_model=False):
         if "client_ID" in json_object:
             updated_user.student_id = json_object["client_ID"]
         if "class_id" in json_object:
-            updated_user.class_id = json_object["class_ID"]
+            updated_user.class_id = json_object["class_id"]
         if "password" in json_object:
-            updated_user.class_id = json_object["password"]
+            updated_user.password = json_object["password"]
         if "password_prompt" in json_object:
-            updated_user.class_id = json_object["password_prompt"]
+            updated_user.password_prompt = json_object["password_prompt"]
 
         commit()
 
         if to_model:
             return updated_user.to_model()
         else:
-            return updated_user.to_model().to_response_profile()
+            return updated_user.to_model().to_response_managements_list()
     except Exception as e:
         print("error UserDB update_profile: " + str(e))
         return
+
+@db_session
+def create_profile_manage_student_list(json_object=None, to_model=False):
+    try:
+        name = json_object.get("name")
+        gender = json_object.get("gender")
+        departement = json_object.get("departement")
+        client_ID = json_object.get("client_ID")
+        class_id = json_object.get("class_ID")
+        password = json_object.get("password")
+        password_prompt = json_object.get("password_prompt")
+
+        new_user = UserDB(
+            name=name,
+            gender=gender,
+            departement=departement,
+            client_ID=client_ID,
+            class_id=class_id,
+            password=password,
+            password_prompt=password_prompt
+        )
+
+        commit()
+
+        if to_model:
+            return new_user.to_model()
+        else:
+            return new_user.to_model().to_response_managements_list()
+    except Exception as e:
+        print("error creating profile: " + str(e))
+        return None

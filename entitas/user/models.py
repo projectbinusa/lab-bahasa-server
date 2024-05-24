@@ -13,7 +13,7 @@ class User:
             firebase_token='',
             ws_id=0,
             activate='',
-            last_login='',
+            last_login=None,
             hp='',
             token='',
             description='',
@@ -36,6 +36,7 @@ class User:
             class_id=0,
             password_prompt='',
             gender='',
+            signed_time=None,
             bank_book_photo='',
             created_date=None,
             updated_date=None,
@@ -76,6 +77,7 @@ class User:
         self.class_id = class_id
         self.password_prompt = password_prompt
         self.gender = gender
+        self.signed_time = signed_time
         self.bank_book_photo = bank_book_photo
         self.created_date = created_date
         self.updated_date = updated_date
@@ -117,6 +119,7 @@ class User:
             "class_id": self.class_id,
             "password_prompt": self.password_prompt,
             "gender": self.gender,
+            "signed_time": str(self.signed_time) if self.signed_time is not None else None,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
@@ -165,7 +168,8 @@ class User:
             "departement": self.departement,
             "class_id": self.class_id,
             "password_prompt": self.password_prompt,
-            "gender": self.gender
+            "gender": self.gender,
+            "signed_time": self.signed_time
         }
 
     def to_response(self):
@@ -204,6 +208,7 @@ class User:
             "class_id": self.class_id,
             "password_prompt": self.password_prompt,
             "gender": self.gender,
+            "signed_time": str(self.signed_time) if self.signed_time is not None else None,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
@@ -238,4 +243,9 @@ class User:
             "class_id": self.class_id,
             "password_prompt": self.password_prompt,
             "password": self.password,
+        }
+    def to_response_guru(self):
+        return {
+            "email": self.email,
+            "password": self.password
         }

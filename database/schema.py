@@ -3,6 +3,7 @@ from pony.orm import *
 
 from entitas.kelas_user.models import KelasUser
 from entitas.log_book.models import LogBook
+from entitas.login_limit.models import LoginLimits
 from entitas.material.models import Material
 from entitas.absent.models import Absent
 from entitas.assignment.models import Assignment
@@ -24,6 +25,7 @@ from entitas.training.models import Training
 from entitas.training_user.models import Training_user
 from entitas.user.models import User
 from entitas.training_material.models import Training_Material
+from entitas.question.models import Question
 from util.db_util import db2
 from config.config import DOMAIN_FILE_URL
 
@@ -64,9 +66,10 @@ class UserDB(db2.Entity):
     last_education= Optional(str, nullable=True)
     client_ID= Optional(str, nullable=True)
     departement= Optional(str, nullable=True)
-    class_id= Optional(str, nullable=True)
+    class_id= Optional(int, nullable=True)
     password_prompt= Optional(str, nullable=True)
     gender= Optional(str, nullable=True)
+    signed_time= Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -108,6 +111,7 @@ class UserDB(db2.Entity):
         item.class_id = self.class_id
         item.password_prompt = self.password_prompt
         item.gender = self.gender
+        item.signed_time = self.signed_time
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
@@ -696,7 +700,8 @@ class LogBookDB(db2.Entity):
 class KelasUserDB(db2.Entity):
     _table_ = "class_user"
     id = PrimaryKey(int, auto=True)
-    user_id = Optional(int, nullable=True)
+    description = Optional(str, nullable=True)
+    file = Optional(str, nullable=True)
     name = Optional(str, nullable=True)
     is_active = Optional(int, nullable=True)
     created_date = Optional(datetime, nullable=True)
@@ -705,9 +710,56 @@ class KelasUserDB(db2.Entity):
     def to_model(self):
         item = KelasUser()
         item.id = self.id
-        item.user_id = self.user_id
+        item.description = self.description
+        item.file = self.file
         item.is_active = self.is_active
         item.name = self.name
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
+class LoginLimitsDB(db2.Entity):
+    _table_ = "login_limits"
+    id = PrimaryKey(int, auto=True)
+    class_id = Optional(int, nullable=True)
+    end_time = Optional(str, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = LoginLimits()
+        item.id = self.id
+        item.class_id = self.class_id
+        item.end_time = self.end_time
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
+class QuestionDB(db2.Entity):
+    _table_ = "question"
+    id = PrimaryKey(int, auto=True)
+    think_time = Optional(str, nullable=True)
+    answer_time = Optional(str, nullable=True)
+    class_id = Optional(int, nullable=True)
+    user_id = Optional(int, nullable=True)
+    user_name = Optional(str, nullable=True)
+    score = Optional(int, nullable=True)
+    answer_time_client = Optional(str, nullable=True)
+    answer = Optional(str, 100000, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = Question()
+        item.id = self.id
+        item.think_time = self.think_time
+        item.answer_time = self.answer_time
+        item.class_id = self.class_id
+        item.user_id = self.user_id
+        item.user_name = self.user_name
+        item.score = self.score
+        item.answer_time_client = self.answer_time_client
+        item.answer = self.answer
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
