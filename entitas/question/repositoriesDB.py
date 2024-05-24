@@ -58,7 +58,8 @@ def insert(json_object={}, to_model=False):
             user_name=json_object["user_name"],
             score=json_object["score"],
             answer_time_client=json_object["answer_time_client"],
-            answer=json_object["answer"]
+            answer=json_object["answer"],
+            type=json_object["type"]
         )
         commit()
         if to_model:
@@ -89,6 +90,8 @@ def update(json_object=None, to_model=False):
             updated_question.answer_time_client = json_object["answer_time_client"]
         if "answer" in json_object:
             updated_question.answer = json_object["answer"]
+        if "type" in json_object:
+            updated_question.type = json_object["type"]
 
         commit()
 
@@ -109,3 +112,10 @@ def delete_by_id(id=None):
     except Exception as e:
         print("error Question delete: ", e)
     return
+
+@db_session
+def find_question_by_id(id=None):
+    data_in_db = select(s for s in QuestionDB if s.id == id)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
