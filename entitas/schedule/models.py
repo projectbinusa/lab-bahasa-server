@@ -15,6 +15,7 @@ class Schedule:
             end_date='',
             is_finish=False,
             pic_wa='',
+            program='',
             created_date=None,
             updated_date=None,
     ):
@@ -32,6 +33,7 @@ class Schedule:
         self.end_date = end_date
         self.is_finish = is_finish
         self.pic_wa = pic_wa
+        self.program = program
         self.created_date = created_date
         self.updated_date = updated_date
 
@@ -52,6 +54,7 @@ class Schedule:
             "start_date": str(self.start_date) if self.start_date is not None else None,
             "end_date": str(self.end_date) if self.end_date is not None else None,
             "pic_wa": self.pic_wa,
+            "program": self.program,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
@@ -73,6 +76,7 @@ class Schedule:
             "start_date": str(self.start_date) if self.start_date is not None else None,
             "end_date": str(self.end_date) if self.end_date is not None else None,
             "pic_wa": self.pic_wa,
+            "program": self.program,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
@@ -94,6 +98,7 @@ class Schedule:
             "start_date": str(self.start_date) if self.start_date is not None else None,
             "end_date": str(self.end_date) if self.end_date is not None else None,
             "pic_wa": self.pic_wa,
+            "program": self.program,
             "day": self.start_date.day if self.start_date is not None else None,
             "hour": self.start_date.hour if self.start_date is not None else None
         }

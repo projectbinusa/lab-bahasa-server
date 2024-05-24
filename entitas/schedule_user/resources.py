@@ -17,16 +17,16 @@ class ScheduleUserResource:
 
 
 class ScheduleUserWithIdResource:
-    def on_get(self, req, resp, schedule_user_id: int):
-        resouce_response_api(resp=resp, data=services.find_schedule_user_for_student_by_id(schedule_id=int(schedule_user_id), user_id=req.context['user']['id']))
-
-    def on_put(self, req, resp, schedule_user_id: int):
-        body = req.media
-        body["id"] = int(schedule_user_id)
-        resouce_response_api(resp=resp, data=services.update_schedule_user_db(json_object=body))
-
-    def on_delete(self, req, resp, schedule_user_id: int):
-        resouce_response_api(resp=resp, data=services.delete_schedule_user_by_id(id=int(schedule_user_id)))
+    def on_get(self, req, resp, schedule_id: int):
+        resouce_response_api(resp=resp, data=services.find_schedule_user_for_student_by_id(schedule_id=int(schedule_id), user_id=req.context['user']['id']))
+    #
+    # def on_put(self, req, resp, schedule_id: int):
+    #     body = req.media
+    #     body["id"] = int(schedule_id)
+    #     resouce_response_api(resp=resp, data=services.update_schedule_user_db(json_object=body))
+    #
+    # def on_delete(self, req, resp, schedule_id: int):
+    #     resouce_response_api(resp=resp, data=services.delete_schedule_user_by_id(id=int(schedule_id)))
 
 
 class ScheduleUserByScheduleResource:
@@ -75,6 +75,10 @@ class InstructurCalendarScheduleParticipantGenerateCertificateResource:
         filters.append({'field': 'instructur_id', 'value': req.context['user']['id']})
         resouce_response_api(resp=resp, data=services.schedule_user_generate_certificate(filters=filters))
 
+class AdminCalendarScheduleParticipantGenerateUndanganResource:
+    def on_post(self, req, resp, schedule_id: int):
+        resouce_response_api(resp=resp, data=services.schedule_user_generate_undangan(schedule_id=schedule_id))
+
 class InstructurCalendarScheduleParticipantScoreResource:
     def on_put(self, req, resp, schedule_id: int, schedule_user_id: int):
         body = req.media
@@ -97,6 +101,6 @@ class InstructurCalendarScheduleParticipantConfirmedResource:
             confirmed=body['confirmed']))
 
 class ScheduleUserWithIdFeedbackResource:
-    def on_put(self, req, resp, schedule_user_id: int):
+    def on_put(self, req, resp, schedule_id: int):
         body = req.media
-        resouce_response_api(resp=resp, data=services.update_schedule_user_for_feeback(id=int(schedule_user_id), user_id=req.context['user']['id'], kritik=body['kritik'], saran=body['saran']))
+        resouce_response_api(resp=resp, data=services.update_schedule_user_for_feeback(schedule_id=int(schedule_id), user_id=req.context['user']['id'], kritik=body['kritik'], saran=body['saran']))

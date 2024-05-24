@@ -62,11 +62,11 @@ class UserDB(db2.Entity):
     id_card= Optional(str, nullable=True)
     signature= Optional(str, nullable=True)
     last_education= Optional(str, nullable=True)
-    clientID= Optional(str, nullable=True)
-    class_id= Optional(int, nullable=True)
-    sex= Optional(str, nullable=True)
+    client_ID= Optional(str, nullable=True)
     departement= Optional(str, nullable=True)
+    class_id= Optional(str, nullable=True)
     password_prompt= Optional(str, nullable=True)
+    gender= Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -103,11 +103,11 @@ class UserDB(db2.Entity):
         item.id_card = self.id_card
         item.signature = self.signature
         item.last_education = self.last_education
-        item.clientID = self.clientID
-        item.class_id = self.class_id
+        item.client_ID = self.client_ID
         item.departement = self.departement
-        item.sex = self.sex
+        item.class_id = self.class_id
         item.password_prompt = self.password_prompt
+        item.gender = self.gender
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
@@ -245,6 +245,7 @@ class Assignment_UserDB(db2.Entity):
     description = Optional(str, nullable=True)
     score = Optional(int, nullable=True)
     comment = Optional(str, nullable=True)
+    schedule_id = Optional(int, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -259,6 +260,7 @@ class Assignment_UserDB(db2.Entity):
         item.description = self.description
         item.score = self.score
         item.comment = self.comment
+        item.schedule_id = self.schedule_id
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
@@ -510,6 +512,7 @@ class ScheduleDB(db2.Entity):
     start_date = Optional(datetime, nullable=True)
     end_date = Optional(datetime, nullable=True)
     pic_wa = Optional(str, nullable=True)
+    program = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -529,6 +532,7 @@ class ScheduleDB(db2.Entity):
         item.end_date = self.end_date
         item.is_finish = self.is_finish
         item.pic_wa = self.pic_wa
+        item.program = self.program
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
@@ -561,8 +565,8 @@ class ScheduleUserDB(db2.Entity):
     schedule_id = Optional(int, nullable=True)
     user_id = Optional(int, nullable=True)
     user_name = Optional(str, nullable=True)
-    in_absent = Optional(str, nullable=True)
-    out_absent = Optional(str, nullable=True)
+    in_absent = Optional(datetime, nullable=True)
+    out_absent = Optional(datetime, nullable=True)
     is_deleted = Optional(bool, nullable=True)
     score = Optional(int, nullable=True)
     certificate_url = Optional(str, nullable=True)

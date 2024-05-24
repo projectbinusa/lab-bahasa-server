@@ -10,6 +10,7 @@ class Assignment_User:
             description= '',
             score= 0,
             comment= '',
+            schedule_id=0,
             created_date= None,
             updated_date= None,
     ):
@@ -22,6 +23,7 @@ class Assignment_User:
         self.description= description
         self.score= score
         self.comment= comment
+        self.schedule_id = schedule_id
         self.created_date= created_date
         self.updated_date= updated_date
 
@@ -36,6 +38,7 @@ class Assignment_User:
             "description": self.description,
             "score": self.score,
             "comment": self.comment,
+            "schedule_id": self.schedule_id,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
@@ -51,6 +54,7 @@ class Assignment_User:
             "description": self.description,
             "score": self.score,
             "comment": self.comment,
+            "schedule_id": self.schedule_id,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }

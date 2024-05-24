@@ -78,7 +78,8 @@ def update(json_object={}, to_model=False):
         updated_material = MaterialDB[json_object["id"]]
         updated_material.name = json_object["name"]
         updated_material.user_id = json_object["user_id"]
-        updated_material.filename = json_object["filename"]
+        if 'filename' in json_object:
+            updated_material.filename = json_object["filename"]
         updated_material.description = json_object["description"]
         updated_material.url_file = json_object["url_file"]
         updated_material.other_link = json_object["other_link"]

@@ -1,5 +1,5 @@
 class User:
-    def __init__(
+    def init(
             self,
             id=0,
             name='',
@@ -28,19 +28,15 @@ class User:
             bank_name='',
             bank_account='',
             bank_in_name='',
-            bank_photo_book='',
             id_card='',
             signature='',
             last_education='',
-            url_file='',
-            filename='',
-            clientID='',
-            class_id=0,
-            class_name='',
+            client_ID='',
             departement='',
-            sex='',
+            class_id=0,
             password_prompt='',
-            comment='',
+            gender='',
+            bank_book_photo='',
             created_date=None,
             updated_date=None,
     ):
@@ -71,19 +67,16 @@ class User:
         self.bank_name = bank_name
         self.bank_account = bank_account
         self.bank_in_name = bank_in_name
-        self.bank_photo_book = bank_photo_book
+        self.bank_book_photo = bank_book_photo
         self.id_card = id_card
         self.signature = signature
         self.last_education = last_education
-        self.url_file = url_file
-        self.filename = filename
-        self.clientID = clientID
-        self.class_id = class_id
-        self.class_name = class_name
-        self.sex = sex
+        self.client_ID = client_ID
         self.departement = departement
+        self.class_id = class_id
         self.password_prompt = password_prompt
-        self.comment = comment
+        self.gender = gender
+        self.bank_book_photo = bank_book_photo
         self.created_date = created_date
         self.updated_date = updated_date
 
@@ -100,7 +93,7 @@ class User:
             "picture": self.picture,
             "firebase_token": self.firebase_token,
             "ws_id": self.ws_id,
-            "activate": self.activate,
+            # "activate": self.activate,
             "last_login": str(self.last_login) if self.last_login is not None else None,
             "token": self.token,
             "description": self.description,
@@ -115,23 +108,18 @@ class User:
             "bank_name": self.bank_name,
             "bank_account": self.bank_account,
             "bank_in_name": self.bank_in_name,
-            "bank_book_photo": self.bank_photo_book,
+            "bank_book_photo": self.bank_book_photo,
             "id_card": self.id_card,
             "signature": self.signature,
             "last_education": self.last_education,
-            "filename": self.filename,
-            "url_file": self.url_file,
-            "clientID": self.clientID,
-            "class_id": self.class_id,
-            "class_name": self.class_name,
+            "client_ID": self.client_ID,
             "departement": self.departement,
-            "sex": self.sex,
-            "comment": self.comment,
+            "class_id": self.class_id,
             "password_prompt": self.password_prompt,
+            "gender": self.gender,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
-
     def to_response_login(self):
         return {
             "id": self.id,
@@ -154,7 +142,7 @@ class User:
             "role": self.role,
             "birth_place": self.birth_place,
             "picture": self.picture,
-            "activate": self.activate,
+            # "activate": self.activate,
             "description": self.description,
             "last_login": str(self.last_login) if self.last_login is not None else None,
             "hp": self.hp,
@@ -169,12 +157,15 @@ class User:
             "bank_name": self.bank_name,
             "bank_account": self.bank_account,
             "bank_in_name": self.bank_in_name,
-            "bank_book_photo": self.bank_photo_book,
+            # "bank_book_photo": self.bank_book_photo,
             "id_card": self.id_card,
             "signature": self.signature,
-            "url_file": self.url_file,
-            "filename": self.filename,
-            "last_education": self.last_education
+            "last_education": self.last_education,
+            "client_ID": self.client_ID,
+            "departement": self.departement,
+            "class_id": self.class_id,
+            "password_prompt": self.password_prompt,
+            "gender": self.gender
         }
 
     def to_response(self):
@@ -188,7 +179,7 @@ class User:
             "role": self.role,
             "birth_place": self.birth_place,
             "picture": self.picture,
-            "activate": self.activate,
+            # "activate": self.activate,
             "last_login": str(self.last_login) if self.last_login is not None else None,
             "hp": self.hp,
             "token": self.token,
@@ -204,19 +195,15 @@ class User:
             "bank_name": self.bank_name,
             "bank_account": self.bank_account,
             "bank_in_name": self.bank_in_name,
-            "bank_book_photo": self.bank_photo_book,
+            "bank_book_photo": self.bank_book_photo,
             "id_card": self.id_card,
             "signature": self.signature,
             "last_education": self.last_education,
-            "filename": self.filename,
-            "url_file": self.url_file,
-            "clientID": self.clientID,
-            "class_id": self.class_id,
-            "class_name": self.class_name,
+            "client_ID": self.client_ID,
             "departement": self.departement,
-            "sex": self.sex,
+            "class_id": self.class_id,
             "password_prompt": self.password_prompt,
-            "comment": self.comment,
+            "gender": self.gender,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
@@ -239,4 +226,16 @@ class User:
             "position": self.position,
             "work_unit": self.work_unit,
             "city": self.city
+        }
+
+    def to_response_managements_list(self):
+        return {
+            "id": self.id,
+            "client_ID": self.client_ID,
+            "gender": self.gender,
+            "name": self.name,
+            "departement": self.departement,
+            "class_id": self.class_id,
+            "password_prompt": self.password_prompt,
+            "password": self.password,
         }

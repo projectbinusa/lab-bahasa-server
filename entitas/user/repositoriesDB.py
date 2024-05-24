@@ -78,6 +78,50 @@ def get_all_with_pagination(
     }
 
 @db_session
+def get_all_with_pagination_managements(
+    page=1,
+    limit=9,
+    to_model=False,
+    filters=[],
+    to_response="to_response",
+    name=None,
+):
+    result = []
+    total_record = 0
+    try:
+        data_in_db = select(s for s in UserDB).order_by(desc(UserDB.id))
+        for item in filters:
+            if item["field"] == "client_ID":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.client_ID)
+            elif item["field"] == "name":
+                data_in_db = data_in_db.filter(lambda d: d.name in item["value"])
+            elif item["field"] == "class_id":
+                data_in_db = data_in_db.filter(lambda d: d.class_id == item["value"])
+        if name:
+            data_in_db = data_in_db.filter(lambda d: d.name == name)
+        total_record = count(data_in_db)
+        total_record = data_in_db.count()
+        if limit > 0:
+            data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
+        else:
+            data_in_db = data_in_db
+        for item in data_in_db:
+            if to_model:
+                result.append(item.to_model())
+            else:
+                if to_response == "to_response_profile":
+                    result.append(item.to_model().to_response_profile())
+                else:
+                    result.append(item.to_model().to_response_managements_list())
+    except Exception as e:
+        print("error UserDB getAllWithPagination: ", e)
+    return result, {
+        "total": total_record,
+        "page": page,
+        "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
+    }
+
+@db_session
 def find_by_id(id=None):
     data_in_db = select(s for s in UserDB if s.id == id)
     if data_in_db.first() is None:
@@ -194,7 +238,12 @@ def insert(json_object={}, to_model=False):
             bank_book_photo=json_object['bank_book_photo'],
             id_card=json_object['id_card'],
             signature=json_object['signature'],
-            last_education=json_object['last_education']
+            last_education=json_object['last_education'],
+            # client_ID=json_object['client_ID'],
+            # departement=json_object['departement'],
+            # class_id=json_object['class_id'],
+            # password_prompt=json_object['password_prompt'],
+            # gender=json_object['gender']
         )
         commit()
         if to_model:
@@ -243,7 +292,12 @@ def signup(json_object={}):
         bank_book_photo=json_object['bank_book_photo'],
         id_card=json_object['id_card'],
         signature=json_object['signature'],
-        last_education=json_object['last_education']
+        last_education=json_object['last_education'],
+        # client_ID=json_object['client_ID'],
+        # departement=json_object['departement'],
+        # class_id=json_object['class_id'],
+        # password_prompt=json_object['password_prompt'],
+        # gender=json_object['gender']
     )
     commit()
     return True
@@ -310,7 +364,9 @@ def update_profile(json_object=None, to_model=False):
         if 'nip' in json_object:
             updated_user.nip = json_object['nip']
         if 'tag' in json_object:
-            updated_user.tag = ','.join(json_object['tag'])
+            tag = ",".join(json_object.get("tag").split(","))
+            json_object['tag'] = tag
+            updated_user.tag = json_object['tag']
         if 'position' in json_object:
             updated_user.position = json_object['position']
         if 'agency' in json_object:
@@ -337,6 +393,16 @@ def update_profile(json_object=None, to_model=False):
             updated_user.signature = json_object['signature']
         if 'last_education' in json_object:
             updated_user.last_education = json_object['last_education']
+        # if 'client_ID' in json_object:
+        #     updated_user.client_ID = json_object['client_ID']
+        # if 'departement' in json_object:
+        #     updated_user.departement = json_object['departement']
+        # if 'class_id' in json_object:
+        #     updated_user.class_id = json_object['class_id']
+        # if 'password_prompt' in json_object:
+        #     updated_user.password_prompt = json_object['password_prompt']
+        # if 'gender' in json_object:
+        #     updated_user.gender = json_object['gender']
 
         commit()
         if to_model:
@@ -482,3 +548,77 @@ def is_email_has_user(email=""):
     if select(s for s in UserDB if s.email == email).count() > 0:
         return True
     return False
+
+@db_session
+def get_all_with_pagination_managements(
+    page=1,
+    limit=9,
+    to_model=False,
+    filters=[],
+    to_response="to_response",
+    name=None,
+):
+    result = []
+    total_record = 0
+    try:
+        data_in_db = select(s for s in UserDB).order_by(desc(UserDB.id))
+        for item in filters:
+            if item["field"] == "client_ID":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.client_ID)
+            elif item["field"] == "name":
+                data_in_db = data_in_db.filter(lambda d: d.name in item["value"])
+            elif item["field"] == "class_id":
+                data_in_db = data_in_db.filter(lambda d: d.class_id == item["value"])
+        if name:
+            data_in_db = data_in_db.filter(lambda d: d.name == name)
+        total_record = count(data_in_db)
+        total_record = data_in_db.count()
+        if limit > 0:
+            data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
+        else:
+            data_in_db = data_in_db
+        for item in data_in_db:
+            if to_model:
+                result.append(item.to_model())
+            else:
+                if to_response == "to_response_profile":
+                    result.append(item.to_model().to_response_profile())
+                else:
+                    result.append(item.to_model().to_response_managements_list())
+    except Exception as e:
+        print("error UserDB getAllWithPagination: ", e)
+    return result, {
+        "total": total_record,
+        "page": page,
+        "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
+    }
+
+
+@db_session
+def update_profile_manage_student_list(json_object=None, to_model=False):
+    try:
+        updated_user = UserDB[json_object["id"]]
+        if "name" in json_object:
+            updated_user.name = json_object["name"]
+        if "gender" in json_object:
+            updated_user.gender = json_object["gender"]
+        if "departement" in json_object:
+            updated_user.departement = json_object["departement"]
+        if "client_ID" in json_object:
+            updated_user.student_id = json_object["client_ID"]
+        if "class_id" in json_object:
+            updated_user.class_id = json_object["class_ID"]
+        if "password" in json_object:
+            updated_user.class_id = json_object["password"]
+        if "password_prompt" in json_object:
+            updated_user.class_id = json_object["password_prompt"]
+
+        commit()
+
+        if to_model:
+            return updated_user.to_model()
+        else:
+            return updated_user.to_model().to_response_profile()
+    except Exception as e:
+        print("error UserDB update_profile: " + str(e))
+        return
