@@ -10,6 +10,7 @@ from entitas.kelas_user.resources import *
 from entitas.user.resources import *
 from entitas.question.resources import *
 from entitas.login_limit.resources import *
+from entitas.whiteboard.resources import *
 
 
 def instructur_routes(api):
@@ -56,3 +57,5 @@ def instructur_routes(api):
     api.add_route("/api/instructur/response_competition/{response_competition_id}", QuestionWithIdResource())
     api.add_route("/api/instructur/class/{class_id}/login_limits", LoginLimitResource())
     api.add_route("/api/instructur/class/{class_id}/login_limits/{login_limits_id}", LoginLimitWithIdResource())
+    api.add_route("/api/instructur/whiteboard", WhiteboardResource())
+    api.add_route("/api/instructur/whiteboard/{whiteboard_id}", WhiteboardWithIdResource())

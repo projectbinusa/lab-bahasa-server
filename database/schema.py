@@ -26,6 +26,7 @@ from entitas.training_user.models import Training_user
 from entitas.user.models import User
 from entitas.training_material.models import Training_Material
 from entitas.question.models import Question
+from entitas.whiteboard.models import Whiteboard
 from util.db_util import db2
 from config.config import DOMAIN_FILE_URL
 
@@ -51,25 +52,25 @@ class UserDB(db2.Entity):
     description = Optional(str, 100000, nullable=True)
     nip = Optional(str, nullable=True)
     tag = Optional(str, nullable=True)
-    position= Optional(str, nullable=True)
-    agency= Optional(str, nullable=True)
-    work_unit= Optional(str, nullable=True)
-    city= Optional(str, nullable=True)
-    rank= Optional(str, nullable=True)
-    npwp= Optional(str, nullable=True)
-    bank_name= Optional(str, nullable=True)
-    bank_account= Optional(str, nullable=True)
-    bank_in_name= Optional(str, nullable=True)
-    bank_book_photo= Optional(str, nullable=True)
-    id_card= Optional(str, nullable=True)
-    signature= Optional(str, nullable=True)
-    last_education= Optional(str, nullable=True)
-    client_ID= Optional(str, nullable=True)
-    departement= Optional(str, nullable=True)
-    class_id= Optional(int, nullable=True)
-    password_prompt= Optional(str, nullable=True)
-    gender= Optional(str, nullable=True)
-    signed_time= Optional(str, nullable=True)
+    position = Optional(str, nullable=True)
+    agency = Optional(str, nullable=True)
+    work_unit = Optional(str, nullable=True)
+    city = Optional(str, nullable=True)
+    rank = Optional(str, nullable=True)
+    npwp = Optional(str, nullable=True)
+    bank_name = Optional(str, nullable=True)
+    bank_account = Optional(str, nullable=True)
+    bank_in_name = Optional(str, nullable=True)
+    bank_book_photo = Optional(str, nullable=True)
+    id_card = Optional(str, nullable=True)
+    signature = Optional(str, nullable=True)
+    last_education = Optional(str, nullable=True)
+    client_ID = Optional(str, nullable=True)
+    departement = Optional(str, nullable=True)
+    class_id = Optional(int, nullable=True)
+    password_prompt = Optional(str, nullable=True)
+    gender = Optional(str, nullable=True)
+    signed_time = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -455,6 +456,7 @@ class RoomDB(db2.Entity):
         item.updated_date = self.updated_date
         return item
 
+
 class AnnouncementDB(db2.Entity):
     _table_ = "announcement"
     id = PrimaryKey(int, auto=True)
@@ -500,6 +502,7 @@ class RoomUserDB(db2.Entity):
         item.updated_date = self.updated_date
         return item
 
+
 class ScheduleDB(db2.Entity):
     _table_ = "schedule"
     id = PrimaryKey(int, auto=True)
@@ -540,6 +543,7 @@ class ScheduleDB(db2.Entity):
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
+
 
 class ScheduleInstructurDB(db2.Entity):
     _table_ = "schedule_instructur"
@@ -662,6 +666,7 @@ class TrainingUserDB(db2.Entity):
         item.updated_date = self.updated_date
         return item
 
+
 class LogBookDB(db2.Entity):
     _table_ = "logbook"
     id = PrimaryKey(int, auto=True)
@@ -697,6 +702,7 @@ class LogBookDB(db2.Entity):
         item.updated_date = self.updated_date
         return item
 
+
 class KelasUserDB(db2.Entity):
     _table_ = "class_user"
     id = PrimaryKey(int, auto=True)
@@ -718,6 +724,7 @@ class KelasUserDB(db2.Entity):
         item.updated_date = self.updated_date
         return item
 
+
 class LoginLimitsDB(db2.Entity):
     _table_ = "login_limits"
     id = PrimaryKey(int, auto=True)
@@ -734,6 +741,7 @@ class LoginLimitsDB(db2.Entity):
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
+
 
 class QuestionDB(db2.Entity):
     _table_ = "question"
@@ -767,7 +775,27 @@ class QuestionDB(db2.Entity):
         return item
 
 
+class WhiteboardDB(db2.Entity):
+    _table_ = "whiteboard"
+    id = PrimaryKey(int, auto=True)
+    user_id = Optional(int, nullable=True)
+    username = Optional(str, nullable=True)
+    class_id = Optional(int, nullable=True)
+    class_name = Optional(str, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = Whiteboard()
+        item.id = self.id
+        item.user_id = self.user_id
+        item.username = self.username
+        item.class_id = self.class_id
+        item.class_name = self.class_name
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
+
 if db2.schema is None:
     db2.generate_mapping(create_tables=False)
-
-
