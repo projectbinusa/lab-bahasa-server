@@ -2,6 +2,8 @@ import uuid
 
 import falcon
 
+from entitas.kelas_user.repositoriesDB import find_kelas_user_db_by_id
+from entitas.user.repositoriesDB import find_by_id
 from entitas.login_limit.repositoriesDB import find_by_login_limits_id_and_class_id
 from entitas.user import repositoriesDB
 from util.constant import EMAIL_MUST_FILL, PASSWORD_MUST_FILL
@@ -27,7 +29,7 @@ def get_user_db_with_pagination(
 def get_user_db_with_pagination_manage_list(
         page=1, limit=9, name="", to_model=False, filters=[], to_response="to_response"
 ):
-    return repositoriesDB.get_all_with_pagination_managements(
+    return repositoriesDB.get_all_with_pagination_by_class_id(
         page=page,
         limit=limit,
         name=name,
@@ -35,6 +37,14 @@ def get_user_db_with_pagination_manage_list(
         filters=filters,
         to_response=to_response,
     )
+
+
+def get_list_by_class_id(class_id=0, page=1, limit=9, filters=[], to_model=False):
+    kelas = find_kelas_user_db_by_id(id=class_id, to_model=True)
+    print("ini class id =====>")
+    if kelas is None:
+        raise_error(msg="class not found")
+    return repositoriesDB.get_all_with_pagination_by_class_id(page=page, limit=limit, filters=filters, to_model=to_model)
 
 def find_user_db_by_id(id=0, to_model=False):
     account = repositoriesDB.find_by_id(id=id)
@@ -380,4 +390,21 @@ def delete_management_name_list_by_id(id=0):
 
 def delete_management_name_list_by_id(id=0):
     return repositoriesDB.delete_management_name_list_by_id(id=id)
+
+def find_management_list_by_ids(class_id=0, management_list_id=0):
+    management_list = find_by_id(id=management_list_id, to_model=True)
+    if management_list is None:
+        raise_error(msg="user not found")
+    kelas = find_kelas_user_db_by_id(id=class_id, to_model=True)
+    if kelas is None:
+        raise_error(msg="class not found")
+    return management_list.to_response()
+
+def find_management_list_db_by_id(id=0, to_model=False):
+    result = repositoriesDB.find_by_id(id=id)
+    if result is None:
+        return None
+    if to_model:
+        return result
+    return result.to_response()
 

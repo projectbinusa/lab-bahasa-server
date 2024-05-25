@@ -188,3 +188,13 @@ def insert(json_object={}, to_model=False):
     except Exception as e:
         print("error Kelas User insert: ", e)
     return None
+
+@db_session
+def find_kelas_user_db_by_id(id=0, to_model=False):
+    result = find_by_id(id=id)
+    print("id ==>", id)
+    if result is None:
+        return None
+    if to_model:
+        return result
+    return result.to_response()

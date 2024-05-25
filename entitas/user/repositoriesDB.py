@@ -603,6 +603,43 @@ def get_all_with_pagination_managements(
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
 
+
+@db_session
+def get_all_with_pagination_by_class_id(page=1, limit=9, filters=[], to_model=False):
+    result = []
+    total_record = 0
+    # try:
+    class_id = next((x["value"] for x in filters if x.get("field") == "class_id"), 0)
+    data_in_db = select((s) for s in UserDB if s.class_id == class_id)
+    for item in filters:
+        if item["field"] == "id":
+            data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
+        elif item["field"] == "class_id":
+            data_in_db = data_in_db.filter(lambda d: item["value"] == d.class_id)
+        # elif item["field"] == "name":
+        #     data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
+        # elif item["field"] == "instructur_id":
+        #     data_in_db = data_in_db.filter(lambda d: d.class_id != item["value"])
+
+    total_record = data_in_db.count()
+    if limit > 0:
+        data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
+    else:
+        data_in_db = data_in_db
+    for item in data_in_db:
+        if to_model:
+            result.append(item.to_model())
+        else:
+            result.append(item.to_model().to_response())
+
+    # except Exception as e:
+    #     print("error ScheduleUser getAllWithPagination: ", e)
+    return result, {
+        "total": total_record,
+        "page": page,
+        "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
+    }
+
 @db_session
 def delete_management_name_list_by_id(id=None):
     try:
@@ -672,3 +709,10 @@ def create_profile_manage_student_list(json_object=None, to_model=False):
     except Exception as e:
         print("error creating profile: " + str(e))
         return None
+
+@db_session
+def find_by_id(id=None):
+    data_in_db = select(s for s in UserDB if s.id == id)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
