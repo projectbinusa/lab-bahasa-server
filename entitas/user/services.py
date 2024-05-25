@@ -144,7 +144,6 @@ def delete_user_by_id(id=0):
 
 
 def login_db(json_object={}, domain=""):
-    # Dapatkan informasi akun dari database
     account_info = repositoriesDB.post_login(json_object=json_object)
     if account_info is None:
         raise_forbidden('Email atau password tidak sesuai')
