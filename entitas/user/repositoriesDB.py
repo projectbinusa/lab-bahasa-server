@@ -569,7 +569,6 @@ def get_all_with_pagination_managements(
     to_model=False,
     filters=[],
     to_response="to_response",
-    name=None,
 ):
     result = []
     total_record = 0
@@ -582,8 +581,6 @@ def get_all_with_pagination_managements(
                 data_in_db = data_in_db.filter(lambda d: d.name in item["value"])
             elif item["field"] == "class_id":
                 data_in_db = data_in_db.filter(lambda d: d.class_id == item["value"])
-        if name:
-            data_in_db = data_in_db.filter(lambda d: d.name == name)
         total_record = count(data_in_db)
         total_record = data_in_db.count()
         if limit > 0:
