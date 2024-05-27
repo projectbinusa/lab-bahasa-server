@@ -4,9 +4,8 @@ import uuid
 from datetime import datetime, timedelta
 
 from pony.orm import *
-from select import select
 
-from database.schema import UserDB
+from database.schema import UserDB, KelasUserDB
 from util.other_util import  raise_error
 from util.other_util import encrypt_string
 
@@ -30,19 +29,23 @@ def get_all(to_model=False, filters=[]):
         print("error UserDB getAll: ", e)
     return result
 
+
 @db_session
 def get_all_with_pagination(
-    page=1,
-    limit=9,
-    to_model=False,
-    filters=[],
-    to_response="to_response",
-    name=None,
+        page=1,
+        limit=9,
+        to_model=False,
+        filters=[],
+        to_response="to_response",
+        name=None,
 ):
     result = []
     total_record = 0
     try:
+        # Initial selection of UserDB objects
         data_in_db = select(s for s in UserDB).order_by(desc(UserDB.id))
+
+        # Apply filters
         for item in filters:
             if item["field"] == "email":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.email)
@@ -51,17 +54,24 @@ def get_all_with_pagination(
             elif item["field"] == "hp":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.hp)
             elif item["field"] == "role":
-                data_in_db = data_in_db.filter(lambda d: d.role == item["value"])
+                data_in_db = data_in_db.filter(lambda d: d.role in item["value"])
             elif item["field"] == "tag":
-                data_in_db = data_in_db.filter(lambda d: d.tag == item["value"])
+                data_in_db = data_in_db.filter(lambda d: d.tag in item["value"])
+            elif item["field"] == "class_id":
+                data_in_db = data_in_db.filter(lambda d: d.class_id == item["value"])
+
+        # Apply additional filter by name if provided
         if name:
             data_in_db = data_in_db.filter(lambda d: d.name == name)
-        total_record = count(data_in_db)
+
+        # Count total records before pagination
         total_record = data_in_db.count()
+
+        # Apply pagination
         if limit > 0:
             data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
-        else:
-            data_in_db = data_in_db
+
+        # Collect results
         for item in data_in_db:
             if to_model:
                 result.append(item.to_model())
@@ -70,13 +80,16 @@ def get_all_with_pagination(
                     result.append(item.to_model().to_response_profile())
                 else:
                     result.append(item.to_model().to_response())
+
     except Exception as e:
         print("error UserDB getAllWithPagination: ", e)
+
     return result, {
         "total": total_record,
         "page": page,
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
+
 
 @db_session
 def get_all_with_pagination_managements(
@@ -115,7 +128,7 @@ def get_all_with_pagination_managements(
                 else:
                     result.append(item.to_model().to_response_managements_list())
     except Exception as e:
-        print("error UserDB getAllWithPagination: ", e)
+        print("error UserDB getAllWithPagination1: ", e)
     return result, {
         "total": total_record,
         "page": page,
@@ -128,6 +141,12 @@ def find_by_id(id=None):
     if data_in_db.first() is None:
         return None
     return data_in_db.first().to_model()
+
+
+@db_session
+def find_by_user_id_and_class_id(class_id=0):
+    data_in_db = select(s for s in UserDB if s.class_id == class_id)
+    return data_in_db.first().to_model() if data_in_db.first() else None
 
 
 @db_session
@@ -603,21 +622,18 @@ def get_all_with_pagination_managements(
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
 
-
 @db_session
-def get_all_with_pagination_by_class_id(page=1, limit=9, filters=[], to_model=False):
+def get_all_with_pagination_by_class_id(class_id, page=1, limit=9, filters=[], to_model=False):
     result = []
     total_record = 0
     # try:
-    class_id = next((x["value"] for x in filters if x.get("field") == "class_id"), 0)
-    data_in_db = select((s) for s in UserDB if s.class_id == class_id)
+    data_in_db = select(s for s in UserDB if s.class_is == class_is).order_by(
+        desc(UserDB.id))
     for item in filters:
         if item["field"] == "id":
             data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
         elif item["field"] == "class_id":
             data_in_db = data_in_db.filter(lambda d: item["value"] == d.class_id)
-        # elif item["field"] == "name":
-        #     data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
         # elif item["field"] == "instructur_id":
         #     data_in_db = data_in_db.filter(lambda d: d.class_id != item["value"])
 
@@ -639,6 +655,17 @@ def get_all_with_pagination_by_class_id(page=1, limit=9, filters=[], to_model=Fa
         "page": page,
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
+
+@db_session
+def update_delete_by_id(id=None, is_deleted=False):
+    try:
+        UserDB[id].is_deleted = is_deleted
+        commit()
+        return True
+    except Exception as e:
+        print('error user delete: ', e)
+    return
+
 
 @db_session
 def delete_management_name_list_by_id(id=None):
@@ -665,9 +692,9 @@ def update_profile_manage_student_list(json_object=None, to_model=False):
         if "class_id" in json_object:
             updated_user.class_id = json_object["class_id"]
         if "password" in json_object:
-            updated_user.password = json_object["password"]
+            updated_user.password = encrypt_string(json_object["password"])
         if "password_prompt" in json_object:
-            updated_user.password_prompt = json_object["password_prompt"]
+            updated_user.password_prompt = encrypt_string(json_object["password_prompt"])
 
         commit()
 
@@ -679,25 +706,21 @@ def update_profile_manage_student_list(json_object=None, to_model=False):
         print("error UserDB update_profile: " + str(e))
         return
 
+
 @db_session
 def create_profile_manage_student_list(json_object=None, to_model=False):
     try:
-        name = json_object.get("name")
-        gender = json_object.get("gender")
-        departement = json_object.get("departement")
-        client_ID = json_object.get("client_ID")
-        class_id = json_object.get("class_ID")
-        password = json_object.get("password")
-        password_prompt = json_object.get("password_prompt")
-
+        # Create new user with the generated client_ID
         new_user = UserDB(
-            name=name,
-            gender=gender,
-            departement=departement,
-            client_ID=client_ID,
-            class_id=class_id,
-            password=password,
-            password_prompt=password_prompt
+            name=json_object['name'],
+            email=json_object['email'],
+            role=json_object['role'],
+            gender=json_object['gender'],
+            departement=json_object["departement"],
+            client_ID=json_object['client_ID'],
+            class_id=json_object["class_id"],
+            password=encrypt_string(json_object["password"]),
+            password_prompt=encrypt_string(json_object["password_prompt"])
         )
 
         commit()
@@ -716,3 +739,9 @@ def find_by_id(id=None):
     if data_in_db.first() is None:
         return None
     return data_in_db.first().to_model()
+
+
+@db_session
+def find_last_client_id():
+    last_client = select(c for c in UserDB if c.role == "student").order_by(desc(UserDB.client_ID)).first()
+    return last_client if last_client else None

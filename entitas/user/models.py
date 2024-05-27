@@ -237,8 +237,9 @@ class User:
         return {
             "id": self.id,
             "client_ID": self.client_ID,
-            "gender": self.gender,
             "name": self.name,
+            "email": self.email,
+            "gender": self.gender,
             "departement": self.departement,
             "class_id": self.class_id,
             "password_prompt": self.password_prompt,
