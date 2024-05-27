@@ -59,4 +59,6 @@ def instructur_routes(api):
     api.add_route("/api/instructur/class/{class_id}/login_limits/{login_limits_id}", LoginLimitWithIdResource())
     api.add_route("/api/instructur/whiteboard", WhiteboardResource())
     api.add_route("/api/instructur/whiteboard/{whiteboard_id}", WhiteboardWithIdResource())
+    api.add_route("/api/instructur/class/{class_id}/whiteboard", WhiteboardResource())
+    api.add_route("/api/instructur/class/{class_id}/whiteboard/{whiteboard_id}", WhiteboardWithIdResource())
     api.add_route("/api/instructur/class/{class_id}/management_name_list/{management_list_id}", ManagementListWithByIdResources())
