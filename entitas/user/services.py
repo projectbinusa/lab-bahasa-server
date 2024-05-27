@@ -1,4 +1,5 @@
 import uuid
+from random import random
 
 import falcon
 
@@ -12,6 +13,7 @@ from util.jwt_util import jwt_encode, check_valid_email
 from util.other_util import encrypt_string, get_random_string, raise_error, raise_forbidden
 from datetime import datetime
 from config.config import TYPE_TOKEN_USER, PICTURE_FOLDER, DOMAIN_FILE_URL, BANK_FOLDER, CARD_FOLDER
+from pony.orm import *
 
 
 def get_user_db_with_pagination(
@@ -390,7 +392,7 @@ def create_profile_manage_student_list_service(class_id=0, json_object={}):
         return True
     json_object['class_id'] = class_id
     json_object["role"] = "student"
-    json_object["client_ID"] = "0808359" + 1
+    json_object["client_ID"] = "0808359" + str(1)
     return repositoriesDB.create_profile_manage_student_list(json_object=json_object)
 
 # def create_profile_manage_student_list_service(json_object={}):
@@ -423,6 +425,7 @@ def delete_user_by_class_id(class_id=0, id=0):
 
 # def delete_management_name_list_by_id(id=0):
 #     return repositoriesDB.delete_management_name_list_by_id(id=id)
+
 
 def find_management_list_by_ids(class_id=0, management_list_id=0):
     management_list = find_user_db_by_id(id=management_list_id, to_model=True)

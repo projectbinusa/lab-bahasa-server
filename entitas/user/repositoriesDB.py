@@ -145,8 +145,13 @@ def find_by_id(id=None):
 
 @db_session
 def find_by_user_id_and_class_id(class_id=0):
-    data_in_db = select(s for s in UserDB if s.class_id == class_id)
-    return data_in_db.first().to_model() if data_in_db.first() else None
+    try:
+        data_in_db = select(s for s in UserDB if s.class_id == class_id)
+        return data_in_db.first().to_model() if data_in_db.first() else None
+    except Exception as e:
+        print("Error:", e)
+        return None
+
 
 
 @db_session
@@ -745,3 +750,5 @@ def find_by_id(id=None):
 def find_last_client_id():
     last_client = select(c for c in UserDB if c.role == "student").order_by(desc(UserDB.client_ID)).first()
     return last_client if last_client else None
+    
+
