@@ -79,9 +79,7 @@ def find_by_id(id=None):
 @db_session
 def find_by_login_limits_id_and_class_id(class_id=0):
     data_in_db = select(s for s in LoginLimitsDB if s.class_id == class_id)
-    if data_in_db.first() is None:
-        return None
-    return data_in_db.first().to_model()
+    return data_in_db.first().to_model() if data_in_db.first() else None
 
 # @db_session
 # def update_class_login_limit(limit_id, start_time):
@@ -146,15 +144,6 @@ def update_delete_by_id(id=None, is_deleted=False):
         print('error login_limits delete: ', e)
     return
 
-
-def update_delete_by_id(id=None, is_deleted=False):
-    try:
-        LoginLimitsDB[id].is_deleted = is_deleted
-        commit()
-        return True
-    except Exception as e:
-        print('error login limit delete: ', e)
-    return
 
 
 @db_session

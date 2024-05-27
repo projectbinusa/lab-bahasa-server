@@ -2,6 +2,8 @@ import uuid
 
 import falcon
 
+from entitas.kelas_user.repositoriesDB import find_kelas_user_db_by_id
+from entitas.user.repositoriesDB import *
 from entitas.login_limit.repositoriesDB import find_by_login_limits_id_and_class_id
 from entitas.user import repositoriesDB
 from util.constant import EMAIL_MUST_FILL, PASSWORD_MUST_FILL
@@ -24,17 +26,18 @@ def get_user_db_with_pagination(
         to_response=to_response,
     )
 
-def get_user_db_with_pagination_manage_list(
-        page=1, limit=9, name="", to_model=False, filters=[], to_response="to_response"
-):
+def get_user_db_with_pagination_manage_list(page=1, limit=9, filters=[], to_model=False, to_response="to_response"):
     return repositoriesDB.get_all_with_pagination_managements(
-        page=page,
-        limit=limit,
-        name=name,
-        to_model=to_model,
-        filters=filters,
-        to_response=to_response,
+        page=page, limit=limit, filters=filters, to_model=to_model, to_response=to_response
     )
+
+
+def get_list_by_class_id(class_id=0, page=1, limit=9, filters=[], to_model=False):
+    kelas = find_kelas_user_db_by_id(id=class_id, to_model=True)
+    print("ini class id =====>", class_id)
+    if kelas is None:
+        raise_error(msg="class not found")
+    return get_user_db_with_pagination(page=page, limit=limit, filters=filters, to_model=to_model)
 
 def find_user_db_by_id(id=0, to_model=False):
     account = repositoriesDB.find_by_id(id=id)
@@ -182,17 +185,15 @@ def register_guru(json_object={}):
 
 
 def check_login_status(user, last_login):
+    allowed_roles = ['user', 'student']
+    if user.role not in allowed_roles:
+        return "-"
     class_limit = find_by_login_limits_id_and_class_id(user.class_id)
     if not class_limit:
-        return "No login limit set for this class"
-
+        return "-"
     end_time = class_limit.end_time
-    # Konversi login_time menjadi objek datetime
     last_login = datetime.strptime(last_login, '%Y-%m-%d %H:%M:%S')
-    if last_login <= end_time:
-        return "Tepat waktu"
-    else:
-        return "Terlambat"
+    return "Tepat waktu" if last_login <= end_time else "Terlambat"
 
 def find_user_db_by_token(token="", to_model=False):
     return repositoriesDB.find_by_token(token=token, to_model=to_model)
@@ -370,14 +371,73 @@ def refresh_token_authorization(authorization=None):
 def update_menage_name_list_db(json_object={}):
     return repositoriesDB.update_profile_manage_student_list(json_object=json_object)
 
-def create_profile_manage_student_list_service(json_object={}):
+
+def create_profile_manage_student_list_service(class_id=0, json_object={}):
+    kelas_user = repositoriesDB.find_by_user_id_and_class_id(class_id=class_id)
+    # user_name = find_by_id(id=json_object['user_id'])
+    print("class_id ====>", class_id, "data ==>", json_object)
+    # last_user = UserDB.select(lambda u: u.client_ID.startswith("08083591")).order_by(desc(UserDB.client_ID)).first()
+    # # Generate new client_ID
+    # if last_user:
+    #     last_id_number = int(last_user.client_ID[8:])  # Extract the numeric part after "08083591"
+    #     new_id_number = last_id_number + 1
+    # else:
+    #     new_id_number = 1  # Start from 1 if there are no existing IDs
+    # new_client_ID = f"0808359{new_id_number:02d}"  # Ensure it has at least 2 digits
+
+    if kelas_user is not None:
+        repositoriesDB.update_delete_by_id(id=kelas_user.id, is_deleted=False)
+        return True
+    json_object['class_id'] = class_id
+    json_object["role"] = "student"
+    json_object["client_ID"] = "0808359" + 1
     return repositoriesDB.create_profile_manage_student_list(json_object=json_object)
 
+# def create_profile_manage_student_list_service(json_object={}):
+#     return repositoriesDB.create_profile_manage_student_list(json_object=json_object)
 
-def delete_management_name_list_by_id(id=0):
-    return repositoriesDB.delete_management_name_list_by_id(id=id)
+
+def update_user_by_class_id(class_id=0, id=0, json_object={}):
+    user = find_by_user_id_and_class_id(id=id, to_model=True)
+    kelas = find_kelas_user_db_by_id(id=class_id, to_model=True)
+    if user is None:
+        raise_error(msg="log book not found")
+    if kelas is None:
+        raise_error(msg="kelas not found")
+    json_object["id"] = user.id
+    json_object["class_id"] = class_id
+    return update_profile_manage_student_list(json_object=json_object)
 
 
-def delete_management_name_list_by_id(id=0):
-    return repositoriesDB.delete_management_name_list_by_id(id=id)
+def delete_user_by_class_id(class_id=0, id=0):
+    user = find_by_user_id_and_class_id(id=id, to_model=True)
+    kelas = find_kelas_user_db_by_id(id=class_id, to_model=True)
+    if kelas is None:
+        raise_error(msg="Kelas not found")
+    if user is None:
+        raise_error(msg="management not found")
+    delete_user = delete_management_name_list_by_id(id=id)
+    if delete_user is None:
+        raise_error(msg="Failed to delete")
+    return True
+
+# def delete_management_name_list_by_id(id=0):
+#     return repositoriesDB.delete_management_name_list_by_id(id=id)
+
+def find_management_list_by_ids(class_id=0, management_list_id=0):
+    management_list = find_user_db_by_id(id=management_list_id, to_model=True)
+    if management_list is None:
+        raise_error(msg="user not found")
+    kelas = find_kelas_user_db_by_id(id=class_id, to_model=True)
+    if kelas is None:
+        raise_error(msg="class not found")
+    return management_list.to_response()
+
+# def find_management_list_db_by_id(id=0, to_model=False):
+#     result = repositoriesDB.find_by_id(id=id)
+#     if result is None:
+#         return None
+#     if to_model:
+#         return result
+#     return result.to_response()
 
