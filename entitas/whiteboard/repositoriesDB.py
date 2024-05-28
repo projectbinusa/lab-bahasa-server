@@ -1,4 +1,4 @@
-from pony.orm import db_session, select, commit
+from pony.orm import db_session, select, commit, desc
 from database.schema import WhiteboardDB
 
 
@@ -35,23 +35,18 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
     result = []
     total_record = 0
     try:
-        # Base query
         data_in_db = select(s for s in WhiteboardDB)
 
-        # Apply filters
         for item in filters:
             if item["field"] == "id":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
             elif item["field"] == "user_id":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.user_id)
 
-        # Count total records after applying filters
         total_record = data_in_db.count()
 
-        # Apply ordering and slicing for pagination
         data_in_db = data_in_db.order_by(lambda s: desc(s.id))[(page - 1) * limit: page * limit]
 
-        # Collect results
         for item in data_in_db:
             if to_model:
                 result.append(item.to_model())
@@ -111,9 +106,13 @@ def find_by_id(id=None):
 
 
 @db_session
-def find_by_whiteboard_id(class_id=0):
-    data_in_db = select(s for s in WhiteboardDB if s.class_id == class_id)
-    return data_in_db.first().to_model() if data_in_db.first() else None
+def find_by_whiteboard_id_and_class_id(class_id=0):
+    try:
+        data_in_db = select(s for s in WhiteboardDB if s.class_id == class_id)
+        return data_in_db.first().to_model() if data_in_db.first() else None
+    except Exception as e:
+        print("Error:", e)
+        return None
 
 
 @db_session
@@ -146,19 +145,47 @@ def delete_by_id(id=None):
 
 
 @db_session
-def delete_by_class_id(id, class_id):
+def update_delete_by_id(id=None, is_deleted=False):
     try:
-        whiteboard = select(s for s in WhiteboardDB if s.id == id and s.class_id == class_id).first()
-        if whiteboard:
-            whiteboard.delete()
-            commit()
-            return True
-        else:
-            return False
+        WhiteboardDB[id].is_deleted = is_deleted
+        commit()
+        return True
     except Exception as e:
-        print("error delete_by_class_id: ", e)
-    return False
+        print('error user delete: ', e)
+    return
 
+
+@db_session
+def delete_whiteboard_by_id(id=None):
+    try:
+        WhiteboardDB[id].delete()
+        commit()
+        return True
+    except Exception as e:
+        print("error Whiteboard delete: ", e)
+    return
+
+
+@db_session
+def create_profile_manage_student_list(json_object=None, to_model=False):
+    try:
+        # Create new user with the generated class_id
+        new_user = WhiteboardDB(
+            user_id=json_object['user_id'],
+            username=json_object['username'],
+            class_id=json_object['class_id'],
+            class_name=json_object['class_name']
+        )
+
+        commit()
+
+        if to_model:
+            return new_user.to_model()
+        else:
+            return new_user.to_model().to_response()
+    except Exception as e:
+        print("error creating profile: " + str(e))
+        return None
 
 @db_session
 def insert(json_object={}, to_model=False):
