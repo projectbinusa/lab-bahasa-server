@@ -5,6 +5,7 @@ import falcon
 import requests
 from entitas.user import services, repositoriesDB
 from entitas.baseResponse.models import BaseResponse
+from entitas.user.services import verify_reset_code_service, request_password_reset, reset_password_service
 from util.entitas_util import generate_filters_resource, resouce_response_api
 
 
@@ -324,6 +325,7 @@ class ManagementListResource:
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 
     def on_post(self, req, resp, class_id):
+        print("di resources ==> ", class_id)
         resouce_response_api(resp=resp,
                              data=services.create_profile_manage_student_list_service(class_id, json_object=req.media))
 
@@ -353,3 +355,44 @@ class ManagementListWithByIdResources:
             management_list_id=int(management_list_id),
         )
         resouce_response_api(resp=resp, data=log_book_data)
+
+
+class ForgotPasswordResource:
+    auth = {
+        'auth_disabled': True
+    }
+    def on_post(self, req, resp):
+        data = req.media
+        email = data.get('email')
+        if not email:
+            raise falcon.HTTPBadRequest('Bad Request', 'Email is required')
+        message = request_password_reset(email)
+        resp.media = {'message': message}
+
+
+class VerifyCodeResource:
+    auth = {
+        'auth_disabled': True
+    }
+    def on_post(self, req, resp):
+        data = req.media
+        email = data.get('email')
+        code = data.get('code')
+        if not email or not code:
+            raise falcon.HTTPBadRequest('Bad Request', 'Email and code are required')
+        message = verify_reset_code_service(email, code)
+        resp.media = {'message': message}
+
+
+class ResetPasswordResource:
+    auth = {
+        'auth_disabled': True
+    }
+    def on_post(self, req, resp):
+        data = req.media
+        email = data.get('email')
+        new_password = data.get('new_password')
+        if not email or not new_password:
+            raise falcon.HTTPBadRequest('Bad Request', 'Email and new password are required')
+        message = reset_password_service(email, new_password)
+        resp.media = {'message': message}

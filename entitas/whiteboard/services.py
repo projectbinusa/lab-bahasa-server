@@ -1,6 +1,6 @@
 from entitas.kelas_user.repositoriesDB import find_kelas_user_db_by_id
 from entitas.whiteboard import repositoriesDB
-from entitas.whiteboard.repositoriesDB import update, find_by_whiteboard_id_and_class_id
+from entitas.whiteboard.repositoriesDB import update, find_by_whiteboard_id_and_class_id, get_all_with_pagination
 from util.other_util import raise_error
 
 
@@ -31,7 +31,7 @@ def get_list_by_class_id(class_id=0, page=1, limit=9, filters=[], to_model=False
     print("ini class id =====>", class_id)
     if kelas is None:
         raise_error(msg="class not found")
-    return get_whiteboard_db_with_pagination(page=page, limit=limit, filters=filters, to_model=to_model)
+    return get_all_with_pagination(page=page, limit=limit, filters=filters, to_model=to_model)
 
 
 def update_whiteboard_db(json_object={}):
@@ -58,7 +58,7 @@ def find_whiteboard_by_class_id(class_id=0, whiteboard_id=0):
 
 
 def update_whiteboard_by_class_id(class_id=0, id=0, json_object={}):
-    whiteboard = find_by_whiteboard_id_and_class_id(id=id, to_model=True)
+    whiteboard = find_whiteboard_db_by_id(id=id, to_model=True)
     kelas = find_kelas_user_db_by_id(id=class_id, to_model=True)
     if whiteboard is None:
         raise_error(msg="log book not found")
