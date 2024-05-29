@@ -34,30 +34,29 @@ def get_all_by_class_id(class_id, to_model=True):
 def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
     result = []
     total_record = 0
-    # try:
-    class_id = next((x["value"] for x in filters if x.get("field") == "class_id"), 0)
-    data_in_db = select((s) for s in WhiteboardDB if s.class_id == class_id)
-    for item in filters:
-        if item["field"] == "id":
-            data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
-        elif item["field"] == "class_id":
-            data_in_db = data_in_db.filter(lambda d: item["value"] == d.class_id)
-        # elif item["field"] == "instructur_id":
-        #     data_in_db = data_in_db.filter(lambda d: d.class_id != item["value"])
+    try:
+        class_id = next((x["value"] for x in filters if x.get("field") == "class_id"), 0)
+        data_in_db = select((s) for s in WhiteboardDB if s.class_id == class_id)
+        for item in filters:
+            if item["field"] == "id":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
+            elif item["field"] == "class_id":
+                data_in_db = data_in_db.filter(lambda d: item["value"] == d.class_id)
+            # elif item["field"] == "instructur_id":
+            #     data_in_db = data_in_db.filter(lambda d: d.class_id != item["value"])
 
-    total_record = data_in_db.count()
-    if limit > 0:
-        data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
-    else:
-        data_in_db = data_in_db
-    for item in data_in_db:
-        if to_model:
-            result.append(item.to_model())
+        total_record = data_in_db.count()
+        if limit > 0:
+            data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
         else:
-            result.append(item.to_model().to_response())
-
-    # except Exception as e:
-    #     print("error ScheduleUser getAllWithPagination: ", e)
+            data_in_db = data_in_db
+        for item in data_in_db:
+            if to_model:
+                result.append(item.to_model())
+            else:
+                result.append(item.to_model().to_response())
+    except Exception as e:
+        print("error ScheduleUser getAllWithPagination: ", e)
     return result, {
         "total": total_record,
         "page": page,
@@ -188,6 +187,7 @@ def create_profile_manage_student_list(json_object=None, to_model=False):
     except Exception as e:
         print("error creating profile: " + str(e))
         return None
+
 
 @db_session
 def insert(json_object={}, to_model=False):

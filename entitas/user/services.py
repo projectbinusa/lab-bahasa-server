@@ -458,15 +458,14 @@ def find_management_list_by_ids(class_id=0, management_list_id=0):
 #     return result.to_response()
 
 from util.mail_service import MailService
-
 def request_password_reset(email):
     mail_service = MailService()
 
-    token = repositoriesDB.create_password_reset_token(email)
+    token = create_password_reset_token(email)
     if not token:
         raise ValueError('Email tidak ditemukan')
 
-    reset_link = f"http://127.0.0.1:9701/reset-password?token={token}"
+    reset_link = f"http://127.0.0.1:9701/reset-password?token={token}&email={email}"
     print("ini reset link === > ", reset_link)
     print("ini email === > ", email)
     try:
@@ -482,17 +481,15 @@ def request_password_reset(email):
         print(f"Error sending email: {e}")
         return "Failed to send password reset email."
 
-
-def reset_password_service(token, new_password):
-    user = repositoriesDB.reset_password(token, new_password)
+def reset_password_service(email, token, new_password):
+    user = reset_password(email, token, new_password)
     print("ini token => ", token)
     if not user:
-        raise_error('Token tidak valid atau telah kedaluwarsa')
+        raise ValueError('Token tidak valid atau telah kedaluwarsa')
     return "Password has been reset successfully."
 
-
 def verify_reset_code_service(email, code):
-    if repositoriesDB.verify_reset_code(email, code):
+    if verify_password_reset_token(email, code):
         return "Code verified successfully."
     else:
-        raise_error('Invalid or expired code')
+        raise ValueError('Invalid or expired code')

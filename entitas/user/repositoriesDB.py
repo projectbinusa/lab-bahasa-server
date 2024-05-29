@@ -6,7 +6,7 @@ import datetime
 from pony.orm import *
 
 from database.schema import UserDB, KelasUserDB
-from util.other_util import  raise_error
+from util.other_util import raise_error
 from util.other_util import encrypt_string
 
 
@@ -93,12 +93,12 @@ def get_all_with_pagination(
 
 @db_session
 def get_all_with_pagination_managements(
-    page=1,
-    limit=9,
-    to_model=False,
-    filters=[],
-    to_response="to_response",
-    name=None,
+        page=1,
+        limit=9,
+        to_model=False,
+        filters=[],
+        to_response="to_response",
+        name=None,
 ):
     result = []
     total_record = 0
@@ -135,6 +135,7 @@ def get_all_with_pagination_managements(
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
 
+
 @db_session
 def find_by_id(id=None):
     data_in_db = select(s for s in UserDB if s.id == id)
@@ -151,7 +152,6 @@ def find_by_user_id_and_class_id(class_id=0):
     except Exception as e:
         print("Error:", e)
         return None
-
 
 
 @db_session
@@ -279,6 +279,7 @@ def insert(json_object={}, to_model=False):
     except Exception as e:
         return None, "error UserDB insert: " + str(e)
 
+
 @db_session
 def signup(json_object={}):
     if 'description' not in json_object:
@@ -344,16 +345,16 @@ def post_login(json_object={}):
 
     if account_db is not None:
         account_db.token = str(uuid.uuid4())
-        account_db.last_login = datetime.now()
+        account_db.last_login = datetime.datetime.now()
         commit()
         return account_db.to_model()
 
     return None
 
-
     # except Exception as e:
     #     print("error UserDB post_login: ", e)
     # return None
+
 
 @db_session
 def register(json_object={}, to_model=False):
@@ -374,6 +375,7 @@ def register(json_object={}, to_model=False):
     # except Exception as e:
     #     return None, "error Register insert: " + str(e)
 
+
 @db_session
 def find_by_token(token="", to_model=False):
     try:
@@ -387,7 +389,6 @@ def find_by_token(token="", to_model=False):
     except Exception as e:
         print("error UserDB find_by_token: " + str(e))
         return None
-
 
 
 @db_session
@@ -482,6 +483,7 @@ def reset_token(json_object=None, to_model=False):
         print("error Account reset Token: ", e)
         return None
 
+
 @db_session
 def reset_token_by_token(token=None):
     if token is None:
@@ -492,6 +494,8 @@ def reset_token_by_token(token=None):
         commit()
         return True
     return
+
+
 #
 @db_session
 def find_by_email(email="", to_model=False):
@@ -506,6 +510,7 @@ def find_by_email(email="", to_model=False):
     except Exception as e:
         print("error UserDB find_by_email: ", e)
         return None
+
 
 @db_session
 def is_email_user_exist(email=""):
@@ -586,13 +591,14 @@ def is_email_has_user(email=""):
         return True
     return False
 
+
 @db_session
 def get_all_with_pagination_managements(
-    page=1,
-    limit=9,
-    to_model=False,
-    filters=[],
-    to_response="to_response",
+        page=1,
+        limit=9,
+        to_model=False,
+        filters=[],
+        to_response="to_response",
 ):
     result = []
     total_record = 0
@@ -626,6 +632,7 @@ def get_all_with_pagination_managements(
         "page": page,
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
+
 
 @db_session
 def get_all_with_pagination_by_class_id(class_id, page=1, limit=9, filters=[], to_model=False):
@@ -661,6 +668,7 @@ def get_all_with_pagination_by_class_id(class_id, page=1, limit=9, filters=[], t
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
 
+
 @db_session
 def update_delete_by_id(id=None, is_deleted=False):
     try:
@@ -681,6 +689,7 @@ def delete_management_name_list_by_id(id=None):
     except Exception as e:
         print("error User delete: ", e)
     return
+
 
 @db_session
 def update_profile_manage_student_list(json_object=None, to_model=False):
@@ -774,7 +783,7 @@ def find_by_id(id=None):
 def find_last_client_id():
     last_client = select(c for c in UserDB if c.role == "student").order_by(desc(UserDB.client_id)).first()
     return last_client if last_client else None
-    
+
 
 import random
 
@@ -790,18 +799,18 @@ def create_password_reset_token(email):
     commit()
     return code
 
-
 @db_session
-def verify_password_reset_token(email):
-    user = create_password_reset_token(email)
-    print("token", user.code_expiry)
+def verify_password_reset_token(email, code):
+    user = UserDB.get(email=email, reset_code=code)
+    if user:
+        print("token", user.code_expiry)
     if user and user.code_expiry > datetime.datetime.now():
         return user
     return None
 
 @db_session
-def reset_password(token, new_password):
-    user = verify_password_reset_token(token)
+def reset_password(email, code, new_password):
+    user = verify_password_reset_token(email, code)
     if not user:
         return None
     user.password = encrypt_string(new_password)
@@ -817,13 +826,18 @@ def verify_reset_code(email, code):
         return True
     return False
 
+
 @db_session
 def generate_new_client_id():
-    last_user = UserDB.select(lambda u: u.client_id.startswith("0808359")).order_by(desc(UserDB.client_id)).first()
-    if last_user:
-        last_id_number = int(last_user.client_id[8:])  # Extract the numeric part after "08083591"
-        new_id_number = last_id_number + 1
-    else:
-        new_id_number = 1  # Start from 1 if there are no existing IDs
-    new_client_id = f"0808359{new_id_number:02d}"  # Ensure it has at least 2 digits
-    return new_client_id
+    try:
+        last_user = UserDB.select(lambda u: u.client_id.startswith("0808359")).order_by(desc(UserDB.client_id)).first()
+        if last_user:
+            last_id_number = int(last_user.client_id[8:])  # Extract the numeric part after "08083591"
+            new_id_number = last_id_number + 1
+        else:
+            new_id_number = 1  # Start from 1 if there are no existing IDs
+        new_client_id = f"0808359{new_id_number:02d}"  # Ensure it has at least 2 digits
+        return new_client_id
+    except Exception as e:
+        print("Error generate clientId: " + str(e))
+        return None
