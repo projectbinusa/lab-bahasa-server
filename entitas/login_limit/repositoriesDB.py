@@ -78,8 +78,13 @@ def find_by_id(id=None):
 
 @db_session
 def find_by_login_limits_id_and_class_id(class_id=0):
-    data_in_db = select(s for s in LoginLimitsDB if s.class_id == class_id)
-    return data_in_db.first().to_model() if data_in_db.first() else None
+    try:
+        data_in_db = select(s for s in LoginLimitsDB if s.class_id == class_id)
+        return data_in_db.first().to_model() if data_in_db.first() else None
+    except Exception as e:
+        print("Error:", e)
+        return None
+
 
 # @db_session
 # def update_class_login_limit(limit_id, start_time):

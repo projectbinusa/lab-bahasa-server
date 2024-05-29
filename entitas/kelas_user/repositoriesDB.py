@@ -16,6 +16,7 @@ def get_all(to_model=True):
         print("error Kelas User getAll: ", e)
     return result
 
+
 @db_session
 def get_kelas_user_ids_by_user_id(user_id=0):
     result = []
@@ -25,6 +26,7 @@ def get_kelas_user_ids_by_user_id(user_id=0):
     except Exception as e:
         print("error get_schedule_ids_by_user_id: ", e)
     return result
+
 
 @db_session
 def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
@@ -91,7 +93,6 @@ def get_user_and_schedule_user_with_pagination(page=1, limit=9, filters=[], to_m
         data['user_profile'] = user.to_model().to_response_participant_schedule()
         result.append(data)
 
-
     # except Exception as e:
     #     print("error ScheduleUser getAllWithPagination: ", e)
     return result, {
@@ -111,6 +112,7 @@ def get_kelas_user_ids_by_user_id(user_id=0):
         print("error get_schedule_ids_by_user_id: ", e)
     return result
 
+
 @db_session
 def find_by_id(id=None):
     data_in_db = select(s for s in KelasUserDB if s.id == id)
@@ -118,12 +120,14 @@ def find_by_id(id=None):
         return None
     return data_in_db.first().to_model()
 
+
 @db_session
 def find_by_kelas_user_id_and_user_id(id=None, user_id=0):
     data_in_db = select(s for s in KelasUserDB if s.id == id and s.user_id == user_id)
     if data_in_db.first() is None:
         return None
     return data_in_db.first().to_model()
+
 
 @db_session
 def update(json_object={}, to_model={}):
@@ -143,6 +147,7 @@ def update(json_object={}, to_model={}):
         print("error Kelas User update: ", e)
     return None
 
+
 @db_session
 def class_active(json_object={}, to_model={}):
     try:
@@ -160,6 +165,7 @@ def class_active(json_object={}, to_model={}):
         print("error Kelas User active: ", e)
     return None
 
+
 @db_session
 def delete_by_id(id=None):
     try:
@@ -169,6 +175,7 @@ def delete_by_id(id=None):
     except Exception as e:
         print("error Kelas User delete: ", e)
     return
+
 
 @db_session
 def insert(json_object={}, to_model=False):
@@ -189,6 +196,7 @@ def insert(json_object={}, to_model=False):
     except Exception as e:
         print("error Kelas User insert: ", e)
     return None
+
 
 @db_session
 def find_kelas_user_db_by_id(id=0, to_model=False):

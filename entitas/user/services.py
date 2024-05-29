@@ -378,15 +378,15 @@ def create_profile_manage_student_list_service(class_id=0, json_object={}):
     print("Service called with class_id:", class_id, "and data:", json_object)
     kelas_user = repositoriesDB.find_by_user_id_and_class_id(class_id=class_id)
     print("Kelas user:", kelas_user)
-    # new_client_ID = repositoriesDB.generate_new_client_id()
-    # print("Generated client_ID:", new_client_ID)
+    new_client_id = repositoriesDB.generate_new_client_id()
+    print("Generated client_ID:", new_client_id)
     if kelas_user is not None:
         print("Updating existing user:", kelas_user.id)
         repositoriesDB.update_delete_by_id(id=kelas_user.id, is_deleted=False)
         return True
     json_object['class_id'] = class_id
     json_object["role"] = "student"
-    # json_object["client_id"] = new_client_ID
+    json_object["client_id"] = new_client_id
     result = repositoriesDB.create_profile_manage_student_list(json_object=json_object)
     print("Create profile result:", result)
     return result
