@@ -71,7 +71,6 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
             result.append(item.to_model())
         else:
             result.append(item.to_model().to_response_participant())
-
     # except Exception as e:
     #     print("error ScheduleUser getAllWithPagination: ", e)
     return result, {

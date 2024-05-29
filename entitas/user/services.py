@@ -1,14 +1,19 @@
 import uuid
+from random import random
 
 import falcon
 
+from entitas.kelas_user.repositoriesDB import find_kelas_user_db_by_id
+from entitas.user.repositoriesDB import *
+from entitas.login_limit.repositoriesDB import find_by_login_limits_id_and_class_id
 from entitas.user import repositoriesDB
 from util.constant import EMAIL_MUST_FILL, PASSWORD_MUST_FILL
 from util.entitas_util import *
 from util.jwt_util import jwt_encode, check_valid_email
 from util.other_util import encrypt_string, get_random_string, raise_error, raise_forbidden
-import datetime
+from datetime import datetime
 from config.config import TYPE_TOKEN_USER, PICTURE_FOLDER, DOMAIN_FILE_URL, BANK_FOLDER, CARD_FOLDER
+from pony.orm import *
 
 
 def get_user_db_with_pagination(
@@ -23,17 +28,18 @@ def get_user_db_with_pagination(
         to_response=to_response,
     )
 
-def get_user_db_with_pagination_manage_list(
-        page=1, limit=9, name="", to_model=False, filters=[], to_response="to_response"
-):
+def get_user_db_with_pagination_manage_list(page=1, limit=9, filters=[], to_model=False, to_response="to_response"):
     return repositoriesDB.get_all_with_pagination_managements(
-        page=page,
-        limit=limit,
-        name=name,
-        to_model=to_model,
-        filters=filters,
-        to_response=to_response,
+        page=page, limit=limit, filters=filters, to_model=to_model, to_response=to_response
     )
+
+
+def get_list_by_class_id(class_id=0, page=1, limit=9, filters=[], to_model=False):
+    kelas = find_kelas_user_db_by_id(id=class_id, to_model=True)
+    print("ini class id =====>", class_id)
+    if kelas is None:
+        raise_error(msg="class not found")
+    return get_user_db_with_pagination(page=page, limit=limit, filters=filters, to_model=to_model)
 
 def find_user_db_by_id(id=0, to_model=False):
     account = repositoriesDB.find_by_id(id=id)
@@ -143,20 +149,53 @@ def delete_user_by_id(id=0):
 
 
 def login_db(json_object={}, domain=""):
-    from util.jwt_util import jwt_encode
-
     account_info = repositoriesDB.post_login(json_object=json_object)
     if account_info is None:
         raise_forbidden('Email atau password tidak sesuai')
-
     if account_info.active == 0:
         raise_error("Email belum di aktivasi")
+    login_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    login_status = check_login_status(account_info, login_time)
+    account_info.last_login = login_time
     domain_result = ""
 
+    # Kemas informasi akun dan status login dalam respons
     account = account_info.to_response_login()
     account["domain"] = domain_result
+    account["comment"] = login_status
+
+    # Encode respons menggunakan JWT sebelum dikirimkan kembali ke pengguna
     return jwt_encode(account, TYPE_TOKEN_USER)
 
+
+def register_guru(json_object={}):
+    if "email" not in json_object:
+        raise_error(str=EMAIL_MUST_FILL)
+    if "password" not in json_object:
+        raise_error(str=PASSWORD_MUST_FILL)
+    if not check_valid_email(email=json_object["email"]):
+        raise_error(msg='Email tidak valid')
+    json_object["role"] = 'instructur'
+    json_object["token"] = str(uuid.uuid4())
+    existing_account = repositoriesDB.find_by_email(email=json_object["email"], to_model=True)
+    if existing_account is not None:
+        raise_error(msg='Email sudah terdaftar')
+
+    json_object["new_password"] = json_object["password"]
+    # json_object['parent_user_id'] = 0
+    return repositoriesDB.register(json_object=json_object)
+
+
+def check_login_status(user, last_login):
+    allowed_roles = ['user', 'student']
+    if user.role not in allowed_roles:
+        return "-"
+    class_limit = find_by_login_limits_id_and_class_id(user.class_id)
+    if not class_limit:
+        return "-"
+    end_time = class_limit.end_time
+    last_login = datetime.strptime(last_login, '%Y-%m-%d %H:%M:%S')
+    return "Tepat waktu" if last_login <= end_time else "Terlambat"
 
 def find_user_db_by_token(token="", to_model=False):
     return repositoriesDB.find_by_token(token=token, to_model=to_model)
@@ -334,10 +373,126 @@ def refresh_token_authorization(authorization=None):
 def update_menage_name_list_db(json_object={}):
     return repositoriesDB.update_profile_manage_student_list(json_object=json_object)
 
-def create_profile_manage_student_list_service(json_object={}):
+
+# def create_profile_manage_student_list_service(class_id=0, json_object={}):
+#     print("Service called with class_id:", class_id, "and data:", json_object)
+#     kelas_user = repositoriesDB.find_by_user_id_and_class_id(class_id=class_id)
+#     print("Kelas user:", kelas_user)
+#     new_client_id = repositoriesDB.generate_new_client_id()
+#     print("Generated client_ID:",   new_client_id)
+#     if kelas_user is not None:
+#         print("Updating existing user:", kelas_user.id)
+#         repositoriesDB.update_delete_by_id(id=kelas_user.id, is_deleted=False)
+#         return True
+#     json_object['class_id'] = class_id
+#     json_object["role"] = "student"
+#     json_object["client_id"] =  new_client_id
+#     result = repositoriesDB.create_profile_manage_student_list(json_object=json_object)
+#     print("Create profile result:", result)
+#     return result
+
+
+def insert_manage_name_list_db(json_object={}):
     return repositoriesDB.create_profile_manage_student_list(json_object=json_object)
 
 
-def delete_management_name_list_by_id(id=0):
-    return repositoriesDB.delete_management_name_list_by_id(id=id)
+def create_profile_manage_student_list_service(class_id=0, json_object={}):
+    kelas_user = repositoriesDB.find_by_user_id_and_class_id(class_id=class_id)
+    # user_name = find_by_id(id=json_object['user_id'])
+    print("class_id ====>",class_id, "data ==>", json_object)
+    if kelas_user is not None:
+        repositoriesDB.update_delete_by_id(id=kelas_user.id, is_deleted=False)
+        return True
+    json_object['class_id'] = class_id
+    json_object['role'] = "student"
+    insert_manage_name_list_db(json_object=json_object)
+    return True
 
+# def create_profile_manage_student_list_service(json_object={}):
+#     return repositoriesDB.create_profile_manage_student_list(json_object=json_object)
+
+
+def update_user_by_class_id(class_id=0, id=0, json_object={}):
+    user = find_by_user_id_and_class_id(id=id, to_model=True)
+    kelas = find_kelas_user_db_by_id(id=class_id, to_model=True)
+    if user is None:
+        raise_error(msg="log book not found")
+    if kelas is None:
+        raise_error(msg="kelas not found")
+    json_object["id"] = user.id
+    json_object["class_id"] = class_id
+    return update_profile_manage_student_list(json_object=json_object)
+
+
+def delete_user_by_class_id(class_id=0, id=0):
+    user = find_by_user_id_and_class_id(id=id, to_model=True)
+    kelas = find_kelas_user_db_by_id(id=class_id, to_model=True)
+    if kelas is None:
+        raise_error(msg="Kelas not found")
+    if user is None:
+        raise_error(msg="management not found")
+    delete_user = delete_management_name_list_by_id(id=id)
+    if delete_user is None:
+        raise_error(msg="Failed to delete")
+    return True
+
+# def delete_management_name_list_by_id(id=0):
+#     return repositoriesDB.delete_management_name_list_by_id(id=id)
+
+
+def find_management_list_by_ids(class_id=0, management_list_id=0):
+    management_list = find_user_db_by_id(id=management_list_id, to_model=True)
+    if management_list is None:
+        raise_error(msg="user not found")
+    kelas = find_kelas_user_db_by_id(id=class_id, to_model=True)
+    if kelas is None:
+        raise_error(msg="class not found")
+    return management_list.to_response()
+
+# def find_management_list_db_by_id(id=0, to_model=False):
+#     result = repositoriesDB.find_by_id(id=id)
+#     if result is None:
+#         return None
+#     if to_model:
+#         return result
+#     return result.to_response()
+
+from util.mail_service import MailService
+
+def request_password_reset(email):
+    mail_service = MailService()
+
+    token = repositoriesDB.create_password_reset_token(email)
+    if not token:
+        raise ValueError('Email tidak ditemukan')
+
+    reset_link = f"http://127.0.0.1:9701/reset-password?token={token}"
+    print("ini reset link === > ", reset_link)
+    print("ini email === > ", email)
+    try:
+        body = f"Click the link to reset your password: {reset_link}"
+        print("ini body === > ", body)
+        mail_service.send_email(
+            receiver_email=email,
+            subject="Password Reset Request",
+            body=body
+        )
+        return "Password reset email sent."
+    except Exception as e:
+        print(f"Error sending email: {e}")
+        return "Failed to send password reset email."
+
+
+def reset_password_service(token, new_password):
+    user = repositoriesDB.reset_password(token, new_password)
+    print("ini token => ", token)
+    if not user:
+        raise_error('Token tidak valid atau telah kedaluwarsa')
+    return "Password has been reset successfully."
+
+
+def verify_reset_code_service(email, code):
+    if repositoriesDB.verify_reset_code(email, code):
+        return "Code verified successfully."
+    else:
+        raise_error('Invalid or expired code')

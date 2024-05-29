@@ -35,5 +35,5 @@ def update_announcement_for_publish_by_id(id=None, is_published=False):
         raise_error('Data tidak ada')
     result = repositoriesDB.publish_by_id(id=id, is_published=is_published)
     if is_published:
-        fcm_service.push_service.broadcast(topic_name='announcement', message=announcement.description,title=announcement.name)
+        fcm_service.broadcast(topic_name='announcement', message=announcement.description,title=announcement.name)
     return result

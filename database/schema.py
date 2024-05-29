@@ -3,6 +3,7 @@ from pony.orm import *
 
 from entitas.kelas_user.models import KelasUser
 from entitas.log_book.models import LogBook
+from entitas.login_limit.models import LoginLimits
 from entitas.material.models import Material
 from entitas.absent.models import Absent
 from entitas.assignment.models import Assignment
@@ -24,6 +25,8 @@ from entitas.training.models import Training
 from entitas.training_user.models import Training_user
 from entitas.user.models import User
 from entitas.training_material.models import Training_Material
+from entitas.question.models import Question
+from entitas.whiteboard.models import Whiteboard
 from util.db_util import db2
 from config.config import DOMAIN_FILE_URL
 
@@ -49,24 +52,27 @@ class UserDB(db2.Entity):
     description = Optional(str, 100000, nullable=True)
     nip = Optional(str, nullable=True)
     tag = Optional(str, nullable=True)
-    position= Optional(str, nullable=True)
-    agency= Optional(str, nullable=True)
-    work_unit= Optional(str, nullable=True)
-    city= Optional(str, nullable=True)
-    rank= Optional(str, nullable=True)
-    npwp= Optional(str, nullable=True)
-    bank_name= Optional(str, nullable=True)
-    bank_account= Optional(str, nullable=True)
-    bank_in_name= Optional(str, nullable=True)
-    bank_book_photo= Optional(str, nullable=True)
-    id_card= Optional(str, nullable=True)
-    signature= Optional(str, nullable=True)
-    last_education= Optional(str, nullable=True)
-    client_ID= Optional(str, nullable=True)
-    departement= Optional(str, nullable=True)
-    class_id= Optional(int, nullable=True)
-    password_prompt= Optional(str, nullable=True)
-    gender= Optional(str, nullable=True)
+    position = Optional(str, nullable=True)
+    agency = Optional(str, nullable=True)
+    work_unit = Optional(str, nullable=True)
+    city = Optional(str, nullable=True)
+    rank = Optional(str, nullable=True)
+    npwp = Optional(str, nullable=True)
+    bank_name = Optional(str, nullable=True)
+    bank_account = Optional(str, nullable=True)
+    bank_in_name = Optional(str, nullable=True)
+    bank_book_photo = Optional(str, nullable=True)
+    id_card = Optional(str, nullable=True)
+    signature = Optional(str, nullable=True)
+    last_education = Optional(str, nullable=True)
+    client_id = Optional(str, nullable=True)
+    departement = Optional(str, nullable=True)
+    class_id = Optional(int, nullable=True)
+    password_prompt = Optional(str, nullable=True)
+    gender = Optional(str, nullable=True)
+    reset_code = Optional(str, nullable=True)
+    code_expiry = Optional(datetime, nullable=True)
+    signed_time = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -103,11 +109,14 @@ class UserDB(db2.Entity):
         item.id_card = self.id_card
         item.signature = self.signature
         item.last_education = self.last_education
-        item.client_ID = self.client_ID
+        item.client_id = self.client_id
         item.departement = self.departement
         item.class_id = self.class_id
         item.password_prompt = self.password_prompt
         item.gender = self.gender
+        item.code_expiry = self.code_expiry
+        item.reset_code = self.reset_code
+        item.signed_time = self.signed_time
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
@@ -451,6 +460,7 @@ class RoomDB(db2.Entity):
         item.updated_date = self.updated_date
         return item
 
+
 class AnnouncementDB(db2.Entity):
     _table_ = "announcement"
     id = PrimaryKey(int, auto=True)
@@ -496,6 +506,7 @@ class RoomUserDB(db2.Entity):
         item.updated_date = self.updated_date
         return item
 
+
 class ScheduleDB(db2.Entity):
     _table_ = "schedule"
     id = PrimaryKey(int, auto=True)
@@ -512,6 +523,7 @@ class ScheduleDB(db2.Entity):
     start_date = Optional(datetime, nullable=True)
     end_date = Optional(datetime, nullable=True)
     pic_wa = Optional(str, nullable=True)
+    program = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -531,9 +543,11 @@ class ScheduleDB(db2.Entity):
         item.end_date = self.end_date
         item.is_finish = self.is_finish
         item.pic_wa = self.pic_wa
+        item.program = self.program
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
+
 
 class ScheduleInstructurDB(db2.Entity):
     _table_ = "schedule_instructur"
@@ -656,6 +670,7 @@ class TrainingUserDB(db2.Entity):
         item.updated_date = self.updated_date
         return item
 
+
 class LogBookDB(db2.Entity):
     _table_ = "logbook"
     id = PrimaryKey(int, auto=True)
@@ -691,6 +706,7 @@ class LogBookDB(db2.Entity):
         item.updated_date = self.updated_date
         return item
 
+
 class KelasUserDB(db2.Entity):
     _table_ = "class_user"
     id = PrimaryKey(int, auto=True)
@@ -713,7 +729,77 @@ class KelasUserDB(db2.Entity):
         return item
 
 
+class LoginLimitsDB(db2.Entity):
+    _table_ = "login_limits"
+    id = PrimaryKey(int, auto=True)
+    class_id = Optional(int, nullable=True)
+    end_time = Optional(str, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = LoginLimits()
+        item.id = self.id
+        item.class_id = self.class_id
+        item.end_time = self.end_time
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
+
+class QuestionDB(db2.Entity):
+    _table_ = "question"
+    id = PrimaryKey(int, auto=True)
+    think_time = Optional(str, nullable=True)
+    answer_time = Optional(str, nullable=True)
+    class_id = Optional(int, nullable=True)
+    user_id = Optional(int, nullable=True)
+    user_name = Optional(str, nullable=True)
+    score = Optional(int, nullable=True)
+    answer_time_client = Optional(str, nullable=True)
+    answer = Optional(str, 100000, nullable=True)
+    type = Optional(str, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = Question()
+        item.id = self.id
+        item.think_time = self.think_time
+        item.answer_time = self.answer_time
+        item.class_id = self.class_id
+        item.user_id = self.user_id
+        item.user_name = self.user_name
+        item.score = self.score
+        item.answer_time_client = self.answer_time_client
+        item.answer = self.answer
+        item.type = self.type
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
+
+class WhiteboardDB(db2.Entity):
+    _table_ = "whiteboard"
+    id = PrimaryKey(int, auto=True)
+    user_id = Optional(int, nullable=True)
+    username = Optional(str, nullable=True)
+    class_id = Optional(int, nullable=True)
+    class_name = Optional(str, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = Whiteboard()
+        item.id = self.id
+        item.user_id = self.user_id
+        item.username = self.username
+        item.class_id = self.class_id
+        item.class_name = self.class_name
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
+
 if db2.schema is None:
     db2.generate_mapping(create_tables=False)
-
-

@@ -12,6 +12,7 @@ def get_kelas_user_db_with_pagination(page=1, limit=9, filters=[], to_model=Fals
 
 def find_kelas_user_db_by_id(id=0, to_model=False):
     result = repositoriesDB.find_by_id(id=id)
+    print("id ==>", id)
     if result is None:
         return None
     if to_model:
@@ -19,7 +20,7 @@ def find_kelas_user_db_by_id(id=0, to_model=False):
     return result.to_response()
 
 def find_kelas_user_for_student_by_id(id=0, user_id=0, to_model=False):
-    result = repositoriesDB.find_by_id(id=id, user_id=user_id)
+    result = repositoriesDB.find_by_kelas_user_id_and_user_id(id=id, user_id=user_id)
     if result is None:
         raise_error('data not found')
     if to_model:

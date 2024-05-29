@@ -13,7 +13,7 @@ class User:
             firebase_token='',
             ws_id=0,
             activate='',
-            last_login='',
+            last_login=None,
             hp='',
             token='',
             description='',
@@ -28,15 +28,17 @@ class User:
             bank_name='',
             bank_account='',
             bank_in_name='',
-            bank_photo_book='',
             id_card='',
             signature='',
             last_education='',
-            client_ID='',
+            client_id='',
             departement='',
             class_id=0,
             password_prompt='',
             gender='',
+            reset_code='',
+            code_expiry=None,
+            signed_time=None,
             bank_book_photo='',
             created_date=None,
             updated_date=None,
@@ -68,15 +70,18 @@ class User:
         self.bank_name = bank_name
         self.bank_account = bank_account
         self.bank_in_name = bank_in_name
-        self.bank_photo_book = bank_photo_book
+        self.bank_book_photo = bank_book_photo
         self.id_card = id_card
         self.signature = signature
         self.last_education = last_education
-        self.client_ID = client_ID
+        self.client_id = client_id
         self.departement = departement
         self.class_id = class_id
         self.password_prompt = password_prompt
         self.gender = gender
+        self.reset_code = reset_code
+        self.code_expiry = code_expiry
+        self.signed_time = signed_time
         self.bank_book_photo = bank_book_photo
         self.created_date = created_date
         self.updated_date = updated_date
@@ -109,15 +114,16 @@ class User:
             "bank_name": self.bank_name,
             "bank_account": self.bank_account,
             "bank_in_name": self.bank_in_name,
-            "bank_book_photo": self.bank_photo_book,
+            "bank_book_photo": self.bank_book_photo,
             "id_card": self.id_card,
             "signature": self.signature,
             "last_education": self.last_education,
-            "client_ID": self.client_ID,
+            "client_id": self.client_id,
             "departement": self.departement,
             "class_id": self.class_id,
             "password_prompt": self.password_prompt,
             "gender": self.gender,
+            "signed_time": str(self.signed_time) if self.signed_time is not None else None,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
@@ -158,15 +164,16 @@ class User:
             "bank_name": self.bank_name,
             "bank_account": self.bank_account,
             "bank_in_name": self.bank_in_name,
-            # "bank_book_photo": self.bank_photo_book,
+            # "bank_book_photo": self.bank_book_photo,
             "id_card": self.id_card,
             "signature": self.signature,
             "last_education": self.last_education,
-            "client_ID": self.client_ID,
+            "client_id": self.client_id,
             "departement": self.departement,
             "class_id": self.class_id,
             "password_prompt": self.password_prompt,
-            "gender": self.gender
+            "gender": self.gender,
+            "signed_time": self.signed_time
         }
 
     def to_response(self):
@@ -196,15 +203,16 @@ class User:
             "bank_name": self.bank_name,
             "bank_account": self.bank_account,
             "bank_in_name": self.bank_in_name,
-            "bank_book_photo": self.bank_photo_book,
+            "bank_book_photo": self.bank_book_photo,
             "id_card": self.id_card,
             "signature": self.signature,
             "last_education": self.last_education,
-            "client_ID": self.client_ID,
+            "client_id": self.client_id,
             "departement": self.departement,
             "class_id": self.class_id,
             "password_prompt": self.password_prompt,
             "gender": self.gender,
+            "signed_time": str(self.signed_time) if self.signed_time is not None else None,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
@@ -232,11 +240,17 @@ class User:
     def to_response_managements_list(self):
         return {
             "id": self.id,
-            "client_ID": self.client_ID,
-            "gender": self.gender,
+            "client_id": self.client_id,
             "name": self.name,
+            "email": self.email,
+            "gender": self.gender,
             "departement": self.departement,
             "class_id": self.class_id,
             "password_prompt": self.password_prompt,
             "password": self.password,
+        }
+    def to_response_guru(self):
+        return {
+            "email": self.email,
+            "password": self.password
         }

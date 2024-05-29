@@ -26,43 +26,42 @@ def get_kelas_user_ids_by_user_id(user_id=0):
         print("error get_schedule_ids_by_user_id: ", e)
     return result
 
-
 @db_session
 def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
-    from database.schema import UserDB
     result = []
     total_record = 0
-    # try:
-    data_in_db = select(s for s in KelasUserDB).order_by(desc(KelasUserDB.id))
-    # id = req.context['user']['id']
-    # print(user_id id)
-    # data_in_db = select((s, u) for s in KelasUserDB for u in UserDB if s.id == s.id and s.user_id == u.id)
-    for item in filters:
-        if item["field"] == "id":
-            data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
-        elif item["field"] == "name":
-            data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
-        # elif item["field"] == "user_id":
-        #     data_in_db = data_in_db.filter(lambda d: item["value"] == d.user_id)
+    try:
+        data_in_db = select(s for s in KelasUserDB).order_by(desc(KelasUserDB.id))
+        for item in filters:
+            if item["field"] == "id":
+                data_in_db = data_in_db.filter(lambda d: item["value"] == d.id)
+            elif item["field"] == "name":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
 
-    total_record = data_in_db.count()
-    if limit > 0:
-        data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
-    else:
-        data_in_db = data_in_db
-    for item in data_in_db:
-        if to_model:
-            result.append(item.to_model())
+        total_record = data_in_db.count()
+        if limit > 0:
+            data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
         else:
-            result.append(item.to_model().to_response())
-
-    # except Exception as e:
-    #     print("error ScheduleUser getAllWithPagination: ", e)
+            data_in_db = data_in_db
+        for item in data_in_db:
+            model_instance = item.to_model()
+            if to_model:
+                result.append(model_instance)
+            else:
+                if model_instance is not None:
+                    result.append(model_instance.to_response())
+                else:
+                    # Handle case where to_model() returns None
+                    print("Warning: to_model() returned None for item with id:", item.id)
+    except Exception as e:
+        print("error Absen getAllWithPagination: ", e)
     return result, {
         "total": total_record,
         "page": page,
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
+
+
 #
 @db_session
 def get_user_and_schedule_user_with_pagination(page=1, limit=9, filters=[], to_model=False):
@@ -174,6 +173,7 @@ def delete_by_id(id=None):
 @db_session
 def insert(json_object={}, to_model=False):
     try:
+        print("kelas user ==> ", json_object)
         new_kelas_user = KelasUserDB(
             name=json_object["name"],
             description=json_object["description"],
@@ -189,3 +189,13 @@ def insert(json_object={}, to_model=False):
     except Exception as e:
         print("error Kelas User insert: ", e)
     return None
+
+@db_session
+def find_kelas_user_db_by_id(id=0, to_model=False):
+    result = find_by_id(id=id)
+    print("id ==>", id)
+    if result is None:
+        return None
+    if to_model:
+        return result
+    return result.to_response()
