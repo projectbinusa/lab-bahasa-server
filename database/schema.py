@@ -65,11 +65,13 @@ class UserDB(db2.Entity):
     id_card = Optional(str, nullable=True)
     signature = Optional(str, nullable=True)
     last_education = Optional(str, nullable=True)
-    client_ID = Optional(str, nullable=True)
+    client_id = Optional(str, nullable=True)
     departement = Optional(str, nullable=True)
     class_id = Optional(int, nullable=True)
     password_prompt = Optional(str, nullable=True)
     gender = Optional(str, nullable=True)
+    reset_code = Optional(str, nullable=True)
+    code_expiry = Optional(datetime, nullable=True)
     signed_time = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
@@ -107,11 +109,13 @@ class UserDB(db2.Entity):
         item.id_card = self.id_card
         item.signature = self.signature
         item.last_education = self.last_education
-        item.client_ID = self.client_ID
+        item.client_id = self.client_id
         item.departement = self.departement
         item.class_id = self.class_id
         item.password_prompt = self.password_prompt
         item.gender = self.gender
+        item.code_expiry = self.code_expiry
+        item.reset_code = self.reset_code
         item.signed_time = self.signed_time
         item.created_date = self.created_date
         item.updated_date = self.updated_date

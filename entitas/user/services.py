@@ -375,25 +375,21 @@ def update_menage_name_list_db(json_object={}):
 
 
 def create_profile_manage_student_list_service(class_id=0, json_object={}):
+    print("Service called with class_id:", class_id, "and data:", json_object)
     kelas_user = repositoriesDB.find_by_user_id_and_class_id(class_id=class_id)
-    # user_name = find_by_id(id=json_object['user_id'])
-    print("class_id ====>", class_id, "data ==>", json_object)
-    # last_user = UserDB.select(lambda u: u.client_ID.startswith("08083591")).order_by(desc(UserDB.client_ID)).first()
-    # # Generate new client_ID
-    # if last_user:
-    #     last_id_number = int(last_user.client_ID[8:])  # Extract the numeric part after "08083591"
-    #     new_id_number = last_id_number + 1
-    # else:
-    #     new_id_number = 1  # Start from 1 if there are no existing IDs
-    # new_client_ID = f"0808359{new_id_number:02d}"  # Ensure it has at least 2 digits
-
+    print("Kelas user:", kelas_user)
+    # new_client_ID = repositoriesDB.generate_new_client_id()
+    # print("Generated client_ID:", new_client_ID)
     if kelas_user is not None:
+        print("Updating existing user:", kelas_user.id)
         repositoriesDB.update_delete_by_id(id=kelas_user.id, is_deleted=False)
         return True
     json_object['class_id'] = class_id
     json_object["role"] = "student"
-    json_object["client_ID"] = "0808359" + str(1)
-    return repositoriesDB.create_profile_manage_student_list(json_object=json_object)
+    # json_object["client_id"] = new_client_ID
+    result = repositoriesDB.create_profile_manage_student_list(json_object=json_object)
+    print("Create profile result:", result)
+    return result
 
 # def create_profile_manage_student_list_service(json_object={}):
 #     return repositoriesDB.create_profile_manage_student_list(json_object=json_object)
@@ -444,3 +440,42 @@ def find_management_list_by_ids(class_id=0, management_list_id=0):
 #         return result
 #     return result.to_response()
 
+from util.mail_service import MailService
+
+def request_password_reset(email):
+    mail_service = MailService()
+
+    token = repositoriesDB.create_password_reset_token(email)
+    if not token:
+        raise ValueError('Email tidak ditemukan')
+
+    reset_link = f"http://127.0.0.1:9701/reset-password?token={token}"
+    print("ini reset link === > ", reset_link)
+    print("ini email === > ", email)
+    try:
+        body = f"Click the link to reset your password: {reset_link}"
+        print("ini body === > ", body)
+        mail_service.send_email(
+            receiver_email=email,
+            subject="Password Reset Request",
+            body=body
+        )
+        return "Password reset email sent."
+    except Exception as e:
+        print(f"Error sending email: {e}")
+        return "Failed to send password reset email."
+
+
+def reset_password_service(token, new_password):
+    user = repositoriesDB.reset_password(token, new_password)
+    print("ini token => ", token)
+    if not user:
+        raise_error('Token tidak valid atau telah kedaluwarsa')
+    return "Password has been reset successfully."
+
+
+def verify_reset_code_service(email, code):
+    if repositoriesDB.verify_reset_code(email, code):
+        return "Code verified successfully."
+    else:
+        raise_error('Invalid or expired code')

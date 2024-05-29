@@ -173,6 +173,7 @@ def delete_by_id(id=None):
 @db_session
 def insert(json_object={}, to_model=False):
     try:
+        print("kelas user ==> ", json_object)
         new_kelas_user = KelasUserDB(
             name=json_object["name"],
             description=json_object["description"],

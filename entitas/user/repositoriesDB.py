@@ -1,7 +1,7 @@
 import datetime
 import json
 import uuid
-from datetime import datetime, timedelta
+import datetime
 
 from pony.orm import *
 
@@ -105,8 +105,8 @@ def get_all_with_pagination_managements(
     try:
         data_in_db = select(s for s in UserDB).order_by(desc(UserDB.id))
         for item in filters:
-            if item["field"] == "client_ID":
-                data_in_db = data_in_db.filter(lambda d: item["value"] in d.client_ID)
+            if item["field"] == "client_id":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.client_id)
             elif item["field"] == "name":
                 data_in_db = data_in_db.filter(lambda d: d.name in item["value"])
             elif item["field"] == "class_id":
@@ -264,7 +264,7 @@ def insert(json_object={}, to_model=False):
             id_card=json_object['id_card'],
             signature=json_object['signature'],
             last_education=json_object['last_education'],
-            # client_ID=json_object['client_ID'],
+            # client_id=json_object['client_id'],
             # departement=json_object['departement'],
             # class_id=json_object['class_id'],
             # password_prompt=json_object['password_prompt'],
@@ -319,7 +319,7 @@ def signup(json_object={}):
         id_card=json_object['id_card'],
         signature=json_object['signature'],
         last_education=json_object['last_education'],
-        # client_ID=json_object['client_ID'],
+        # client_id=json_object['client_id'],
         # departement=json_object['departement'],
         # class_id=json_object['class_id'],
         # password_prompt=json_object['password_prompt'],
@@ -599,8 +599,8 @@ def get_all_with_pagination_managements(
     try:
         data_in_db = select(s for s in UserDB).order_by(desc(UserDB.id))
         for item in filters:
-            if item["field"] == "client_ID":
-                data_in_db = data_in_db.filter(lambda d: item["value"] in d.client_ID)
+            if item["field"] == "client_id":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.client_id)
             elif item["field"] == "name":
                 data_in_db = data_in_db.filter(lambda d: d.name in item["value"])
             elif item["field"] == "class_id":
@@ -692,8 +692,8 @@ def update_profile_manage_student_list(json_object=None, to_model=False):
             updated_user.gender = json_object["gender"]
         if "departement" in json_object:
             updated_user.departement = json_object["departement"]
-        if "client_ID" in json_object:
-            updated_user.student_id = json_object["client_ID"]
+        if "client_id" in json_object:
+            updated_user.student_id = json_object["client_id"]
         if "class_id" in json_object:
             updated_user.class_id = json_object["class_id"]
         if "password" in json_object:
@@ -711,32 +711,32 @@ def update_profile_manage_student_list(json_object=None, to_model=False):
         print("error UserDB update_profile: " + str(e))
         return
 
-
 @db_session
-def create_profile_manage_student_list(json_object=None, to_model=False):
+def create_profile_manage_student_list(json_object={}, to_model=False):
     try:
-        # Create new user with the generated client_ID
+        print("Creating new user with data: ", json_object)
+        # Create new user with the generated client_id
         new_user = UserDB(
-            name=json_object['name'],
-            email=json_object['email'],
-            role=json_object['role'],
-            gender=json_object['gender'],
+            name=json_object["name"],
+            email=json_object["email"],
+            role=json_object["role"],
+            gender=json_object["gender"],
             departement=json_object["departement"],
-            client_ID=json_object['client_ID'],
+            client_id=json_object["client_id"],
             class_id=json_object["class_id"],
             password=encrypt_string(json_object["password"]),
             password_prompt=encrypt_string(json_object["password_prompt"])
         )
-
-        commit()
-
+        commit()  # Explicit commit to save changes
+        print("User created successfully with ID: ", new_user.client_id)
         if to_model:
             return new_user.to_model()
         else:
             return new_user.to_model().to_response_managements_list()
     except Exception as e:
-        print("error creating profile: " + str(e))
+        print("Error creating profile: " + str(e))
         return None
+
 
 @db_session
 def find_by_id(id=None):
@@ -748,7 +748,58 @@ def find_by_id(id=None):
 
 @db_session
 def find_last_client_id():
-    last_client = select(c for c in UserDB if c.role == "student").order_by(desc(UserDB.client_ID)).first()
+    last_client = select(c for c in UserDB if c.role == "student").order_by(desc(UserDB.client_id)).first()
     return last_client if last_client else None
     
 
+import random
+
+@db_session
+def create_password_reset_token(email):
+    user = UserDB.get(email=email)
+    print("repo =>", email)
+    if user is None:
+        return None
+    code = str(random.randint(100000, 999999))
+    user.reset_code = code
+    user.code_expiry = datetime.datetime.now() + datetime.timedelta(minutes=15)
+    commit()
+    return code
+
+
+@db_session
+def verify_password_reset_token(email):
+    user = create_password_reset_token(email)
+    print("token", user.code_expiry)
+    if user and user.code_expiry > datetime.datetime.now():
+        return user
+    return None
+
+@db_session
+def reset_password(token, new_password):
+    user = verify_password_reset_token(token)
+    if not user:
+        return None
+    user.password = encrypt_string(new_password)
+    user.reset_code = None
+    user.code_expiry = None
+    commit()
+    return user.to_model()
+
+@db_session
+def verify_reset_code(email, code):
+    user = UserDB.get(email=email, reset_code=code)
+    if user and user.code_expiry > datetime.datetime.now():
+        return True
+    return False
+
+@db_session
+def generate_new_client_id():
+    last_user = UserDB.select(lambda u: u.client_id.startswith("0808359")).order_by(desc(UserDB.client_id)).first()
+    if last_user:
+        last_id_number = int(last_user.client_id[8:])  # Extract the numeric part after "08083591"
+        new_id_number = last_id_number + 1
+    else:
+        new_id_number = 1  # Start from 1 if there are no existing IDs
+    new_client_id = f"0808359{new_id_number:02d}"  # Ensure it has at least 2 digits
+    return new_client_id
