@@ -58,6 +58,7 @@ def find_whiteboard_by_class_id(class_id=0, whiteboard_id=0):
 
 
 def update_whiteboard_by_class_id(class_id=0, id=0, json_object={}):
+    # try:
     whiteboard = find_whiteboard_db_by_id(id=id, to_model=True)
     kelas = find_kelas_user_db_by_id(id=class_id, to_model=True)
     if whiteboard is None:
@@ -67,6 +68,9 @@ def update_whiteboard_by_class_id(class_id=0, id=0, json_object={}):
     json_object["id"] = whiteboard.id
     json_object["class_id"] = class_id
     return update(json_object=json_object)
+    # except Exception as e:
+    #     print("Error:", e)
+    #     return None
 
 
 def create_whiteboard_service(class_id=0, json_object={}):

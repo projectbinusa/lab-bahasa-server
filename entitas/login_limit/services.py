@@ -41,7 +41,7 @@ def insert_login_limits_db(json_object={}):
 def insert_login_limits_db_by_class_id(class_id=0, json_object={}):
     kelas_user = repositoriesDB.find_by_login_limits_id_and_class_id(class_id=class_id)
     # user_name = find_by_id(id=json_object['user_id'])
-    print("class_id ====>" ,class_id, "data ==>", json_object)
+    print("class_id ====>",class_id, "data ==>", json_object)
     if kelas_user is not None:
         repositoriesDB.update_delete_by_id(id=kelas_user.id, is_deleted=False)
         return True

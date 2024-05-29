@@ -43,13 +43,17 @@ def kelas_user_active_db(json_object={}):
     return repositoriesDB.class_active(json_object=json_object)
 
 def insert_kelas_user_db(json_object={}, file=None):
-    if file is None:
-        raise raise_error('File not found')
-    temp_file = str(uuid.uuid4()) + file.filename.replace(" ", "")
-    with open(LOG_BOOK_FOLDER + temp_file, "wb") as f:
-        f.write(file.file.read())
-    json_object["file"] = DOMAIN_FILE_URL + '/files/' + temp_file
-    return repositoriesDB.insert(json_object=json_object)
+    try:
+        if file is None:
+            raise raise_error('File not found')
+        temp_file = str(uuid.uuid4()) + file.filename.replace(" ", "")
+        with open(LOG_BOOK_FOLDER + temp_file, "wb") as f:
+            f.write(file.file.read())
+        json_object["file"] = DOMAIN_FILE_URL + '/files/' + temp_file
+        return repositoriesDB.insert(json_object=json_object)
+    except Exception as e:
+        print("Error:", e)
+        return None
 
 def delete_kelas_user_by_id(id=0):
     return repositoriesDB.delete_by_id(id=id)
