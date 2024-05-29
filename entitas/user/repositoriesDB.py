@@ -711,31 +711,55 @@ def update_profile_manage_student_list(json_object=None, to_model=False):
         print("error UserDB update_profile: " + str(e))
         return
 
+
 @db_session
 def create_profile_manage_student_list(json_object={}, to_model=False):
     try:
-        print("Creating new user with data: ", json_object)
-        # Create new user with the generated client_id
         new_user = UserDB(
-            name=json_object["name"],
-            email=json_object["email"],
-            role=json_object["role"],
-            gender=json_object["gender"],
-            departement=json_object["departement"],
-            client_id=json_object["client_id"],
-            class_id=json_object["class_id"],
-            password=encrypt_string(json_object["password"]),
-            password_prompt=encrypt_string(json_object["password_prompt"])
+            name = json_object["name"],
+            email = json_object["email"],
+            role = json_object["role"],
+            gender = json_object["gender"],
+            departement = json_object["departement"],
+            client_id = json_object["client_id"],
+            class_id = json_object["class_id"],
+            password = json_object["password"],
+            password_prompt = json_object["password_prompt"],
         )
-        commit()  # Explicit commit to save changes
-        print("User created successfully with ID: ", new_user.client_id)
+        commit()
         if to_model:
             return new_user.to_model()
         else:
-            return new_user.to_model().to_response_managements_list()
+            return new_user.to_model().to_response()
     except Exception as e:
-        print("Error creating profile: " + str(e))
-        return None
+        print("error management name list insert: ", e)
+    return None
+
+# @db_session
+# def create_profile_manage_student_list(json_object={}, to_model=False):
+#     try:
+#         print("Creating new user with data: ", json_object)
+#         # Create new user with the generated client_id
+#         new_user = UserDB(
+#             name=json_object["name"],
+#             email=json_object["email"],
+#             role=json_object["role"],
+#             gender=json_object["gender"],
+#             departement=json_object["departement"],
+#             client_id=json_object["client_id"],
+#             class_id=json_object["class_id"],
+#             password=encrypt_string(json_object["password"]),
+#             password_prompt=encrypt_string(json_object["password_prompt"])
+#         )
+#         commit()  # Explicit commit to save changes
+#         print("User created successfully with ID: ", new_user.client_id)
+#         if to_model:
+#             return new_user.to_model()
+#         else:
+#             return new_user.to_model().to_response_managements_list()
+#     except Exception as e:
+#         print("Error creating profile: " + str(e))
+#         return None
 
 
 @db_session

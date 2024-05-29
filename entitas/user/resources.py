@@ -324,8 +324,11 @@ class ManagementListResource:
         )
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 
+    # def on_post(self, req, resp, class_id):
+    #     print("di resources ==> ", class_id)
+    #     resouce_response_api(resp=resp,
+    #                          data=services.create_profile_manage_student_list_service(class_id, json_object=req.media))
     def on_post(self, req, resp, class_id):
-        print("di resources ==> ", class_id)
         resouce_response_api(resp=resp,
                              data=services.create_profile_manage_student_list_service(class_id, json_object=req.media))
 
