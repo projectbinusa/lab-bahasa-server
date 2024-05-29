@@ -360,6 +360,7 @@ class ManagementListWithByIdResources:
         resouce_response_api(resp=resp, data=log_book_data)
 
 
+
 class ForgotPasswordResource:
     auth = {
         'auth_disabled': True
@@ -371,7 +372,6 @@ class ForgotPasswordResource:
             raise falcon.HTTPBadRequest('Bad Request', 'Email is required')
         message = request_password_reset(email)
         resp.media = {'message': message}
-
 
 class VerifyCodeResource:
     auth = {
@@ -386,7 +386,6 @@ class VerifyCodeResource:
         message = verify_reset_code_service(email, code)
         resp.media = {'message': message}
 
-
 class ResetPasswordResource:
     auth = {
         'auth_disabled': True
@@ -394,8 +393,9 @@ class ResetPasswordResource:
     def on_post(self, req, resp):
         data = req.media
         email = data.get('email')
+        token = req.get_param('token')
         new_password = data.get('new_password')
-        if not email or not new_password:
-            raise falcon.HTTPBadRequest('Bad Request', 'Email and new password are required')
-        message = reset_password_service(email, new_password)
+        if not email or not token or not new_password:
+            raise falcon.HTTPBadRequest('Bad Request', 'Email, token, and new password are required')
+        message = reset_password_service(email, token, new_password)
         resp.media = {'message': message}

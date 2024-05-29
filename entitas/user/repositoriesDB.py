@@ -787,7 +787,6 @@ def find_last_client_id():
 
 import random
 
-
 @db_session
 def create_password_reset_token(email):
     user = UserDB.get(email=email)
@@ -800,19 +799,18 @@ def create_password_reset_token(email):
     commit()
     return code
 
-
 @db_session
-def verify_password_reset_token(email):
-    user = create_password_reset_token(email)
-    print("token", user.code_expiry)
+def verify_password_reset_token(email, code):
+    user = UserDB.get(email=email, reset_code=code)
+    if user:
+        print("token", user.code_expiry)
     if user and user.code_expiry > datetime.datetime.now():
         return user
     return None
 
-
 @db_session
-def reset_password(token, new_password):
-    user = verify_password_reset_token(token)
+def reset_password(email, code, new_password):
+    user = verify_password_reset_token(email, code)
     if not user:
         return None
     user.password = encrypt_string(new_password)
@@ -820,7 +818,6 @@ def reset_password(token, new_password):
     user.code_expiry = None
     commit()
     return user.to_model()
-
 
 @db_session
 def verify_reset_code(email, code):
