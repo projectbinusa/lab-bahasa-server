@@ -724,28 +724,51 @@ def update_profile_manage_student_list(json_object=None, to_model=False):
 @db_session
 def create_profile_manage_student_list(json_object={}, to_model=False):
     try:
-        print("Creating new user with data: ", json_object)
-        # Create new user with the generated client_id
         new_user = UserDB(
-            name=json_object["name"],
-            email=json_object["email"],
-            role=json_object["role"],
-            gender=json_object["gender"],
-            departement=json_object["departement"],
-            client_id=json_object["client_id"],
-            class_id=json_object["class_id"],
-            password=encrypt_string(json_object["password"]),
-            password_prompt=encrypt_string(json_object["password_prompt"])
+            name = json_object["name"],
+            email = json_object["email"],
+            role = json_object["role"],
+            gender = json_object["gender"],
+            departement = json_object["departement"],
+            client_id = json_object["client_id"],
+            class_id = json_object["class_id"],
+            password = json_object["password"],
+            password_prompt = json_object["password_prompt"],
         )
-        commit()  # Explicit commit to save changes
-        print("User created successfully with ID: ", new_user.client_id)
+        commit()
         if to_model:
             return new_user.to_model()
         else:
-            return new_user.to_model().to_response_managements_list()
+            return new_user.to_model().to_response()
     except Exception as e:
-        print("Error creating profile: " + str(e))
-        return None
+        print("error management name list insert: ", e)
+    return None
+
+# @db_session
+# def create_profile_manage_student_list(json_object={}, to_model=False):
+#     try:
+#         print("Creating new user with data: ", json_object)
+#         # Create new user with the generated client_id
+#         new_user = UserDB(
+#             name=json_object["name"],
+#             email=json_object["email"],
+#             role=json_object["role"],
+#             gender=json_object["gender"],
+#             departement=json_object["departement"],
+#             client_id=json_object["client_id"],
+#             class_id=json_object["class_id"],
+#             password=encrypt_string(json_object["password"]),
+#             password_prompt=encrypt_string(json_object["password_prompt"])
+#         )
+#         commit()  # Explicit commit to save changes
+#         print("User created successfully with ID: ", new_user.client_id)
+#         if to_model:
+#             return new_user.to_model()
+#         else:
+#             return new_user.to_model().to_response_managements_list()
+#     except Exception as e:
+#         print("Error creating profile: " + str(e))
+#         return None
 
 
 @db_session
@@ -764,7 +787,6 @@ def find_last_client_id():
 
 import random
 
-
 @db_session
 def create_password_reset_token(email):
     user = UserDB.get(email=email)
@@ -777,19 +799,18 @@ def create_password_reset_token(email):
     commit()
     return code
 
-
 @db_session
-def verify_password_reset_token(email):
-    user = create_password_reset_token(email)
-    print("token", user.code_expiry)
+def verify_password_reset_token(email, code):
+    user = UserDB.get(email=email, reset_code=code)
+    if user:
+        print("token", user.code_expiry)
     if user and user.code_expiry > datetime.datetime.now():
         return user
     return None
 
-
 @db_session
-def reset_password(token, new_password):
-    user = verify_password_reset_token(token)
+def reset_password(email, code, new_password):
+    user = verify_password_reset_token(email, code)
     if not user:
         return None
     user.password = encrypt_string(new_password)
@@ -797,7 +818,6 @@ def reset_password(token, new_password):
     user.code_expiry = None
     commit()
     return user.to_model()
-
 
 @db_session
 def verify_reset_code(email, code):

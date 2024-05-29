@@ -374,22 +374,39 @@ def update_menage_name_list_db(json_object={}):
     return repositoriesDB.update_profile_manage_student_list(json_object=json_object)
 
 
+# def create_profile_manage_student_list_service(class_id=0, json_object={}):
+#     print("Service called with class_id:", class_id, "and data:", json_object)
+#     kelas_user = repositoriesDB.find_by_user_id_and_class_id(class_id=class_id)
+#     print("Kelas user:", kelas_user)
+#     new_client_id = repositoriesDB.generate_new_client_id()
+#     print("Generated client_ID:",   new_client_id)
+#     if kelas_user is not None:
+#         print("Updating existing user:", kelas_user.id)
+#         repositoriesDB.update_delete_by_id(id=kelas_user.id, is_deleted=False)
+#         return True
+#     json_object['class_id'] = class_id
+#     json_object["role"] = "student"
+#     json_object["client_id"] =  new_client_id
+#     result = repositoriesDB.create_profile_manage_student_list(json_object=json_object)
+#     print("Create profile result:", result)
+#     return result
+
+
+def insert_manage_name_list_db(json_object={}):
+    return repositoriesDB.create_profile_manage_student_list(json_object=json_object)
+
+
 def create_profile_manage_student_list_service(class_id=0, json_object={}):
-    print("Service called with class_id:", class_id, "and data:", json_object)
     kelas_user = repositoriesDB.find_by_user_id_and_class_id(class_id=class_id)
-    print("Kelas user:", kelas_user)
-    new_client_id = repositoriesDB.generate_new_client_id()
-    print("Generated client_ID:", new_client_id)
+    # user_name = find_by_id(id=json_object['user_id'])
+    print("class_id ====>",class_id, "data ==>", json_object)
     if kelas_user is not None:
-        print("Updating existing user:", kelas_user.id)
         repositoriesDB.update_delete_by_id(id=kelas_user.id, is_deleted=False)
         return True
     json_object['class_id'] = class_id
-    json_object["role"] = "student"
-    json_object["client_id"] = new_client_id
-    result = repositoriesDB.create_profile_manage_student_list(json_object=json_object)
-    print("Create profile result:", result)
-    return result
+    json_object['role'] = "student"
+    insert_manage_name_list_db(json_object=json_object)
+    return True
 
 # def create_profile_manage_student_list_service(json_object={}):
 #     return repositoriesDB.create_profile_manage_student_list(json_object=json_object)
@@ -441,15 +458,14 @@ def find_management_list_by_ids(class_id=0, management_list_id=0):
 #     return result.to_response()
 
 from util.mail_service import MailService
-
 def request_password_reset(email):
     mail_service = MailService()
 
-    token = repositoriesDB.create_password_reset_token(email)
+    token = create_password_reset_token(email)
     if not token:
         raise ValueError('Email tidak ditemukan')
 
-    reset_link = f"http://127.0.0.1:9701/reset-password?token={token}"
+    reset_link = f"http://127.0.0.1:9701/reset-password?token={token}&email={email}"
     print("ini reset link === > ", reset_link)
     print("ini email === > ", email)
     try:
@@ -465,17 +481,15 @@ def request_password_reset(email):
         print(f"Error sending email: {e}")
         return "Failed to send password reset email."
 
-
-def reset_password_service(token, new_password):
-    user = repositoriesDB.reset_password(token, new_password)
+def reset_password_service(email, token, new_password):
+    user = reset_password(email, token, new_password)
     print("ini token => ", token)
     if not user:
-        raise_error('Token tidak valid atau telah kedaluwarsa')
+        raise ValueError('Token tidak valid atau telah kedaluwarsa')
     return "Password has been reset successfully."
 
-
 def verify_reset_code_service(email, code):
-    if repositoriesDB.verify_reset_code(email, code):
+    if verify_password_reset_token(email, code):
         return "Code verified successfully."
     else:
-        raise_error('Invalid or expired code')
+        raise ValueError('Invalid or expired code')
