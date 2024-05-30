@@ -493,3 +493,10 @@ def verify_reset_code_service(email, code):
         return "Code verified successfully."
     else:
         raise ValueError('Invalid or expired code')
+
+def update_class_id_user(json_object={}, id=0):
+    user = find_by_id(id=id)
+    print(id)
+    if user is None:
+        raise_error(msg="user not found")
+    return repositoriesDB.edit_class_id_user(json_object=json_object)

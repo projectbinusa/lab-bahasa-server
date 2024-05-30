@@ -65,4 +65,5 @@ def instructur_routes(api):
     api.add_route('/api/instructur/class/{class_id}/first-to-answer', FirstToAnswerResource())
     api.add_route('/api/instructur/class/{class_id}/enter-answer', EnterAnswerResource())
     api.add_route('/api/instructur/class/{class_id}/demo-to-answer', DemoToAnswerResource())
+    api.add_route("/api/instructur/update_class_id_user/{update_class_id_user}", EditClassIdUserResource())
 
