@@ -399,3 +399,12 @@ class ResetPasswordResource:
             raise falcon.HTTPBadRequest('Bad Request', 'Email, token, and new password are required')
         message = reset_password_service(email, token, new_password)
         resp.media = {'message': message}
+
+class EditClassIdUserResource:
+    def on_put(self, req, resp, update_class_id_user: int):
+        body = req.media
+        resouce_response_api(resp=resp, data=services.update_class_id_user(id=int(update_class_id_user), json_object=body
+        ))
+    # def on_put(self, req, resp, update_class_id_user: int):
+    #     body = req.media
+    #     resouce_response_api(resp=resp, data=services.update_class_id_user(id=int(update_class_id_user), json_object=body))
