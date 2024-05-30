@@ -1,6 +1,9 @@
+from datetime import datetime
+
 from pony.orm import *
 
 from database.schema import QuestionDB
+
 
 @db_session
 def get_all(to_model=True):
@@ -47,6 +50,7 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
 
+
 @db_session
 def insert(json_object={}, to_model=False):
     try:
@@ -69,6 +73,7 @@ def insert(json_object={}, to_model=False):
     except Exception as e:
         print("error question insert: ", e)
     return
+
 
 @db_session
 def update(json_object=None, to_model=False):
@@ -103,6 +108,7 @@ def update(json_object=None, to_model=False):
         print("error UserDB update_profile: " + str(e))
         return
 
+
 @db_session
 def delete_by_id(id=None):
     try:
@@ -113,9 +119,55 @@ def delete_by_id(id=None):
         print("error Question delete: ", e)
     return
 
+
 @db_session
 def find_question_by_id(id=None):
     data_in_db = select(s for s in QuestionDB if s.id == id)
     if data_in_db.first() is None:
         return None
     return data_in_db.first().to_model()
+
+
+@db_session
+def save_competition(json_object={}, to_model=False):
+    try:
+        new_competition = QuestionDB(
+            class_id=json_object["class_id"],
+            type=json_object["type"],
+            think_time=json_object["think_time"],
+            answer_time=json_object["answer_time"]
+        )
+        commit()
+        if to_model:
+            return new_competition.to_model()
+        else:
+            return new_competition.to_model().to_response_competition()
+    except Exception as e:
+        print("error Question insert: ", e)
+    return None
+
+
+@db_session
+def save_competition_answer(json_object={}):
+    try:
+        # Format the datetime object to a string
+        answer_time_formatted = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        new_answer = QuestionDB(
+            class_id=json_object['class_id'],
+            user_id=json_object['user_id'],
+            answer=json_object['answer'],
+            answer_time_client=answer_time_formatted  # Save as a formatted string
+        )
+        commit()
+        return new_answer
+    except Exception as e:
+        print(f"Error saving answer: {e}")
+        return None
+
+
+@db_session
+def get_active_competition(class_id):
+    # Get the active competition for the class
+    active_competitions = select(s for s in QuestionDB if s.class_id == class_id)
+    return active_competitions.first() if active_competitions else None
