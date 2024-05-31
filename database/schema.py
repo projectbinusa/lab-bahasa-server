@@ -1,6 +1,7 @@
 from datetime import date, datetime
 from pony.orm import *
 
+from entitas.answer.models import Answer
 from entitas.kelas_user.models import KelasUser
 from entitas.log_book.models import LogBook
 from entitas.login_limit.models import LoginLimits
@@ -750,14 +751,12 @@ class LoginLimitsDB(db2.Entity):
 class QuestionDB(db2.Entity):
     _table_ = "question"
     id = PrimaryKey(int, auto=True)
+    name = Optional(str, nullable=True)
     think_time = Optional(str, nullable=True)
     answer_time = Optional(str, nullable=True)
     class_id = Optional(int, nullable=True)
-    user_id = Optional(int, nullable=True)
-    user_name = Optional(str, nullable=True)
-    score = Optional(int, nullable=True)
-    answer_time_client = Optional(str, nullable=True)
-    answer = Optional(str, 100000, nullable=True)
+    instructur_id = Optional(int, nullable=True)
+    instructur_name = Optional(str, nullable=True)
     type = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
@@ -765,14 +764,12 @@ class QuestionDB(db2.Entity):
     def to_model(self):
         item = Question()
         item.id = self.id
+        item.name = self.name
         item.think_time = self.think_time
         item.answer_time = self.answer_time
         item.class_id = self.class_id
-        item.user_id = self.user_id
-        item.user_name = self.user_name
-        item.score = self.score
-        item.answer_time_client = self.answer_time_client
-        item.answer = self.answer
+        item.instructur_id = self.instructur_id
+        item.instructur_name = self.instructur_name
         item.type = self.type
         item.created_date = self.created_date
         item.updated_date = self.updated_date
@@ -796,6 +793,30 @@ class WhiteboardDB(db2.Entity):
         item.username = self.username
         item.class_id = self.class_id
         item.class_name = self.class_name
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
+
+class AnswerDB(db2.Entity):
+    _table_ = "answer"
+    id = PrimaryKey(int, auto=True)
+    question_id = Optional(int, nullable=True)
+    answer = Optional(str, 100000, nullable=True)
+    user_id = Optional(int, nullable=True)
+    answer_time_user = Optional(str, nullable=True)
+    class_id = Optional(int, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = Answer()
+        item.id = self.id
+        item.question_id = self.question_id
+        item.answer = self.answer
+        item.user_id = self.user_id
+        item.answer_time_user = self.answer_time_user
+        item.class_id = self.class_id
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item

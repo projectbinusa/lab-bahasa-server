@@ -87,78 +87,63 @@ def start_competition(json_object={}):
     return repositoriesDB.save_competition(json_object=json_object)
 
 
-def handle_first_to_answer(json_object={}):
-    class_id = json_object.get('class_id')
-    user_id = json_object.get('user_id')
-    answer = json_object.get('answer')
-    if not class_id or not user_id or not answer:
-        raise ValueError("class_id, user_id, and answer are required")
-
-    competition = get_active_competition(class_id)
-    if not competition:
-        raise ValueError("No active competition found for this class")
-
-    if competition.answer:
-        return {"status": "failed", "message": "Question already answered"}
-
-    competition.user_id = user_id
-    competition.answer = answer
-    competition.answer_time_client = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    commit()
-    return {"status": "answered", "message": "You are the first to answer"}
-
-
-@db_session
-def handle_enter_answer(json_object={}):
-    class_id = json_object.get('class_id')
-    user_id = json_object.get('user_id')
-    answer = json_object.get('answer')
-
-    if not class_id or not user_id or not answer:
-        return {"status": "failed", "message": "Missing required parameters: class_id, user_id, and/or answer"}
-
-        # Check if the user has already answered this question
-    existing_answer = QuestionDB.select(lambda q: q.class_id == class_id and q.user_id == user_id).order_by(
-        desc(QuestionDB.id)).first()
-    if existing_answer:
-        return {"status": "failed", "message": "You have already answered this question."}
-
-    if existing_answer:
-        # Jika entri sudah ada, perbarui nilai-nilainya
-        existing_answer.answer = answer
-
-        # Simpan perubahan
-        commit()
-        return {"status": "success", "message": "Answer updated successfully"}
-    else:
-        # Jika tidak ada entri yang ditemukan, buat entri baru
-        new_answer = QuestionDB(class_id=class_id, user_id=user_id, answer=answer)
-
-        # Simpan entri baru
-        commit()
-        return {"status": "success", "message": "New answer created successfully"}
-
-
-def handle_demo_to_answer(json_object={}, userjson_object={}):
-    class_id = json_object.get('class_id')
-    user_id = json_object.get('user_id')
-    answer = json_object.get('answer')
-
-    if not class_id or not user_id or not answer:
-        raise ValueError("Missing required parameters: class_id, user_id, and/or answer")
-
-    competition = get_active_competition(class_id)
-    if not competition:
-        return {"status": "failed", "message": "No active competition found for this class"}
-
-    # Demo logic might include handling predefined answers or simulations
-    # For demonstration, let's assume it simply logs the attempt
-    print(f"Demo answer received: {answer} from user {userjson_object['user_id']} in class {class_id}")
-
-    # Save the competition answer for demo as well
-    saved_answer = repositoriesDB.save_competition_answer(json_object)
-    if saved_answer:
-        return {"status": "success", "message": "Demo answer submitted successfully"}
-    else:
-        return {"status": "error", "message": "Failed to submit demo answer"}
+# def handle_first_to_answer(json_object={}):
+#     class_id = json_object.get('class_id')
+#     user_id = json_object.get('user_id')
+#     answer = json_object.get('answer')
+#     if not class_id or not user_id or not answer:
+#         raise ValueError("class_id, user_id, and answer are required")
+#
+#     competition = get_active_competition(class_id)
+#     if not competition:
+#         raise ValueError("No active competition found for this class")
+#
+#     if competition.answer:
+#         return {"status": "failed", "message": "Question already answered"}
+#
+#     competition.user_id = user_id
+#     competition.answer = answer
+#     competition.answer_time_client = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+#     commit()
+#     return {"status": "answered", "message": "You are the first to answer"}
+#
+#
+# @db_session
+# def handle_enter_answer(json_object={}):
+#     class_id = json_object.get('class_id')
+#     user_id = json_object.get('user_id')
+#     answer = json_object.get('answer')
+#
+#     if not class_id or not user_id or not answer:
+#         return {"status": "failed", "message": "Missing required parameters: class_id, user_id, and/or answer"}
+#
+#         # Check if the user has already answered this question
+#     existing_answer = QuestionDB.select(lambda q: q.class_id == class_id and q.user_id == user_id).order_by(
+#         desc(QuestionDB.id)).first()
+#     if existing_answer:
+#         return {"status": "failed", "message": "You have already answered this question."}
+#
+#
+# def handle_demo_to_answer(json_object={}, userjson_object={}):
+#     class_id = json_object.get('class_id')
+#     user_id = json_object.get('user_id')
+#     answer = json_object.get('answer')
+#
+#     if not class_id or not user_id or not answer:
+#         raise ValueError("Missing required parameters: class_id, user_id, and/or answer")
+#
+#     competition = get_active_competition(class_id)
+#     if not competition:
+#         return {"status": "failed", "message": "No active competition found for this class"}
+#
+#     # Demo logic might include handling predefined answers or simulations
+#     # For demonstration, let's assume it simply logs the attempt
+#     print(f"Demo answer received: {answer} from user {userjson_object['user_id']} in class {class_id}")
+#
+#     # Save the competition answer for demo as well
+#     saved_answer = repositoriesDB.save_competition_answer(json_object)
+#     if saved_answer:
+#         return {"status": "success", "message": "Demo answer submitted successfully"}
+#     else:
+#         return {"status": "error", "message": "Failed to submit demo answer"}
 
