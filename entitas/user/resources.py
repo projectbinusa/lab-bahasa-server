@@ -365,13 +365,18 @@ class ForgotPasswordResource:
     auth = {
         'auth_disabled': True
     }
+
     def on_post(self, req, resp):
         data = req.media
         email = data.get('email')
         if not email:
             raise falcon.HTTPBadRequest('Bad Request', 'Email is required')
-        message = request_password_reset(email)
-        resp.media = {'message': message}
+        try:
+            message = request_password_reset(email)
+            resp.media = {'message': message}
+        except Exception as e:
+            resp.media = {'error': str(e)}
+
 
 class VerifyCodeResource:
     auth = {
