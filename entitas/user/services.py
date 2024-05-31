@@ -466,11 +466,8 @@ def request_password_reset(email):
         raise ValueError('Email tidak ditemukan')
 
     reset_link = f"http://127.0.0.1:9701/reset-password?token={token}&email={email}"
-    print("ini reset link === > ", reset_link)
-    print("ini email === > ", email)
+    body = f"Click the link to reset your password: {reset_link}"
     try:
-        body = f"Click the link to reset your password: {reset_link}"
-        print("ini body === > ", body)
         mail_service.send_email(
             receiver_email=email,
             subject="Password Reset Request",
@@ -478,8 +475,8 @@ def request_password_reset(email):
         )
         return "Password reset email sent."
     except Exception as e:
-        print(f"Error sending email: {e}")
-        return "Failed to send password reset email."
+        raise Exception(f"Error sending email: {e}")
+
 
 def reset_password_service(email, token, new_password):
     user = reset_password(email, token, new_password)
@@ -493,3 +490,11 @@ def verify_reset_code_service(email, code):
         return "Code verified successfully."
     else:
         raise ValueError('Invalid or expired code')
+
+def update_class_id_user(json_object={}, id=0):
+    user = find_by_id(id=id)
+    print(id)
+    if user is None:
+        raise_error(msg="user not found")
+    json_object["id"] = user.id
+    return repositoriesDB.edit_class_id_user(json_object=json_object)

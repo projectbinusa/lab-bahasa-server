@@ -841,3 +841,20 @@ def generate_new_client_id():
     except Exception as e:
         print("Error generate clientId: " + str(e))
         return None
+
+@db_session
+def edit_class_id_user(json_object=None, to_model=False):
+    try:
+        update_class_id = UserDB[json_object["id"]]
+        if "class_id" in json_object:
+            update_class_id.class_id = json_object["class_id"]
+
+        commit()
+
+        if to_model:
+            return update_class_id.to_model()
+        else:
+            return update_class_id.to_model().to_response_managements_list()
+    except Exception as e:
+        print("error UserDB update_profile: " + str(e))
+        return
