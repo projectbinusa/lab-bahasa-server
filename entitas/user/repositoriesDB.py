@@ -854,7 +854,7 @@ def edit_class_id_user(json_object=None, to_model=False):
         if to_model:
             return update_class_id.to_model()
         else:
-            return update_class_id.to_model().to_response()
+            return update_class_id.to_model().to_response_managements_list()
     except Exception as e:
         print("error UserDB update_profile: " + str(e))
         return

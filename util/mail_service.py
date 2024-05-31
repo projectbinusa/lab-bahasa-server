@@ -4,13 +4,12 @@ from email.mime.multipart import MIMEMultipart
 from jinja2 import Template
 class MailService:
     def __init__(self):
-        self.port = 2525  # For starttls
-        self.smtp_server = "smtp.elasticemail.com"
-        self.sender_email = "candra.sulistiyono@gmail.com"
-        self.password = "88B93B00B85E4383FE6C06843CFFE31847B4"
+        self.port = 25
+        self.smtp_server = "smtp.gmail.com"
+        self.sender_email = "fatiyasalsabila83@gmail.com"
+        self.password = "auajfbvkjwzimaos"
         with open("./res/undangan.html", "r") as file:
             template_str = file.read()
-
         self.jinja_template = Template(template_str)
 
     def send_email_undangan(self, subject='', data={}, receiver_email=''):
@@ -34,7 +33,8 @@ class MailService:
         msg['Subject'] = subject
         msg['From'] = self.sender_email
         msg['To'] = receiver_email
-        email_content = self.jinja_template.render({})
+        email_content = body
+        # email_content = self.jinja_template.render({'reset_link': body})  # Menambahkan reset_link ke template
         msg.attach(MIMEText(email_content, "html"))
         context = ssl.create_default_context()
 

@@ -127,6 +127,27 @@ def find_question_by_id(id=None):
         return None
     return data_in_db.first().to_model()
 
+@db_session
+def create_competition(json_object={}, to_model=False):
+    try:
+        new_competition = QuestionDB(
+            class_id=json_object["class_id"],
+            type=json_object["type"],
+            think_time=json_object["think_time"],
+            answer_time=json_object["answer_time"]
+        )
+        commit()
+        if to_model:
+            return new_competition.to_model()
+        else:
+            return new_competition.to_model().to_response_competition()
+    except Exception as e:
+        print("eror create competition: ", e)
+    return None
+
+# @db_session
+# def answer(json_object={}, to_model=False):
+#
 
 @db_session
 def save_competition(json_object={}, to_model=False):
