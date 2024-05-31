@@ -127,10 +127,12 @@ def find_question_by_id(id=None):
         return None
     return data_in_db.first().to_model()
 
+
 @db_session
 def create_competition(json_object={}, to_model=False):
     try:
         new_competition = QuestionDB(
+            name=json_object["name"],
             class_id=json_object["class_id"],
             type=json_object["type"],
             think_time=json_object["think_time"],
@@ -145,6 +147,7 @@ def create_competition(json_object={}, to_model=False):
         print("eror create competition: ", e)
     return None
 
+
 # @db_session
 # def answer(json_object={}, to_model=False):
 #
@@ -153,6 +156,7 @@ def create_competition(json_object={}, to_model=False):
 def save_competition(json_object={}, to_model=False):
     try:
         new_competition = QuestionDB(
+            name=json_object["name"],
             class_id=json_object["class_id"],
             type=json_object["type"],
             think_time=json_object["think_time"],
@@ -167,28 +171,27 @@ def save_competition(json_object={}, to_model=False):
         print("error Question insert: ", e)
     return None
 
-
-@db_session
-def save_competition_answer(json_object={}):
-    try:
-        # Format the datetime object to a string
-        answer_time_formatted = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-        new_answer = QuestionDB(
-            class_id=json_object['class_id'],
-            user_id=json_object['user_id'],
-            answer=json_object['answer'],
-            answer_time_client=answer_time_formatted  # Save as a formatted string
-        )
-        commit()
-        return new_answer
-    except Exception as e:
-        print(f"Error saving answer: {e}")
-        return None
-
-
-@db_session
-def get_active_competition(class_id):
-    # Get the active competition for the class
-    active_competitions = select(s for s in QuestionDB if s.class_id == class_id)
-    return active_competitions.first() if active_competitions else None
+# @db_session
+# def save_competition_answer(json_object={}):
+#     try:
+#         # Format the datetime object to a string
+#         answer_time_formatted = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+#
+#         new_answer = QuestionDB(
+#             class_id=json_object['class_id'],
+#             user_id=json_object['user_id'],
+#             answer=json_object['answer'],
+#             answer_time_client=answer_time_formatted  # Save as a formatted string
+#         )
+#         commit()
+#         return new_answer
+#     except Exception as e:
+#         print(f"Error saving answer: {e}")
+#         return None
+#
+#
+# @db_session
+# def get_active_competition(class_id):
+#     # Get the active competition for the class
+#     active_competitions = select(s for s in QuestionDB if s.class_id == class_id)
+#     return active_competitions.first() if active_competitions else None

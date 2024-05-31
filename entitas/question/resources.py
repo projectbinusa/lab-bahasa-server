@@ -59,46 +59,46 @@ class StartCompetitionResource:
         #     resp.media = {'competition': competition}
 
 
-class FirstToAnswerResource:
-    def on_post(self, req, resp, class_id):
-        json_object = req.media
-        json_object["class_id"] = class_id
-        resouce_response_api(resp=resp, data=services.handle_first_to_answer(json_object=json_object))
-        # data = req.media
-        # user_id = data.get('user_id')
-        # class_id = data.get('class_id')
-        # answer = data.get('answer')
-        # if not user_id or not class_id or not answer:
-        #     raise falcon.HTTPBadRequest('Bad Request', 'All fields are required')
-        # result = handle_first_to_answer(user_id, class_id, answer)
-        # resp.media = {'result': result}
-
-
-class EnterAnswerResource:
-    def on_put(self, req, resp, class_id):
-        json_object = req.media
-        json_object["class_id"] = class_id
-        resouce_response_api(resp=resp, data=services.handle_enter_answer(json_object=json_object))
-        # data = req.media
-        # user_id = data.get('user_id')
-        # class_id = data.get('class_id')
-        # answer = data.get('answer')
-        # if not user_id or not class_id or not answer:
-        #     raise falcon.HTTPBadRequest('Bad Request', 'All fields are required')
-        # result = handle_enter_answer(user_id, class_id, answer)
-        # resp.media = {'result': result}
-
-
-class DemoToAnswerResource:
-    def on_post(self, req, resp, class_id):
-        json_object = req.media
-        json_object["class_id"] = class_id
-        resouce_response_api(resp=resp, data=services.handle_demo_to_answer(json_object=json_object))
-        # data = req.media
-        # user_id = data.get('user_id')
-        # class_id = data.get('class_id')
-        # answer = data.get('answer')
-        # if not user_id or not class_id or not answer:
-        #     raise falcon.HTTPBadRequest('Bad Request', 'All fields are required')
-        # result = handle_demo_to_answer(user_id, class_id, answer)
-        # resp.media = {'result': result}
+# class FirstToAnswerResource:
+#     def on_post(self, req, resp, class_id):
+#         json_object = req.media
+#         json_object["class_id"] = class_id
+#         resouce_response_api(resp=resp, data=services.handle_first_to_answer(json_object=json_object))
+#         # data = req.media
+#         # user_id = data.get('user_id')
+#         # class_id = data.get('class_id')
+#         # answer = data.get('answer')
+#         # if not user_id or not class_id or not answer:
+#         #     raise falcon.HTTPBadRequest('Bad Request', 'All fields are required')
+#         # result = handle_first_to_answer(user_id, class_id, answer)
+#         # resp.media = {'result': result}
+#
+#
+# class EnterAnswerResource:
+#     def on_put(self, req, resp, class_id):
+#         json_object = req.media
+#         json_object["class_id"] = class_id
+#         resouce_response_api(resp=resp, data=services.handle_enter_answer(json_object=json_object))
+#         # data = req.media
+#         # user_id = data.get('user_id')
+#         # class_id = data.get('class_id')
+#         # answer = data.get('answer')
+#         # if not user_id or not class_id or not answer:
+#         #     raise falcon.HTTPBadRequest('Bad Request', 'All fields are required')
+#         # result = handle_enter_answer(user_id, class_id, answer)
+#         # resp.media = {'result': result}
+#
+#
+# class DemoToAnswerResource:
+#     def on_post(self, req, resp, class_id):
+#         json_object = req.media
+#         json_object["class_id"] = class_id
+#         resouce_response_api(resp=resp, data=services.handle_demo_to_answer(json_object=json_object))
+#         # data = req.media
+#         # user_id = data.get('user_id')
+#         # class_id = data.get('class_id')
+#         # answer = data.get('answer')
+#         # if not user_id or not class_id or not answer:
+#         #     raise falcon.HTTPBadRequest('Bad Request', 'All fields are required')
+#         # result = handle_demo_to_answer(user_id, class_id, answer)
+#         # resp.media = {'result': result}
