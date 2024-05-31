@@ -79,7 +79,6 @@ def create_whiteboard_service(class_id=0, json_object={}):
         repositoriesDB.update_delete_by_id(id=kelas_user.id, is_deleted=False)
         return True
     json_object['class_id'] = class_id
-    json_object["id"] = "0808359" + str(1)
     return repositoriesDB.create_profile_manage_student_list(json_object=json_object)
 
 
