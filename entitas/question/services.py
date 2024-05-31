@@ -4,7 +4,6 @@ from select import select
 
 from database.schema import QuestionDB
 from entitas.question import repositoriesDB
-from entitas.question.repositoriesDB import get_active_competition
 from datetime import datetime, timedelta
 
 
