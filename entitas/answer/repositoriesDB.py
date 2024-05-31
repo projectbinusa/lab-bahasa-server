@@ -31,10 +31,8 @@ def get_all_with_pagination(
         for item in filters:
             if item["field"] == "id":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
-            elif item["field"] == "question_id":
-                data_in_db = data_in_db.filter(lambda d: item["value"] in d.question_id)
             elif item["field"] == "class_id":
-                data_in_db = data_in_db.filter(lambda d: item["value"] in d.class_id)
+                data_in_db = data_in_db.filter(lambda d: item["value"] == d.class_id)
 
         total_record = data_in_db.count()
         if limit > 0:
@@ -61,6 +59,16 @@ def find_by_id(id=None):
     if data_in_db.first() is None:
         return None
     return data_in_db.first().to_model()
+
+
+@db_session
+def find_by_answer_id_and_class_id(class_id=0):
+    try:
+        data_in_db = select(s for s in AnswerDB if s.class_id == class_id)
+        return data_in_db.first().to_model() if data_in_db.first() else None
+    except Exception as e:
+        print("Error:", e)
+        return None
 
 
 @db_session
@@ -100,8 +108,31 @@ def update_delete_by_id(id=None, is_deleted=False):
         commit()
         return True
     except Exception as e:
-        print("error Answer delete: ", e)
+        print('error user delete: ', e)
     return
+
+
+@db_session
+def create_profile_answer(json_object=None, to_model=False):
+    try:
+        # Create new user with the generated class_id
+        new_user = AnswerDB(
+            question_id=json_object['question_id'],
+            answer=json_object['answer'],
+            user_id=json_object['user_id'],
+            answer_time_user=json_object['answer_time_user'],
+            class_id=json_object['class_id']
+        )
+
+        commit()
+
+        if to_model:
+            return new_user.to_model()
+        else:
+            return new_user.to_model().to_response()
+    except Exception as e:
+        print("error creating profile: " + str(e))
+        return None
 
 
 @db_session

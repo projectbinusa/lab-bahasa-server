@@ -3,8 +3,6 @@ from datetime import datetime
 import falcon
 
 from entitas.question import services
-from entitas.question.services import handle_first_to_answer, start_competition, handle_enter_answer, \
-    handle_demo_to_answer
 from util.entitas_util import generate_filters_resource, resouce_response_api
 
 
