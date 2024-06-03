@@ -847,20 +847,24 @@ class MessageChatDB(db2.Entity):
 class ChatDB(db2.Entity):
     _table_ = "chat"
     id = PrimaryKey(int, auto=True)
-    name = Optional(str, nullable=True)
-    is_group = Optional(bool, nullable=True)
-    users = Optional(int, nullable=True)
-    messages = Optional(int, nullable=True)
-    class_id = Optional(int, nullable=True)
+    content = Optional(str, nullable=True)
+    receiver_id = Optional(int, nullable=True)
+    sender_id = Optional(int, nullable=True)
+    is_group = Optional(int, nullable=True)
+    group_id = Optional(int, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
         item = Chat()
         item.id = self.id
-        item.name = self.name
+        item.content = self.content
+        item.group_id = self.group_id
+        item.receiver_id = self.receiver_id
+        item.sender_id = self.sender_id
         item.is_group = self.is_group
-        item.users = self.users
-        item.messages = self.messages
-        item.class_id = self.class_id
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
         return item
 
 

@@ -465,7 +465,8 @@ def request_password_reset(email):
     if not token:
         raise ValueError('Email tidak ditemukan')
 
-    reset_link = f"http://127.0.0.1:9701/reset-password?token={token}&email={email}"
+    # reset_link = f"http://127.0.0.1:9701/reset-password?token={token}&email={email}"
+    reset_link = f"{token} ini adalah kode untuk mengganti password baru, kode tersebut akan kadaluarwa setelah 15 menit. Verify Code terlebih dahulu agar bisa melakukan reset password berikut link untuk verify code http://localhost:3000/verify-code"
     body = f"Click the link to reset your password: {reset_link}"
     try:
         mail_service.send_email(

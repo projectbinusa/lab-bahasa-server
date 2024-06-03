@@ -362,6 +362,7 @@ def register(json_object={}, to_model=False):
     UserDB(
         role=json_object["role"],
         email=json_object["email"],
+        name=json_object["name"],
         password=encrypt_string(json_object["new_password"]),
         token=str(uuid.uuid4())
     )
@@ -858,3 +859,7 @@ def edit_class_id_user(json_object=None, to_model=False):
     except Exception as e:
         print("error UserDB update_profile: " + str(e))
         return
+
+@db_session
+def get_user(user_id):
+    return UserDB.get(id=user_id)
