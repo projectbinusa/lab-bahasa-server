@@ -320,7 +320,7 @@ class ManagementListResource:
         limit = int(req.get_param("limit", required=False, default=9))
         data, pagination = services.get_list_by_class_id(
             class_id=class_id, page=page, limit=limit, filters=filters)
-
+        resouce_response_api(resp=resp, data=data, pagination=pagination)
     # def on_post(self, req, resp, class_id):
     #     print("di resources ==> ", class_id)
     #     resouce_response_api(resp=resp,
