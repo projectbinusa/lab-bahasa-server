@@ -55,14 +55,16 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
 def update_chat(json_object=None, to_model=False):
     try:
         updated_chat = ChatDB[json_object["id"]]
-        if "name" in json_object:
-            updated_chat.name = json_object["name"]
         if "is_group" in json_object:
             updated_chat.is_group = json_object["is_group"]
-        if "users" in json_object:
-            updated_chat.users = json_object["users"]
-        if "messages" in json_object:
-            updated_chat.messages = json_object["messages"]
+        if "content" in json_object:
+            updated_chat.content = json_object["content"]
+        if "sender_id" in json_object:
+            updated_chat.sender_id = json_object["sender_id"]
+        if "receiver_id" in json_object:
+            updated_chat.receiver_id = json_object["receiver_id"]
+        if "group_id" in json_object:
+            updated_chat.group_id = json_object["group_id"]
         if "class_id" in json_object:
             updated_chat.class_id = json_object["class_id"]
 
