@@ -30,6 +30,8 @@ from entitas.question.models import Question
 from entitas.whiteboard.models import Whiteboard
 from entitas.message_chat.models import MessageChat
 from entitas.chat.models import Chat
+from entitas.anggota_group.models import AnggotaGroup
+from entitas.group.models import Group
 from util.db_util import db2
 from config.config import DOMAIN_FILE_URL
 
@@ -871,6 +873,43 @@ class ChatDB(db2.Entity):
         # item.class_id = self.class_id
         return item
 
+class AnggotaGroupDB(db2.Entity):
+    _table_ = "anggota_group"
+    id = PrimaryKey(int, auto=True)
+    group_id = Optional(int, nullable=True)
+    user_id = Optional(int, nullable=True)
+    role = Optional(str, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = AnggotaGroup()
+        item.id = self.id
+        item.group_id = self.group_id
+        item.user_id = self.user_id
+        item.role = self.role
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
+class GroupDB(db2.Entity):
+    _table_ = "group"
+    id = PrimaryKey(int, auto=True)
+    name = Optional(str, nullable=True)
+    description = Optional(str, 10000, nullable=True)
+    is_removed = Optional(int, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = Group()
+        item.id = self.id
+        item.name = self.name
+        item.description = self.description
+        item.is_removed = self.is_removed
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
 
 if db2.schema is None:
     db2.generate_mapping(create_tables=False)
