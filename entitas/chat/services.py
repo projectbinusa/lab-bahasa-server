@@ -21,7 +21,6 @@ def delete_chat_by_id(id=0):
 
 
 def insert_message_service(json_object={}):
-    body={}
     return repositoriesDB.insert_private_chat(json_object=json_object)
 
 def get_messages_for_user_service(user_id, sender_id=None):

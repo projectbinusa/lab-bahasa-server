@@ -33,6 +33,8 @@ def get_all_with_pagination(
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
             elif item["field"] == "class_id":
                 data_in_db = data_in_db.filter(lambda d: item["value"] == d.class_id)
+            elif item["field"] == "user_id":
+                data_in_db = data_in_db.filter(lambda d: item["value"] == d.user_id)
 
         total_record = data_in_db.count()
         if limit > 0:
@@ -60,15 +62,20 @@ def find_by_id(id=None):
         return None
     return data_in_db.first().to_model()
 
+@db_session
+def find_by_id_answer_time_user(answer_time_user=None):
+    data_in_db = select(s for s in AnswerDB if s.answer_time_user == answer_time_user)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
+
 
 @db_session
-def find_by_answer_id_and_class_id(class_id=0):
-    try:
-        data_in_db = select(s for s in AnswerDB if s.class_id == class_id)
-        return data_in_db.first().to_model() if data_in_db.first() else None
-    except Exception as e:
-        print("Error:", e)
+def find_by_answer_id_and_class_id(class_id=0, id=0 ):
+    data_in_db = select(s for s in AnswerDB if s.id == id and s.class_id == class_id)
+    if data_in_db.first() is None:
         return None
+    return data_in_db.first().to_model()
 
 
 @db_session
@@ -100,7 +107,6 @@ def delete_by_id(id=None):
         print("error Answer delete: ", e)
     return
 
-
 @db_session
 def update_delete_by_id(id=None, is_deleted=False):
     try:
@@ -108,14 +114,13 @@ def update_delete_by_id(id=None, is_deleted=False):
         commit()
         return True
     except Exception as e:
-        print('error user delete: ', e)
+        print('error Answer delete: ', e)
     return
 
 
 @db_session
-def create_profile_answer(json_object=None, to_model=False):
+def create_profile_answer(json_object={}, to_model=False):
     try:
-        # Create new user with the generated class_id
         new_user = AnswerDB(
             question_id=json_object['question_id'],
             answer=json_object['answer'],
@@ -123,16 +128,14 @@ def create_profile_answer(json_object=None, to_model=False):
             answer_time_user=json_object['answer_time_user'],
             class_id=json_object['class_id']
         )
-
         commit()
-
         if to_model:
             return new_user.to_model()
         else:
             return new_user.to_model().to_response()
     except Exception as e:
         print("error creating profile: " + str(e))
-        return None
+    return None
 
 
 @db_session

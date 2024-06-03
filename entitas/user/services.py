@@ -398,6 +398,7 @@ def insert_manage_name_list_db(json_object={}):
 
 def create_profile_manage_student_list_service(class_id=0, json_object={}):
     kelas_user = repositoriesDB.find_by_user_id_and_class_id(class_id=class_id)
+    client = repositoriesDB.generate_new_client_id()
     # user_name = find_by_id(id=json_object['user_id'])
     print("class_id ====>",class_id, "data ==>", json_object)
     if kelas_user is not None:
@@ -405,6 +406,7 @@ def create_profile_manage_student_list_service(class_id=0, json_object={}):
         return True
     json_object['class_id'] = class_id
     json_object['role'] = "student"
+    json_object['client_id'] = client
     insert_manage_name_list_db(json_object=json_object)
     return True
 

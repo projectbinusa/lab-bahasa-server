@@ -145,13 +145,11 @@ def find_by_id(id=None):
 
 
 @db_session
-def find_by_user_id_and_class_id(class_id=0):
-    try:
-        data_in_db = select(s for s in UserDB if s.class_id == class_id)
-        return data_in_db.first().to_model() if data_in_db.first() else None
-    except Exception as e:
-        print("Error:", e)
+def find_by_user_id_and_class_id(class_id=0, id=0):
+    data_in_db = select(s for s in UserDB if s.id == id and s.class_id == class_id)
+    if data_in_db.first() is None:
         return None
+    return data_in_db.first().to_model()
 
 
 @db_session
