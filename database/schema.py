@@ -772,8 +772,6 @@ class QuestionDB(db2.Entity):
         item.think_time = self.think_time
         item.answer_time = self.answer_time
         item.class_id = self.class_id
-        item.user_id = self.instructur_id
-        item.user_name = self.instructur_name
         item.type = self.type
         item.created_date = self.created_date
         item.updated_date = self.updated_date
