@@ -77,13 +77,11 @@ def find_by_id(id=None):
     return data_in_db.first().to_model()
 
 @db_session
-def find_by_login_limits_id_and_class_id(class_id=0):
-    try:
-        data_in_db = select(s for s in LoginLimitsDB if s.class_id == class_id)
-        return data_in_db.first().to_model() if data_in_db.first() else None
-    except Exception as e:
-        print("Error:", e)
+def find_by_login_limits_id_and_class_id(class_id=0, id=0):
+    data_in_db = select(s for s in LoginLimitsDB if s.id == id and s.class_id == class_id)
+    if data_in_db.first() is None:
         return None
+    return data_in_db.first().to_model()
 
 
 # @db_session
@@ -140,6 +138,7 @@ def delete_by_id(id=None):
 #         print("error TrainingDB getAll: ", e)
 #     return
 
+@db_session
 def update_delete_by_id(id=None, is_deleted=False):
     try:
         LoginLimitsDB[id].is_deleted = is_deleted
@@ -155,8 +154,8 @@ def update_delete_by_id(id=None, is_deleted=False):
 def insert(json_object={}, to_model=False):
     try:
         new_login_limits = LoginLimitsDB(
-            class_id=json_object["class_id"],
-            end_time=json_object["end_time"],
+            class_id=json_object['class_id'],
+            end_time=json_object['end_time'],
         )
         commit()
         if to_model:

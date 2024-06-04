@@ -3,8 +3,6 @@ from datetime import datetime
 import falcon
 
 from entitas.question import services
-from entitas.question.services import handle_first_to_answer, start_competition, handle_enter_answer, \
-    handle_demo_to_answer
 from util.entitas_util import generate_filters_resource, resouce_response_api
 
 
@@ -47,6 +45,18 @@ class StartCompetitionResource:
         json_object = req.media
         json_object["class_id"] = class_id
         resouce_response_api(resp=resp, data=services.start_competition(json_object=json_object))
+
+class QuestionByClassIdAndUserIdResource:
+    def on_get(self, req, resp, class_id):
+        filters = generate_filters_resource(req=req, params_int=['id'])
+        filters.append({'field': 'class_id', 'value': class_id})
+        filters.append({'field': 'user_id', 'value': req.context["user"]["id"]})
+        page = int(req.get_param("page", required=False, default=1))
+        limit = int(req.get_param("limit", required=False, default=9))
+        data, pagination = services.get_question_by_class_id_and_user_id(
+            class_id=class_id, user_id=req.context["user"]["id"], page=page, limit=limit, filters=filters
+        )
+        resouce_response_api(resp=resp, data=data, pagination=pagination)
         # def on_post(self, req, resp):
         #     data = req.media
         #     class_id = data.get('class_id')
@@ -59,46 +69,46 @@ class StartCompetitionResource:
         #     resp.media = {'competition': competition}
 
 
-class FirstToAnswerResource:
-    def on_post(self, req, resp, class_id):
-        json_object = req.media
-        json_object["class_id"] = class_id
-        resouce_response_api(resp=resp, data=services.handle_first_to_answer(json_object=json_object))
-        # data = req.media
-        # user_id = data.get('user_id')
-        # class_id = data.get('class_id')
-        # answer = data.get('answer')
-        # if not user_id or not class_id or not answer:
-        #     raise falcon.HTTPBadRequest('Bad Request', 'All fields are required')
-        # result = handle_first_to_answer(user_id, class_id, answer)
-        # resp.media = {'result': result}
-
-
-class EnterAnswerResource:
-    def on_put(self, req, resp, class_id):
-        json_object = req.media
-        json_object["class_id"] = class_id
-        resouce_response_api(resp=resp, data=services.handle_enter_answer(json_object=json_object))
-        # data = req.media
-        # user_id = data.get('user_id')
-        # class_id = data.get('class_id')
-        # answer = data.get('answer')
-        # if not user_id or not class_id or not answer:
-        #     raise falcon.HTTPBadRequest('Bad Request', 'All fields are required')
-        # result = handle_enter_answer(user_id, class_id, answer)
-        # resp.media = {'result': result}
-
-
-class DemoToAnswerResource:
-    def on_post(self, req, resp, class_id):
-        json_object = req.media
-        json_object["class_id"] = class_id
-        resouce_response_api(resp=resp, data=services.handle_demo_to_answer(json_object=json_object))
-        # data = req.media
-        # user_id = data.get('user_id')
-        # class_id = data.get('class_id')
-        # answer = data.get('answer')
-        # if not user_id or not class_id or not answer:
-        #     raise falcon.HTTPBadRequest('Bad Request', 'All fields are required')
-        # result = handle_demo_to_answer(user_id, class_id, answer)
-        # resp.media = {'result': result}
+# class FirstToAnswerResource:
+#     def on_post(self, req, resp, class_id):
+#         json_object = req.media
+#         json_object["class_id"] = class_id
+#         resouce_response_api(resp=resp, data=services.handle_first_to_answer(json_object=json_object))
+#         # data = req.media
+#         # user_id = data.get('user_id')
+#         # class_id = data.get('class_id')
+#         # answer = data.get('answer')
+#         # if not user_id or not class_id or not answer:
+#         #     raise falcon.HTTPBadRequest('Bad Request', 'All fields are required')
+#         # result = handle_first_to_answer(user_id, class_id, answer)
+#         # resp.media = {'result': result}
+#
+#
+# class EnterAnswerResource:
+#     def on_put(self, req, resp, class_id):
+#         json_object = req.media
+#         json_object["class_id"] = class_id
+#         resouce_response_api(resp=resp, data=services.handle_enter_answer(json_object=json_object))
+#         # data = req.media
+#         # user_id = data.get('user_id')
+#         # class_id = data.get('class_id')
+#         # answer = data.get('answer')
+#         # if not user_id or not class_id or not answer:
+#         #     raise falcon.HTTPBadRequest('Bad Request', 'All fields are required')
+#         # result = handle_enter_answer(user_id, class_id, answer)
+#         # resp.media = {'result': result}
+#
+#
+# class DemoToAnswerResource:
+#     def on_post(self, req, resp, class_id):
+#         json_object = req.media
+#         json_object["class_id"] = class_id
+#         resouce_response_api(resp=resp, data=services.handle_demo_to_answer(json_object=json_object))
+#         # data = req.media
+#         # user_id = data.get('user_id')
+#         # class_id = data.get('class_id')
+#         # answer = data.get('answer')
+#         # if not user_id or not class_id or not answer:
+#         #     raise falcon.HTTPBadRequest('Bad Request', 'All fields are required')
+#         # result = handle_demo_to_answer(user_id, class_id, answer)
+#         # resp.media = {'result': result}

@@ -11,6 +11,7 @@ from entitas.user.resources import *
 from entitas.question.resources import *
 from entitas.login_limit.resources import *
 from entitas.whiteboard.resources import *
+from entitas.answer.resources import *
 
 
 def instructur_routes(api):
@@ -62,8 +63,10 @@ def instructur_routes(api):
     api.add_route("/api/instructur/class/{class_id}/whiteboard/{whiteboard_id}", WhiteboardWithIdResource())
     api.add_route("/api/instructur/class/{class_id}/management_name_list/{management_list_id}", ManagementListWithByIdResources())
     api.add_route('/api/instructur/class/{class_id}/start-competition', StartCompetitionResource())
-    api.add_route('/api/instructur/class/{class_id}/first-to-answer', FirstToAnswerResource())
-    api.add_route('/api/instructur/class/{class_id}/enter-answer', EnterAnswerResource())
-    api.add_route('/api/instructur/class/{class_id}/demo-to-answer', DemoToAnswerResource())
+    # api.add_route('/api/instructur/class/{class_id}/first-to-answer', FirstToAnswerResource())
+    # api.add_route('/api/instructur/class/{class_id}/enter-answer', EnterAnswerResource())
+    # api.add_route('/api/instructur/class/{class_id}/demo-to-answer', DemoToAnswerResource())
     api.add_route("/api/instructur/update_class_id_user/{update_class_id_user}", EditClassIdUserResource())
+    api.add_route("/api/instructur/class/{class_id}/answer/{answer_id}", AnswerWithIdResource())
+    api.add_route("/api/instructur/class/{class_id}/answer", AnswerResource())
 

@@ -1,4 +1,5 @@
 from entitas.absent.resources import *
+from entitas.answer.resources import AnswerResource
 from entitas.assignment.resources import *
 from entitas.assignment_user.resources import *
 from entitas.certificate.resources import *
@@ -7,6 +8,7 @@ from entitas.pathway.resources import *
 from entitas.pathway_training.resources import *
 from entitas.pathway_user.resources import *
 from entitas.announcement.resources import *
+from entitas.question.resources import QuestionByClassIdAndUserIdResource, QuestionResource
 from entitas.room_user.resources import *
 from entitas.schedule.resources import *
 from entitas.schedule_instructur.resources import *
@@ -58,3 +60,5 @@ def user_routes(api):
     api.add_route("/api/api/user/mytrain/{schedule_id}/confirmed",
                   InstructurCalendarScheduleParticipantConfirmedResource())
     api.add_route("/api/user/announcement", AnnouncementStudentResource())
+    api.add_route("/api/user/class/{class_id}/answer", AnswerResource())
+    api.add_route("/api/user/class/{class_id}/question", QuestionResource())

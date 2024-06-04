@@ -1,6 +1,7 @@
 from datetime import date, datetime
 from pony.orm import *
 
+from entitas.answer.models import Answer
 from entitas.kelas_user.models import KelasUser
 from entitas.log_book.models import LogBook
 from entitas.login_limit.models import LoginLimits
@@ -27,6 +28,10 @@ from entitas.user.models import User
 from entitas.training_material.models import Training_Material
 from entitas.question.models import Question
 from entitas.whiteboard.models import Whiteboard
+from entitas.message_chat.models import MessageChat
+from entitas.chat.models import Chat
+from entitas.anggota_group.models import AnggotaGroup
+from entitas.group.models import Group
 from util.db_util import db2
 from config.config import DOMAIN_FILE_URL
 
@@ -750,14 +755,12 @@ class LoginLimitsDB(db2.Entity):
 class QuestionDB(db2.Entity):
     _table_ = "question"
     id = PrimaryKey(int, auto=True)
+    name = Optional(str, nullable=True)
     think_time = Optional(str, nullable=True)
     answer_time = Optional(str, nullable=True)
     class_id = Optional(int, nullable=True)
-    user_id = Optional(int, nullable=True)
-    user_name = Optional(str, nullable=True)
-    score = Optional(int, nullable=True)
-    answer_time_client = Optional(str, nullable=True)
-    answer = Optional(str, 100000, nullable=True)
+    instructur_id = Optional(int, nullable=True)
+    instructur_name = Optional(str, nullable=True)
     type = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
@@ -765,14 +768,12 @@ class QuestionDB(db2.Entity):
     def to_model(self):
         item = Question()
         item.id = self.id
+        item.name = self.name
         item.think_time = self.think_time
         item.answer_time = self.answer_time
         item.class_id = self.class_id
-        item.user_id = self.user_id
-        item.user_name = self.user_name
-        item.score = self.score
-        item.answer_time_client = self.answer_time_client
-        item.answer = self.answer
+        item.instructur_id = self.instructur_id
+        item.instructur_name = self.instructur_name
         item.type = self.type
         item.created_date = self.created_date
         item.updated_date = self.updated_date
@@ -800,6 +801,111 @@ class WhiteboardDB(db2.Entity):
         item.updated_date = self.updated_date
         return item
 
+
+class AnswerDB(db2.Entity):
+    _table_ = "answer"
+    id = PrimaryKey(int, auto=True)
+    question_id = Optional(int, nullable=True)
+    answer = Optional(str, 100000, nullable=True)
+    user_id = Optional(int, nullable=True)
+    answer_time_user = Optional(str, nullable=True)
+    class_id = Optional(int, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = Answer()
+        item.id = self.id
+        item.question_id = self.question_id
+        item.answer = self.answer
+        item.user_id = self.user_id
+        item.answer_time_user = self.answer_time_user
+        item.class_id = self.class_id
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
+class MessageChatDB(db2.Entity):
+    _table_ = "message_chat"
+    id = PrimaryKey(int, auto=True)
+    chat = Optional(int, nullable=True)
+    content = Optional(str, nullable=True)
+    sender = Optional(int, nullable=True)
+    class_id = Optional(int, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = MessageChat()
+        item.id = self.id
+        item.chat = self.chat
+        item.content = self.content
+        item.sender = self.sender
+        item.class_id = self.class_id
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
+class ChatDB(db2.Entity):
+    _table_ = "chat"
+    id = PrimaryKey(int, auto=True)
+    content = Optional(str, nullable=True)
+    receiver_id = Optional(int, nullable=True)
+    sender_id = Optional(int, nullable=True)
+    is_group = Optional(int, nullable=True)
+    group_id = Optional(int, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = Chat()
+        item.id = self.id
+        item.content = self.content
+        item.group_id = self.group_id
+        item.receiver_id = self.receiver_id
+        item.sender_id = self.sender_id
+        item.is_group = self.is_group
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
+class AnggotaGroupDB(db2.Entity):
+    _table_ = "anggota_group"
+    id = PrimaryKey(int, auto=True)
+    group_id = Optional(int, nullable=True)
+    user_id = Optional(int, nullable=True)
+    role = Optional(str, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = AnggotaGroup()
+        item.id = self.id
+        item.group_id = self.group_id
+        item.user_id = self.user_id
+        item.role = self.role
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
+class GroupDB(db2.Entity):
+    _table_ = "group"
+    id = PrimaryKey(int, auto=True)
+    name = Optional(str, nullable=True)
+    description = Optional(str, 10000, nullable=True)
+    is_removed = Optional(int, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = Group()
+        item.id = self.id
+        item.name = self.name
+        item.description = self.description
+        item.is_removed = self.is_removed
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
 
 if db2.schema is None:
     db2.generate_mapping(create_tables=False)

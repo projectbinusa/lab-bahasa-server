@@ -2,7 +2,7 @@ class LoginLimits:
     def __init__(
             self,
             id=0,
-            class_id='',
+            class_id=0,
             end_time=None,
             created_date=None,
             updated_date=None,
