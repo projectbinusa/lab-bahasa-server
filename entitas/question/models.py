@@ -6,8 +6,8 @@ class Question:
             think_time='',
             answer_time='',
             class_id=0,
-            instructur_id=0,
-            instructur_name='',
+            user_id=0,
+            user_name='',
             type='',
             created_date=None,
             updated_date=None
@@ -17,8 +17,8 @@ class Question:
         self.think_time = think_time
         self.answer_time = answer_time
         self.class_id = class_id
-        self.instructur_id = instructur_id
-        self.instructur_name = instructur_name
+        self.user_id = user_id
+        self.user_name = user_name
         self.type = type
         self.created_date = created_date
         self.updated_date = updated_date
@@ -30,8 +30,8 @@ class Question:
             "think_time": self.think_time,
             "answer_time": self.answer_time,
             "class_id": self.class_id,
-            "instructur_id": self.instructur_id,
-            "instructur_name": self.instructur_name,
+            "user_id": self.user_id,
+            "user_name": self.user_name,
             "type": self.type,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None
@@ -44,8 +44,8 @@ class Question:
             "think_time": self.think_time,
             "answer_time": self.answer_time,
             "class_id": self.class_id,
-            "instructur_id": self.instructur_id,
-            "instructur_name": self.instructur_name,
+            "user_id": self.user_id,
+            "user_name": self.user_name,
             "type": self.type,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None

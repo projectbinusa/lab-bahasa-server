@@ -30,6 +30,10 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
                 data_in_db = data_in_db.filter(id=item["value"])
             elif item["field"] == "user_name":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.user_name)
+            elif item["field"] == "class_id":
+                data_in_db = data_in_db.filter(lambda d: item["value"] == d.class_id)
+            elif item["field"] == "user_id":
+                data_in_db = data_in_db.filter(lambda d: item["value"] == d.user_id)
 
         total_record = data_in_db.count()
         if limit > 0:
@@ -49,6 +53,7 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
         "page": page,
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
+
 
 
 @db_session
@@ -147,6 +152,14 @@ def create_competition(json_object={}, to_model=False):
         print("eror create competition: ", e)
     return None
 
+
+
+@db_session
+def find_by_id_answer_time(answer_time=None):
+    data_in_db = select(s for s in QuestionDB if s.answer_time == answer_time)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
 
 # @db_session
 # def answer(json_object={}, to_model=False):

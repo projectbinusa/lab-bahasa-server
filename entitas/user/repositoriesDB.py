@@ -145,13 +145,11 @@ def find_by_id(id=None):
 
 
 @db_session
-def find_by_user_id_and_class_id(class_id=0):
-    try:
-        data_in_db = select(s for s in UserDB if s.class_id == class_id)
-        return data_in_db.first().to_model() if data_in_db.first() else None
-    except Exception as e:
-        print("Error:", e)
+def find_by_user_id_and_class_id(class_id=0, id=0):
+    data_in_db = select(s for s in UserDB if s.id == id and s.class_id == class_id)
+    if data_in_db.first() is None:
         return None
+    return data_in_db.first().to_model()
 
 
 @db_session
@@ -362,6 +360,7 @@ def register(json_object={}, to_model=False):
     UserDB(
         role=json_object["role"],
         email=json_object["email"],
+        name=json_object["name"],
         password=encrypt_string(json_object["new_password"]),
         token=str(uuid.uuid4())
     )
@@ -858,3 +857,7 @@ def edit_class_id_user(json_object=None, to_model=False):
     except Exception as e:
         print("error UserDB update_profile: " + str(e))
         return
+
+@db_session
+def get_user(user_id):
+    return UserDB.get(id=user_id)

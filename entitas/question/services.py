@@ -3,8 +3,11 @@ from pony.orm import commit, db_session, desc
 from select import select
 
 from database.schema import QuestionDB
+from entitas.kelas_user.repositoriesDB import find_kelas_user_db_by_id, find_by_id
 from entitas.question import repositoriesDB
 from datetime import datetime, timedelta
+
+from util.other_util import raise_error
 
 
 def insert_question_db(json_object={}):
@@ -70,6 +73,14 @@ def submit_answer(user_id, question_id, answer, type):
 
     return {"status": "failed", "message": "Unknown competition mode"}
 
+def get_question_by_class_id_and_user_id(class_id=0, page=1, user_id=0, limit=9, filters=[], to_model=False):
+    kelas = find_kelas_user_db_by_id(id=class_id, to_model=True)
+    user = find_by_id(id=user_id)
+    if kelas is None:
+        raise_error(msg="kelas not found")
+    if user is None:
+        raise_error(msg="user not found")
+    return repositoriesDB.get_all_with_pagination(page=page, limit=limit, filters=filters, to_model=to_model)
 
 def start_competition(json_object={}):
     class_id = json_object.get('class_id')

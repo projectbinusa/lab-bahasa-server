@@ -398,6 +398,7 @@ def insert_manage_name_list_db(json_object={}):
 
 def create_profile_manage_student_list_service(class_id=0, json_object={}):
     kelas_user = repositoriesDB.find_by_user_id_and_class_id(class_id=class_id)
+    client = repositoriesDB.generate_new_client_id()
     # user_name = find_by_id(id=json_object['user_id'])
     print("class_id ====>",class_id, "data ==>", json_object)
     if kelas_user is not None:
@@ -405,6 +406,7 @@ def create_profile_manage_student_list_service(class_id=0, json_object={}):
         return True
     json_object['class_id'] = class_id
     json_object['role'] = "student"
+    json_object['client_id'] = client
     insert_manage_name_list_db(json_object=json_object)
     return True
 
@@ -465,7 +467,8 @@ def request_password_reset(email):
     if not token:
         raise ValueError('Email tidak ditemukan')
 
-    reset_link = f"http://127.0.0.1:9701/reset-password?token={token}&email={email}"
+    # reset_link = f"http://127.0.0.1:9701/reset-password?token={token}&email={email}"
+    reset_link = f"{token} ini adalah kode untuk mengganti password baru, kode tersebut akan kadaluarwa setelah 15 menit. Verify Code terlebih dahulu agar bisa melakukan reset password berikut link untuk verify code http://localhost:3000/verify-code"
     body = f"Click the link to reset your password: {reset_link}"
     try:
         mail_service.send_email(
