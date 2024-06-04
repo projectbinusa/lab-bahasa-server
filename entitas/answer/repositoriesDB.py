@@ -1,6 +1,6 @@
 from pony.orm import *
 
-from database.schema import AnswerDB
+from database.schema import AnswerDB, QuestionDB
 
 
 @db_session
@@ -62,6 +62,7 @@ def find_by_id(id=None):
         return None
     return data_in_db.first().to_model()
 
+
 @db_session
 def find_by_id_answer_time_user(answer_time_user=None):
     data_in_db = select(s for s in AnswerDB if s.answer_time_user == answer_time_user)
@@ -71,7 +72,7 @@ def find_by_id_answer_time_user(answer_time_user=None):
 
 
 @db_session
-def find_by_answer_id_and_class_id(class_id=0, id=0 ):
+def find_by_answer_id_and_class_id(class_id=0, id=0):
     data_in_db = select(s for s in AnswerDB if s.id == id and s.class_id == class_id)
     if data_in_db.first() is None:
         return None
@@ -106,6 +107,7 @@ def delete_by_id(id=None):
     except Exception as e:
         print("error Answer delete: ", e)
     return
+
 
 @db_session
 def update_delete_by_id(id=None, is_deleted=False):
