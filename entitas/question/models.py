@@ -58,6 +58,8 @@ class Question:
             "think_time": self.think_time,
             "answer_time": self.answer_time,
             "class_id": self.class_id,
+            "user_id": self.user_id,
+            "user_name": self.user_name,
             "type": self.type,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None

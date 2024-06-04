@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from entitas.answer import repositoriesDB
 from entitas.answer.repositoriesDB import get_all_with_pagination, update
 from entitas.kelas_user.repositoriesDB import find_kelas_user_db_by_id
@@ -70,23 +72,29 @@ def update_answer_by_class_id(class_id=0, id=0, json_object={}):
 def insert_answer_db(json_object={}):
     return repositoriesDB.create_profile_answer(json_object=json_object)
 
-def create_answer_service(answer_time_user, class_id=0, json_object={}, user_id=0):
-    # try:
+
+def create_answer_service(class_id=0, json_object={}, user_id=0):
     kelas_user = repositoriesDB.find_by_answer_id_and_class_id(class_id=class_id)
     user = find_by_id(id=user_id)
+
     print("ini user user_id di services", user_id)
+
+    # Check if the question can still be answered
+    current_time = datetime.now()
+    if 'answer_time_limit' in json_object and json_object['answer_time_limit'] < current_time:
+        raise_error(msg="The time limit for answering this question has passed.")
+
+    # Check if an answer already exists for this question in this class
     if kelas_user is not None:
-        repositoriesDB.update_delete_by_id(id=kelas_user.id, is_deleted=False)
-        return True
+        raise_error(msg="This question has already been answered by another student.")
+
     if user is None:
-        raise_error(msg="user not found")
+        raise_error(msg="User not found")
+
     json_object['class_id'] = class_id
     json_object['user_id'] = user_id
     insert_answer_db(json_object=json_object)
     return True
-    # except Exception as e:
-    #     print("Error:", e)
-    #     return None
 
 
 def delete_answer_db_by_id(id=0):
