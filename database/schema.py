@@ -852,6 +852,8 @@ class ChatDB(db2.Entity):
     sender_id = Optional(int, nullable=True)
     is_group = Optional(int, nullable=True)
     group_id = Optional(int, nullable=True)
+    gambar = Optional(str, nullable=True)
+    class_id = Optional(int, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -863,6 +865,7 @@ class ChatDB(db2.Entity):
         item.receiver_id = self.receiver_id
         item.sender_id = self.sender_id
         item.is_group = self.is_group
+        item.gambar = self.gambar
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
@@ -873,6 +876,7 @@ class AnggotaGroupDB(db2.Entity):
     group_id = Optional(int, nullable=True)
     user_id = Optional(int, nullable=True)
     role = Optional(str, nullable=True)
+    class_id = Optional(int, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -882,6 +886,7 @@ class AnggotaGroupDB(db2.Entity):
         item.group_id = self.group_id
         item.user_id = self.user_id
         item.role = self.role
+        item.class_id = self.class_id
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
@@ -892,6 +897,7 @@ class GroupDB(db2.Entity):
     name = Optional(str, nullable=True)
     description = Optional(str, 10000, nullable=True)
     is_removed = Optional(int, nullable=True)
+    class_id = Optional(int, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -901,6 +907,7 @@ class GroupDB(db2.Entity):
         item.name = self.name
         item.description = self.description
         item.is_removed = self.is_removed
+        item.class_id = self.class_id
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
