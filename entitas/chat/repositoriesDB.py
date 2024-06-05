@@ -23,16 +23,16 @@ from database.schema import ChatDB, UserDB, MessageChatDB
 #     return
 
 @db_session
-def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
+def get_all_with_pagination_by_class_id(class_id, page=1, limit=9, filters=[], to_model=False):
     result = []
     total_record = 0
     try:
-        data_in_db = select(s for s in ChatDB).order_by(desc(ChatDB.id))
+        data_in_db = select(s for s in ChatDB if (s.class_id == class_id)).order_by(desc(ChatDB.id))
         for item in filters:
             if item["field"] == "id":
                 data_in_db = data_in_db.filter(id=item["value"])
-            elif item["field"] == "name":
-                data_in_db = data_in_db.filter(lambda d: item["value"] in d.name)
+            elif item["field"] == "content":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.content)
 
         total_record = data_in_db.count()
         if limit > 0:
@@ -46,7 +46,7 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
                 result.append(item.to_model().to_response())
 
     except Exception as e:
-        print("error Chat getAllWithPagination: ", e)
+        print("error Group getAllWithPagination: ", e)
     return result, {
         "total": total_record,
         "page": page,
@@ -54,9 +54,9 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
     }
 
 @db_session
-def update_chat(json_object=None, to_model=False):
+def update_chat(class_id=None, json_object=None, to_model=False):
     try:
-        updated_chat = ChatDB[json_object["id"]]
+        updated_chat = ChatDB.get(id=json_object["id"], class_id=class_id)
         if "is_group" in json_object:
             updated_chat.is_group = json_object["is_group"]
         if "content" in json_object:
@@ -69,6 +69,8 @@ def update_chat(json_object=None, to_model=False):
             updated_chat.group_id = json_object["group_id"]
         if "class_id" in json_object:
             updated_chat.class_id = json_object["class_id"]
+        if "gambar" in json_object:
+            updated_chat.gambar = json_object["gambar"]
 
         commit()
 
@@ -82,9 +84,9 @@ def update_chat(json_object=None, to_model=False):
 
 
 @db_session
-def delete_chat_by_id(id=None):
+def delete_chat_by_id_and_by_class_id(id=None, class_id=None):
     try:
-        ChatDB[id].delete()
+        ChatDB.get(id=id, class_id=class_id).delete()
         commit()
         return True
     except Exception as e:
@@ -178,13 +180,15 @@ def delete_chat_by_id(id=None):
 #         return None
 
 @db_session
-def insert_private_chat(json_object={}, to_model=False):
+def insert_private_chat(class_id, json_object={}, to_model=False):
     try:
         new_chat = ChatDB(
+            class_id=class_id,
             sender_id=json_object["sender_id"],
             receiver_id=json_object["receiver_id"],
             content=json_object["content"],
-            is_group=json_object["is_group"]
+            is_group=json_object["is_group"],
+            gambar=json_object["gambar"]
         )
         commit()
         if to_model:

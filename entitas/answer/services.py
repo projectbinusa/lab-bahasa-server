@@ -1,7 +1,13 @@
+from datetime import datetime, timedelta
+
+from falcon import HTTPBadRequest
+
 from entitas.answer import repositoriesDB
-from entitas.answer.repositoriesDB import get_all_with_pagination, update
+from entitas.answer.repositoriesDB import update, get_all_with_pagination
 from entitas.kelas_user.repositoriesDB import find_kelas_user_db_by_id
 from entitas.user.repositoriesDB import find_by_id
+from entitas.question.repositoriesDB import find_question_by_id, find_by_id_answer_time, \
+    find_by_question_id_and_class_id, check_answer_time
 from util.other_util import raise_error
 
 
@@ -68,25 +74,105 @@ def update_answer_by_class_id(class_id=0, id=0, json_object={}):
 
 
 def insert_answer_db(json_object={}):
-    return repositoriesDB.create_profile_answer(json_object=json_object)
+    return repositoriesDB.create_profile_answer(json_object=json_object, to_model=True)
 
-def create_answer_service(answer_time_user, class_id=0, json_object={}, user_id=0):
-    # try:
+
+# from datetime import datetime, timedelta
+
+def check_answer(json_object, answer_time_user_str):
+    # Temukan batas waktu berdasarkan question_id dan class_id
+    question = find_question_by_id(json_object['question_id'])
+    if not question:
+        raise ValueError("Question not found")
+
+    # Waktu jawaban siswa sebagai datetime object
+    answer_time_user = datetime.strptime(answer_time_user_str, '%H:%M:%S').time()
+
+    # Kalkulasi batas waktu sebagai start_time + answer_time_limit
+    end_time = question.answer_time
+
+    # Ubah answer_time_user ke datetime.timedelta
+    answer_time_user = datetime.combine(datetime.today(), answer_time_user) - datetime.combine(datetime.today(), datetime.min.time())
+
+    # Periksa apakah waktu jawaban siswa melebihi batas waktu
+    if answer_time_user > end_time:
+        raise ValueError("Waktu telah habis")
+
+    # Jika tepat waktu, kembalikan True
+    return True
+
+
+def create_answer_service(json_object={}):
+    class_id = json_object['class_id']
+    user_id = json_object['user_id']
+    question_id = json_object['question_id']
+
+    print("class id di service => ", class_id)
+    print("user id di service => ", user_id)
+    print("question id di service => ", question_id)
+
+    # Format waktu saat ini sebagai waktu jawaban siswa
+    answer_time_user_str = datetime.now().strftime('%H:%M:%S')
+    json_object['answer_time_user'] = answer_time_user_str
+    print("answer_time_user ==> ", answer_time_user_str)
+    # Periksa apakah jawaban siswa tepat waktu
+    # check_answer(json_object, answer_time_user)
+    answer = check_answer(json_object, answer_time_user_str)
+    print(answer)
+    # if answer:
+    #     raise ValueError("Jawabn melebihi batas waktu")
+
+    # Periksa apakah pertanyaan sudah dijawab oleh pengguna lain
+    existing_answer = repositoriesDB.find_existing_answer_by_question_id(question_id)
+    if existing_answer:
+        raise ValueError("Question has already been answered by another user")
+
+    # Sisipkan jawaban ke dalam database
+    answer_info = repositoriesDB.create_profile_answer(json_object=json_object)
+
+    question = find_question_by_id(id=question_id)
+    if question is None:
+        raise ValueError("Question not found")
+
+    # Cari kelas berdasarkan jawaban dan class_id
     kelas_user = repositoriesDB.find_by_answer_id_and_class_id(class_id=class_id)
     user = find_by_id(id=user_id)
-    print("ini user user_id di services", user_id)
+
     if kelas_user is not None:
         repositoriesDB.update_delete_by_id(id=kelas_user.id, is_deleted=False)
         return True
+
     if user is None:
-        raise_error(msg="user not found")
-    json_object['class_id'] = class_id
-    json_object['user_id'] = user_id
-    insert_answer_db(json_object=json_object)
-    return True
-    # except Exception as e:
-    #     print("Error:", e)
-    #     return None
+        raise ValueError("User not found")
+
+    return answer_info
+
+
+# def create_answer_service(class_id=0, json_object={}, user_id=0):
+#     try:
+#         question = find_by_id_answer_time(answer_time=json_object['answer_time_user'])
+#         print("ini question id di service ==> ", question)
+#         if question is None:
+#             raise_error(msg="Batas waktu jawaban sudah habis")
+#
+#         existing_answer = find_question_by_id(json_object['question_id'])
+#         if existing_answer:
+#             raise_error(msg="Pertanyaan sudah dijawab oleh siswa lain")
+#
+#         kelas_user = repositoriesDB.find_by_answer_id_and_class_id(class_id=class_id)
+#         user = find_by_id(id=user_id)
+#         if kelas_user is not None:
+#             repositoriesDB.update_delete_by_id(id=kelas_user.id, is_deleted=False)
+#             return True
+#         if user is None:
+#             raise_error(msg="User not found")
+#         json_object['class_id'] = class_id
+#         json_object['user_id'] = user_id
+#         insert_answer_db(json_object=json_object)
+#         return True
+#     except Exception as e:
+#         print("Error:", e)
+#         return None
 
 
 def delete_answer_db_by_id(id=0):

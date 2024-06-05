@@ -1,8 +1,8 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from pony.orm import *
 
-from database.schema import QuestionDB
+from database.schema import QuestionDB, AnswerDB
 
 
 @db_session
@@ -55,20 +55,17 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
     }
 
 
-
 @db_session
 def insert(json_object={}, to_model=False):
     try:
         new_question = QuestionDB(
-            think_time=json_object["think_time"],
-            answer_time=json_object["answer_time"],
+            name=json_object["name"],
             class_id=json_object["class_id"],
             user_id=json_object["user_id"],
             user_name=json_object["user_name"],
-            score=json_object["score"],
-            answer_time_client=json_object["answer_time_client"],
-            answer=json_object["answer"],
-            type=json_object["type"]
+            type=json_object["type"],
+            think_time=json_object["think_time"],
+            answer_time=json_object["answer_time"]
         )
         commit()
         if to_model:
@@ -84,6 +81,8 @@ def insert(json_object={}, to_model=False):
 def update(json_object=None, to_model=False):
     try:
         updated_question = QuestionDB[json_object["id"]]
+        if "name" in json_object:
+            updated_question.name = json_object["name"]
         if "think_time" in json_object:
             updated_question.think_time = json_object["think_time"]
         if "answer_time" in json_object:
@@ -94,12 +93,6 @@ def update(json_object=None, to_model=False):
             updated_question.user_id = json_object["user_id"]
         if "user_name" in json_object:
             updated_question.user_name = json_object["user_name"]
-        if "score" in json_object:
-            updated_question.score = json_object["score"]
-        if "answer_time_client" in json_object:
-            updated_question.answer_time_client = json_object["answer_time_client"]
-        if "answer" in json_object:
-            updated_question.answer = json_object["answer"]
         if "type" in json_object:
             updated_question.type = json_object["type"]
 
@@ -139,6 +132,8 @@ def create_competition(json_object={}, to_model=False):
         new_competition = QuestionDB(
             name=json_object["name"],
             class_id=json_object["class_id"],
+            user_id=json_object["user_id"],
+            user_name=json_object["user_name"],
             type=json_object["type"],
             think_time=json_object["think_time"],
             answer_time=json_object["answer_time"]
@@ -153,10 +148,17 @@ def create_competition(json_object={}, to_model=False):
     return None
 
 
-
 @db_session
 def find_by_id_answer_time(answer_time=None):
     data_in_db = select(s for s in QuestionDB if s.answer_time == answer_time)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
+
+
+@db_session
+def find_by_question_id_and_class_id(class_id=0, id=0):
+    data_in_db = select(s for s in QuestionDB if s.id == id and s.class_id == class_id)
     if data_in_db.first() is None:
         return None
     return data_in_db.first().to_model()
@@ -171,6 +173,8 @@ def save_competition(json_object={}, to_model=False):
         new_competition = QuestionDB(
             name=json_object["name"],
             class_id=json_object["class_id"],
+            user_id=json_object["user_id"],
+            user_name=json_object["user_name"],
             type=json_object["type"],
             think_time=json_object["think_time"],
             answer_time=json_object["answer_time"]
@@ -184,6 +188,34 @@ def save_competition(json_object={}, to_model=False):
         print("error Question insert: ", e)
     return None
 
+
+@db_session
+def check_answer_time(question_id):
+    # Temukan pertanyaan dan jawaban berdasarkan ID
+    question = select(q for q in QuestionDB if q.id == question_id).first()
+    answer = select(a for a in AnswerDB if a.question_id == question_id).first()
+
+    if not question or not answer:
+        return "Question or answer not found."
+
+    # Tidak perlu konversi jika question.answer_time sudah timedelta
+    question_answer_time = question.answer_time
+    print("quest_answer_time ==> ", question_answer_time)
+
+    # Konversi answer_time_user ke timedelta jika belum
+    if isinstance(answer.answer_time_user, str):
+        # Misalkan answer_time_user adalah string dalam format 'HH:MM:SS'
+        hours, minutes, seconds = map(int, answer.answer_time_user.split(':'))
+        answer_time_user = timedelta(hours=hours, minutes=minutes, seconds=seconds)
+        print("answer time user ==> ", answer_time_user)
+    else:
+        answer_time_user = answer.answer_time_user
+
+    # Bandingkan waktu jawaban pengguna dengan batas waktu jawaban
+    if answer_time_user > question_answer_time:
+        raise ValueError("Jawaban melebihi batas waktu")
+    else:
+        return "Jawaban diberikan tepat waktu."
 # @db_session
 # def save_competition_answer(json_object={}):
 #     try:

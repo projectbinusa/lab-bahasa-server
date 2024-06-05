@@ -1,4 +1,6 @@
+import csv
 import datetime
+import errno
 import json
 import uuid
 import datetime
@@ -6,6 +8,7 @@ import datetime
 from pony.orm import *
 
 from database.schema import UserDB, KelasUserDB
+from entitas.kelas_user.repositoriesDB import find_kelas_user_db_by_id
 from util.other_util import raise_error
 from util.other_util import encrypt_string
 
@@ -144,13 +147,6 @@ def find_by_id(id=None):
     return data_in_db.first().to_model()
 
 
-@db_session
-def find_by_user_id_and_class_id(class_id=0, id=0):
-    data_in_db = select(s for s in UserDB if s.id == id and s.class_id == class_id)
-    if data_in_db.first() is None:
-        return None
-    return data_in_db.first().to_model()
-
 
 @db_session
 def find_by_list_id(list_id=[]):
@@ -224,6 +220,25 @@ def delete_by_id(id=None):
         print("Error Account deleteById" + str(e))
     return None
 
+@db_session
+def delete_by_ids(ids=[]):
+    print("ids di service ==>", ids)
+    try:
+        for id in ids:
+            UserDB[id].delete()
+        commit()
+        return True
+    except Exception as e:
+        print("Error Account deleteByIds" + str(e))
+        return None
+
+
+@db_session
+def find_by_user_id_and_class_id(class_id=0, id=0):
+    data_in_db = select(s for s in UserDB if s.id == id and s.class_id == class_id)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
 
 @db_session
 def insert(json_object={}, to_model=False):
@@ -861,3 +876,51 @@ def edit_class_id_user(json_object=None, to_model=False):
 @db_session
 def get_user(user_id):
     return UserDB.get(id=user_id)
+
+
+@db_session
+def export_users_to_csv(file_path='management_name_list.csv'):
+    try:
+        users = select(u for u in UserDB)[:]
+        with open(file_path, mode='w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file, delimiter=';')  # Using tab as delimiter
+            writer.writerow(["#", "Client ID", "Name", "Email", "Gender", "Departement", "Kelas", "Password",
+                             "Password Prompt"])  # header
+            for user in users:
+                writer.writerow(
+                    [user.id, user.client_id, user.name, user.email, user.gender, user.departement, user.class_id,
+                     user.password, user.password_prompt])
+        return True, None
+    except IOError as e:
+        if e.errno == errno.EACCES:
+            return False, f"[Errno 13] Permission denied: '{file_path}'"
+        else:
+            return False, str(e)
+    except Exception as e:
+        print(e)
+        return False, str(e)
+
+@db_session
+def import_users_from_csv(file_path='management_name_list.csv', to_model=False):
+    # try:
+        with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+            reader = csv.reader(file, delimiter=';')  # Gunakan delimiter yang sesuai
+            next(reader)  # Lewati baris header
+            for row in reader:
+                user = UserDB(
+                    name=row[0],
+                    email=row[1],
+                    gender=row[2],
+                    departement=row[3],
+                    class_id=row[4],
+                    password=encrypt_string(row[5]),
+                    password_prompt=encrypt_string(row[6])
+                )
+                commit()
+                if to_model:
+                    return user.to_model()
+                else:
+                    return user.to_model().to_response()
+    # except Exception as e:
+    # return None
+

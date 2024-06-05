@@ -5,6 +5,7 @@ class AnggotaGroup:
             group_id=0,
             user_id=0,
             role='',
+            class_id=0,
             created_date=None,
             updated_date=None,
     ):
@@ -12,6 +13,7 @@ class AnggotaGroup:
         self.group_id = group_id,
         self.user_id = user_id,
         self.role = role,
+        self.class_id = class_id,
         self.created_date = created_date
         self.updated_date = updated_date
 
@@ -21,6 +23,7 @@ class AnggotaGroup:
             "group_id": self.group_id,
             "user_id": self.user_id,
             "role": self.role,
+            "class_id": self.class_id,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None
         }
@@ -31,6 +34,7 @@ class AnggotaGroup:
             "group_id": self.group_id,
             "user_id": self.user_id,
             "role": self.role,
+            "class_id": self.class_id,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None
         }

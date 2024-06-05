@@ -1,11 +1,13 @@
 from pony.orm import *
 from database.schema import AnggotaGroupDB
 
+
 @db_session
-def add_member_to_group_by_group_id(group_id, json_object={}, to_model=False):
+def add_member_to_group_by_group_id_by_class_id(group_id, class_id, json_object={}, to_model=False):
     try:
         new_member = AnggotaGroupDB(
             group_id=group_id,
+            class_id=class_id,
             user_id=json_object["user_id"],
             role=json_object["role"],
         )
@@ -16,14 +18,17 @@ def add_member_to_group_by_group_id(group_id, json_object={}, to_model=False):
             return new_member.to_model().to_json()
     except Exception as e:
         print("error anggotaGroup insert: ", e)
-    return
+    return None
+
 
 @db_session
-def get_group_member_by_group_id(group_id, page=1, limit=9, filters=[], to_model=False):
+def get_group_member_by_group_id_by_class_id(group_id, class_id, page=1, limit=9, filters=[], to_model=False):
     result = []
     total_record = 0
     try:
-        data_in_db = select(s for s in AnggotaGroupDB if s.group_id == group_id).order_by(desc(AnggotaGroupDB.id))
+        data_in_db = select(
+            s for s in AnggotaGroupDB if (s.group_id == group_id) and (s.class_id == class_id)).order_by(
+            desc(AnggotaGroupDB.id))
         for item in filters:
             if item["field"] == "id":
                 data_in_db = data_in_db.filter(id=item["value"])
@@ -49,12 +54,13 @@ def get_group_member_by_group_id(group_id, page=1, limit=9, filters=[], to_model
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
 
+
 @db_session
-def delete_anggota_group_by_id(id=None):
+def delete_anggota_group_by_id_by_class_id(id=None, class_id=None):
     try:
-        AnggotaGroupDB[id].delete()
+        AnggotaGroupDB.get(id=id, class_id=class_id).delete()
         commit()
         return True
     except Exception as e:
         print("error Chat delete: ", e)
-    return
+        return False
