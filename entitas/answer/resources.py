@@ -1,3 +1,5 @@
+import datetime
+
 from entitas.answer import services
 from util.entitas_util import generate_filters_resource, resouce_response_api
 
@@ -13,9 +15,32 @@ class AnswerResource:
         )
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 
-    def on_post(self, req, resp, class_id):
-        resouce_response_api(resp=resp,
-                             data=services.create_answer_service(class_id, json_object=req.media, user_id=req.context["user"]["id"]))
+    def on_post(self, req, resp, class_id: int):
+        print("class id di resources => ", class_id)
+        print("user id di resources => ", req.context["user"]["id"])
+
+        # Ambil question_id dan answer dari payload JSON
+        question_id = req.media.get('question_id')
+        answer = req.media.get('answer')
+
+        if question_id is None or answer is None:
+            # Handle the absence of question_id or answer appropriately
+            print("question_id or answer is missing from the request")
+            resouce_response_api(resp=resp, data={"error": "question_id or answer is missing"}, status=400)
+            return
+
+        body = {
+            "user_id": req.context['user']['id'],
+            "class_id": class_id,
+            "question_id": question_id,
+            "answer": answer
+        }
+        result = services.create_answer_service(json_object=body)
+        resouce_response_api(resp=resp, data=result)
+        # except ValueError as e:
+        #     resouce_response_api(resp=resp, data={"error": str(e)})
+        # except Exception as e:
+        #     resouce_response_api(resp=resp, data={"error": "Internal server error"})
 
 
 class AnswerWithIdResource:
