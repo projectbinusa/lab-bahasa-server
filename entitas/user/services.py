@@ -148,6 +148,11 @@ def delete_user_by_id(id=0):
     return repositoriesDB.delete_by_id(id=id)
 
 
+def delete_user_by_ids(ids=[]):
+    print("delete ids di service ==> ", ids)
+    return repositoriesDB.delete_by_ids(ids=ids)
+
+
 def login_db(json_object={}, domain=""):
     account_info = repositoriesDB.post_login(json_object=json_object)
     if account_info is None:
@@ -395,6 +400,8 @@ def update_menage_name_list_db(json_object={}):
 def insert_manage_name_list_db(json_object={}):
     return repositoriesDB.create_profile_manage_student_list(json_object=json_object)
 
+# def import_users_from_csv(file_path):
+#     return repositoriesDB.import_users_from_csv(file_path=file_path)
 
 def create_profile_manage_student_list_service(class_id=0, json_object={}):
     kelas_user = repositoriesDB.find_by_user_id_and_class_id(class_id=class_id)
@@ -443,7 +450,8 @@ def delete_user_by_class_id(class_id=0, id=0):
 
 
 def find_management_list_by_ids(class_id=0, management_list_id=0):
-    management_list = find_user_db_by_id(id=management_list_id, to_model=True)
+    print("class id dan user id di service ==> ", class_id, management_list_id)
+    management_list = find_by_user_id_and_class_id(class_id=class_id, id=management_list_id)
     if management_list is None:
         raise_error(msg="user not found")
     kelas = find_kelas_user_db_by_id(id=class_id, to_model=True)
@@ -501,3 +509,16 @@ def update_class_id_user(json_object={}, id=0):
         raise_error(msg="user not found")
     json_object["id"] = user.id
     return repositoriesDB.edit_class_id_user(json_object=json_object)
+
+def export_users(file_path='management_name_list.csv', id=0):
+    user = find_kelas_user_db_by_id(id=id)
+    if user is None:
+        raise_error("class not found")
+    return export_users_to_csv(file_path=file_path)
+
+
+def import_users(file_path='management_name_list.csv', id=0):
+    user = find_kelas_user_db_by_id(id=id)
+    if user is None:
+        raise_error("class not found")
+    return import_users_from_csv(file_path=file_path)

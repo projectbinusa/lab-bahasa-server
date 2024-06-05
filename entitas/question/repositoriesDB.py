@@ -1,8 +1,8 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from pony.orm import *
 
-from database.schema import QuestionDB
+from database.schema import QuestionDB, AnswerDB
 
 
 @db_session
@@ -156,6 +156,13 @@ def find_by_id_answer_time(answer_time=None):
     return data_in_db.first().to_model()
 
 
+@db_session
+def find_by_question_id_and_class_id(class_id=0, id=0):
+    data_in_db = select(s for s in QuestionDB if s.id == id and s.class_id == class_id)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
+
 # @db_session
 # def answer(json_object={}, to_model=False):
 #
@@ -181,6 +188,34 @@ def save_competition(json_object={}, to_model=False):
         print("error Question insert: ", e)
     return None
 
+
+@db_session
+def check_answer_time(question_id):
+    # Temukan pertanyaan dan jawaban berdasarkan ID
+    question = select(q for q in QuestionDB if q.id == question_id).first()
+    answer = select(a for a in AnswerDB if a.question_id == question_id).first()
+
+    if not question or not answer:
+        return "Question or answer not found."
+
+    # Tidak perlu konversi jika question.answer_time sudah timedelta
+    question_answer_time = question.answer_time
+    print("quest_answer_time ==> ", question_answer_time)
+
+    # Konversi answer_time_user ke timedelta jika belum
+    if isinstance(answer.answer_time_user, str):
+        # Misalkan answer_time_user adalah string dalam format 'HH:MM:SS'
+        hours, minutes, seconds = map(int, answer.answer_time_user.split(':'))
+        answer_time_user = timedelta(hours=hours, minutes=minutes, seconds=seconds)
+        print("answer time user ==> ", answer_time_user)
+    else:
+        answer_time_user = answer.answer_time_user
+
+    # Bandingkan waktu jawaban pengguna dengan batas waktu jawaban
+    if answer_time_user > question_answer_time:
+        raise ValueError("Jawaban melebihi batas waktu")
+    else:
+        return "Jawaban diberikan tepat waktu."
 # @db_session
 # def save_competition_answer(json_object={}):
 #     try:

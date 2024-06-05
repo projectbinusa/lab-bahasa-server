@@ -1,8 +1,11 @@
 import json
+import os
 from urllib.request import urlopen
 
 import falcon
 import requests
+
+from config.config import DOMAIN_FILE_URL, LOG_BOOK_FOLDER
 from entitas.user import services, repositoriesDB
 from entitas.baseResponse.models import BaseResponse
 from entitas.user.services import verify_reset_code_service, request_password_reset, reset_password_service
@@ -78,6 +81,16 @@ class UserWithIdResource:
     def on_delete(self, req, resp, id: int):
         resouce_response_api(resp=resp, data=services.delete_user_by_id(id=int(id)))
 
+class UserDeleteByIds:
+    def on_delete(self, req, resp):
+        ids = req.media.get('ids', [])
+        print("ids di resources ==> ", ids)
+        if not ids:
+            resp.status = falcon.HTTP_400
+            resp.media = {'error': 'No IDs provided for deletion.'}
+            return
+        result = services.delete_user_by_ids(ids=ids)
+        resouce_response_api(resp=resp, data=result)
 
 class UserLoginResource:
     auth = {"auth_disabled": True}
@@ -196,6 +209,7 @@ class AdminUserUpdateProfileWithIdResource:
         body['rank'] = req.get_param("rank")
         body['signature'] = req.get_param("signature")
         body['tag'] = req.get_param("tag")
+        body['work_unit'] = req.get_param("work_unit")
         body['work_unit'] = req.get_param("work_unit")
         resouce_response_api(resp=resp, data=services.update_profile_id_user_by_admin(
             json_object=body, picture=picture, bank_book_photo=bank_book_photo, id_card=id_card
@@ -407,6 +421,34 @@ class EditClassIdUserResource:
         body = req.media
         resouce_response_api(resp=resp, data=services.update_class_id_user(id=int(update_class_id_user), json_object=body
         ))
-    # def on_put(self, req, resp, update_class_id_user: int):
-    #     body = req.media
-    #     resouce_response_api(resp=resp, data=services.update_class_id_user(id=int(update_class_id_user), json_object=body))
+
+
+# Resources
+class ExportManagementList:
+    def on_get(self, req, resp, class_id: int):
+        file_path = "tmp/management_name_list.csv"
+        success, error = services.export_users(file_path, id=class_id)
+        if success:  # Remove the file after download
+            resp.content_type = 'application/octet-stream'
+            resp.downloadable_as = 'management_name_list.csv'
+            with open(file_path, 'r', encoding='utf-8') as f:
+                resp.body = f.read()
+            os.remove(file_path)
+            # resp.body = data
+        else:
+            resouce_response_api(resp=resp, data={"error": error})
+
+class ImportManagementNameList:
+    def on_post(self, req, resp, class_id: int):
+        uploaded_file = req.get_param('file')
+        if uploaded_file.filename.endswith('.csv'):
+            file_path = "tmp/" + uploaded_file.filename
+            with open(file_path, 'wb') as f:
+                f.write(uploaded_file.file.read())
+            success = services.import_users(file_path, id=class_id)
+            if success:
+                resp.media = {"message": "Import successful"}
+            # else:
+            #     resp.media = {"error": error}
+        else:
+            resp.media = {"error": "Only CSV files are allowed for import"}
