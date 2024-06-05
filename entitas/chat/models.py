@@ -7,6 +7,8 @@ class Chat:
             sender_id=0,
             is_group=0,
             group_id=0,
+            gambar='',
+            class_id=0,
             created_date=None,
             updated_date=None
     ):
@@ -16,6 +18,8 @@ class Chat:
         self.sender_id = sender_id
         self.group_id = group_id
         self.is_group = is_group
+        self.gambar = gambar
+        self.class_id = class_id
         self.created_date = created_date
         self.updated_date = updated_date
 
@@ -28,6 +32,8 @@ class Chat:
             "receiver_id": self.receiver_id,
             "group_id": self.group_id,
             "is_group": self.is_group,
+            "gambar": self.gambar,
+            "class_id": self.class_id,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
@@ -40,6 +46,8 @@ class Chat:
             "receiver_id": self.receiver_id,
             "group_id": self.group_id,
             "is_group": self.is_group,
+            "gambar": self.gambar,
+            "class-id": self.class_id,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
