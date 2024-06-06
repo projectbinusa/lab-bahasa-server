@@ -19,12 +19,15 @@ class ChatResource:
         body["sender_id"] = req.context["user"]["id"]
         resouce_response_api(resp=resp, data=services.insert_message_service(class_id, json_object=body, gambar=gambar))
 
-    def on_get(self, req, resp, class_id):
+
+
+class ChatByClassIdAndSenderIdAndReceiverId:
+    def on_get(self, req, resp, class_id, receiver_id):
         filters = generate_filters_resource(req=req, params_int=['id'], params_string=['content'])
         page = int(req.get_param("page", required=False, default=1))
         limit = int(req.get_param("limit", required=False, default=9))
-        data, pagination = services.get_chat_db_with_pagination(
-            class_id, page=page, limit=limit, filters=filters
+        data, pagination = services.get_chat_db_with_pagination_sender_id_and_receiver_id(
+            class_id, sender_id=req.context['user']['id'], receiver_id=receiver_id, page=page, limit=limit, filters=filters
         )
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 

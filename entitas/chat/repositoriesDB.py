@@ -53,6 +53,56 @@ def get_all_with_pagination_by_class_id(class_id, page=1, limit=9, filters=[], t
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
 
+
+@db_session
+def get_all_with_pagination_by_class_id_and_sender_id_receiver_id(class_id, sender_id, receiver_id, page=1, limit=9,
+                                                                  filters=[], to_model=False):
+    result = []
+    total_record = 0
+    try:
+        # Filter berdasarkan class_id, sender_id, dan receiver_id
+        data_in_db = select(s for s in ChatDB if
+                            s.class_id == class_id and s.sender_id == sender_id and s.receiver_id == receiver_id).order_by(
+            desc(ChatDB.id))
+
+        # Terapkan filter tambahan
+        for item in filters:
+            if item["field"] == "id":
+                data_in_db = data_in_db.filter(lambda d: d.id == item["value"])
+            elif item["field"] == "content":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.content)
+            elif item["field"] == "sender_id":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.sender_id)
+            elif item["field"] == "receiver_id":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.receiver_id)
+
+        # Hitung total record
+        total_record = data_in_db.count()
+
+        # Terapkan pagination jika limit lebih dari 0
+        if limit > 0:
+            data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
+
+        # Konversi data ke model atau response
+        for item in data_in_db:
+            if to_model:
+                result.append(item.to_model())
+            else:
+                result.append(item.to_model().to_response())
+
+    except Exception as e:
+        print("error pada getAllWithPagination: ", e)
+
+    # Hitung total halaman
+    total_page = (total_record + limit - 1) // limit if limit > 0 else 1
+
+    return result, {
+        "total": total_record,
+        "page": page,
+        "total_page": total_page,
+    }
+
+
 @db_session
 def update_chat(class_id=None, json_object=None, to_model=False):
     try:
@@ -263,6 +313,28 @@ def find_by_chat_by_message_id(chat=None, user_id=0):
 @db_session
 def find_by_id(id=None):
     data_in_db = select(s for s in ChatDB if s.id == id)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
+
+
+@db_session
+def get_by_class_id(class_id=None):
+    data_in_db = select(s for s in ChatDB if s.class_id == class_id)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
+
+@db_session
+def get_by_sender_id(sender_id=None):
+    data_in_db = select(s for s in ChatDB if s.sender_id == sender_id)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
+
+@db_session
+def get_by_receiver_id(receiver_id=None):
+    data_in_db = select(s for s in ChatDB if s.receiver_id == receiver_id)
     if data_in_db.first() is None:
         return None
     return data_in_db.first().to_model()
