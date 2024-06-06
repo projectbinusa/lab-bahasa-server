@@ -1,7 +1,3 @@
-import json
-
-import falcon
-
 from entitas.chat import services
 from util.entitas_util import generate_filters_resource, resouce_response_api
 
