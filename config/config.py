@@ -18,6 +18,7 @@ BANK_FOLDER = 'files/'
 CARD_FOLDER = 'files/'
 LOG_BOOK_FOLDER = 'files/'
 CERTIFICATE_FOLDER = 'files/'
+CHAT_FOLDER = 'files/'
 ASSIGNMENT_FOLDER = 'files/'
 SIGNATURE_FOLDER = 'files/'
 LINK_MEET = os.environ["LINK_MEET"]
