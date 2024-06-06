@@ -19,6 +19,7 @@ CARD_FOLDER = 'files/'
 LOG_BOOK_FOLDER = 'files/'
 CERTIFICATE_FOLDER = 'files/'
 ASSIGNMENT_FOLDER = 'files/'
+CHAT_FOLDER = 'files/'
 SIGNATURE_FOLDER = 'files/'
 LINK_MEET = os.environ["LINK_MEET"]
 firebase_server_key=os.environ['firebase_server_key']
