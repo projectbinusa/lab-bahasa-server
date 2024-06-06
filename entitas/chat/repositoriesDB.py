@@ -97,6 +97,8 @@ def update_chat(class_id=None, json_object=None, to_model=False):
             updated_chat.receiver_id = json_object["receiver_id"]
         if "group_id" in json_object:
             updated_chat.group_id = json_object["group_id"]
+        if "topic_chat_id" in json_object:
+            updated_chat.topic_chat_id = json_object["topic_chat_id"]
         if "class_id" in json_object:
             updated_chat.class_id = json_object["class_id"]
         if "gambar" in json_object:
