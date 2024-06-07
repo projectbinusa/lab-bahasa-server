@@ -3,8 +3,10 @@ import uuid
 from database.schema import ChatDB
 from entitas.chat import repositoriesDB
 from entitas.kelas_user.repositoriesDB import find_by_id
+from entitas.user.repositoriesDB import find_by_id as find_user_by_id
 from config.config import CHAT_FOLDER, DOMAIN_FILE_URL
 from util.other_util import raise_error
+import logging
 
 
 def insert_chat_db(json_object={}):
@@ -26,23 +28,59 @@ def get_chat_db_with_pagination_sender_id_and_receiver_id(class_id, sender_id, r
         class_id, sender_id, receiver_id, page=page, limit=limit, filters=filters, to_model=to_model
     )
 
-def update_chat_db(class_id, gambar=None, json_object={}):
+def update_chat_db(class_id, receiver_id=0, gambar=None, json_object={}):
+    print("receiverid di services > ", receiver_id)
+    kelas = find_by_id(id=class_id)
+    receiver_id = repositoriesDB.get_by_receiver_id(receiver_id=receiver_id)
+    if kelas is None:
+        raise_error(msg="kelas not found")
+    if receiver_id is None:
+        raise_error(msg="receiver_id in chat not found")
     temp_file_start = str(uuid.uuid4()) + gambar.filename.replace(" ", "")
     with open(CHAT_FOLDER + temp_file_start, "wb") as f:
         f.write(gambar.file.read())
     json_object["gambar"] = DOMAIN_FILE_URL + '/files/' + temp_file_start
-    return repositoriesDB.update_chat(class_id, json_object=json_object)
+    return repositoriesDB.update_chat(class_id, receiver_id, json_object)
 
-def delete_chat_by_id(id=0, class_id=0):
+
+def delete_chat_by_id(id=0, class_id=0, receiver_id=0):
+    print("kelas service > ", class_id)
+    print("receiverid di services > ", receiver_id)
+
+    # Pastikan receiver_id sudah dalam format yang benar sebelumnya
+    if receiver_id is None:
+        raise_error(msg="receiver_id is not valid")
+
+    # Cek apakah class_id valid
+    kelas = find_by_id(id=class_id)
+    if kelas is None:
+        raise_error(msg="kelas not found")
+
+    # Cek apakah receiver_id valid dari tabel user
+    receiver = find_user_by_id(id=receiver_id)
+    if receiver is None:
+        raise_error(msg="receiver_id in chat not found")
+
+    # Melanjutkan dengan penghapusan chat
     return repositoriesDB.delete_chat_by_id_and_by_class_id(id, class_id)
 
 
-def insert_message_service(class_id, json_object={}, gambar=None):
-    temp_file_start = str(uuid.uuid4()) + gambar.filename.replace(" ", "")
-    with open(CHAT_FOLDER + temp_file_start, "wb") as f:
-        f.write(gambar.file.read())
-    json_object["gambar"] = DOMAIN_FILE_URL + '/files/' + temp_file_start
-    return repositoriesDB.insert_private_chat(class_id, json_object=json_object)
+def insert_message_service(class_id, receiver_id=0, json_object={}, gambar=None):
+    # print("json_object i service >>> ", json_object)
+    print("receiverid di services > ", receiver_id)
+    kelas = find_by_id(id=class_id)
+    receiver_id = repositoriesDB.get_by_receiver_id(receiver_id=receiver_id)
+    if kelas is None:
+        raise_error(msg="kelas not found")
+    if receiver_id is None:
+        raise_error(msg="receiver_id not found")
+        temp_file_start = str(uuid.uuid4()) + gambar.filename.replace(" ", "")
+        with open(CHAT_FOLDER + temp_file_start, "wb") as f:
+            f.write(gambar.file.read())
+        json_object["gambar"] = DOMAIN_FILE_URL + '/files/' + temp_file_start
+    json_object["class_id"] = class_id
+    # json_object["receiver_id"] = receiver_id
+    return repositoriesDB.insert_private_chat(receiver_id=receiver_id, json_object=json_object)
 
 def get_messages_for_user_service(user_id, sender_id=None):
     return repositoriesDB.get_chats_for_user(user_id, sender_id)

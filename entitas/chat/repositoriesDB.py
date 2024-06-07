@@ -86,7 +86,7 @@ def get_all_with_pagination_by_class_id_and_sender_id_receiver_id(class_id, send
 @db_session
 def update_chat(class_id=None, json_object=None, to_model=False):
     try:
-        updated_chat = ChatDB.get(id=json_object["id"], class_id=class_id)
+        updated_chat = ChatDB[json_object["id"]]
         if "is_group" in json_object:
             updated_chat.is_group = json_object["is_group"]
         if "content" in json_object:
@@ -97,15 +97,11 @@ def update_chat(class_id=None, json_object=None, to_model=False):
             updated_chat.receiver_id = json_object["receiver_id"]
         if "group_id" in json_object:
             updated_chat.group_id = json_object["group_id"]
-        if "topic_chat_id" in json_object:
-            updated_chat.topic_chat_id = json_object["topic_chat_id"]
         if "class_id" in json_object:
             updated_chat.class_id = json_object["class_id"]
         if "gambar" in json_object:
             updated_chat.gambar = json_object["gambar"]
-
         commit()
-
         if to_model:
             return updated_chat.to_model()
         else:
@@ -127,12 +123,13 @@ def delete_chat_by_id_and_by_class_id(id=None, class_id=None):
 
 
 @db_session
-def insert_private_chat(class_id, json_object={}, to_model=False):
+def insert_private_chat(receiver_id, json_object={}, to_model=False):
+    print(receiver_id)
     try:
         new_chat = ChatDB(
-            class_id=class_id,
+            class_id=json_object["class_id"],
             sender_id=json_object["sender_id"],
-            receiver_id=json_object["receiver_id"],
+            receiver_id=receiver_id,
             content=json_object["content"],
             is_group=json_object["is_group"],
             gambar=json_object["gambar"]
@@ -143,7 +140,7 @@ def insert_private_chat(class_id, json_object={}, to_model=False):
         else:
             return new_chat.to_model().to_response()
     except Exception as e:
-        print("error Message insert: ", e)
+        print("error Chat insert: ", e)
     return None
 
 @db_session
@@ -230,7 +227,7 @@ def get_by_sender_id(sender_id=None):
     return data_in_db.first().to_model()
 
 @db_session
-def get_by_receiver_id(receiver_id=None):
+def get_by_receiver_id(receiver_id=0):
     data_in_db = select(s for s in ChatDB if s.receiver_id == receiver_id)
     if data_in_db.first() is None:
         return None
