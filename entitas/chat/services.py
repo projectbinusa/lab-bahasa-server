@@ -2,8 +2,9 @@ import uuid
 
 from database.schema import ChatDB
 from entitas.chat import repositoriesDB
-from entitas.kelas_user.repositoriesDB import find_by_id
+from entitas.kelas_user.repositoriesDB import find_by_id, find_kelas_user_db_by_id
 from config.config import CHAT_FOLDER, DOMAIN_FILE_URL
+from entitas.topic_chat import services
 from util.other_util import raise_error
 
 
@@ -25,6 +26,31 @@ def get_chat_db_with_pagination_sender_id_and_receiver_id(class_id, sender_id, r
     return repositoriesDB.get_all_with_pagination_by_class_id_and_sender_id_receiver_id(
         class_id, sender_id, receiver_id, page=page, limit=limit, filters=filters, to_model=to_model
     )
+
+
+def get_chat_db_with_pagination_by_topic_chat_id(class_id=0, topic_chat_id=0, page=1, limit=9, filters=[], to_model=False):
+    kelas = repositoriesDB.get_by_class_id(class_id=class_id)
+    topic_chat = repositoriesDB.get_by_topic_chat_id(topic_chat_id=topic_chat_id)
+    if kelas is None:
+        raise_error(msg="class id not found")
+    if topic_chat is None:
+        raise_error(msg="topic chat id not found")
+    return repositoriesDB.get_all_with_pagination_by_class_id_and_topic_chat_id(
+        class_id, topic_chat_id, page=page, limit=limit, filters=filters, to_model=to_model
+    )
+
+
+def get_chat_db_with_pagination_by_group_id(class_id=0, group_id=0, page=1, limit=9, filters=[], to_model=False):
+    kelas = repositoriesDB.get_by_class_id(class_id=class_id)
+    group = repositoriesDB.get_by_group_id(group_id=group_id)
+    if kelas is None:
+        raise_error(msg="class id not found")
+    if group is None:
+        raise_error(msg="group id not found")
+    return repositoriesDB.get_all_with_pagination_by_class_id_and_group_id(
+        class_id=class_id, group_id=group_id, page=page, limit=limit, filters=filters, to_model=to_model
+    )
+
 
 def update_chat_db(class_id, gambar=None, json_object={}):
     temp_file_start = str(uuid.uuid4()) + gambar.filename.replace(" ", "")

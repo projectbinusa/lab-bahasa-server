@@ -871,6 +871,7 @@ class ChatDB(db2.Entity):
         item.sender_id = self.sender_id
         item.is_group = self.is_group
         item.gambar = self.gambar
+        item.class_id = self.class_id
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
