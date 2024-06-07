@@ -14,10 +14,12 @@ def find_kelas_user_db_by_id(id=0, to_model=False):
     result = repositoriesDB.find_by_id(id=id)
     print("id ==>", id)
     if result is None:
-        return None
+        raise_error('class id not found')
     if to_model:
         return result
     return result.to_response()
+
+
 
 def find_kelas_user_for_student_by_id(id=0, user_id=0, to_model=False):
     result = repositoriesDB.find_by_kelas_user_id_and_user_id(id=id, user_id=user_id)
