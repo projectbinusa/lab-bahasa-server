@@ -7,13 +7,15 @@ class ChatResource:
         gambar = req.get_param("gambar")
         content = req.get_param("content")
         receiver_id = req.get_param("receiver_id")
+        print("receiver_id di resources >>", req.get_param("receiver_id"))
         is_group = req.get_param("is_group")
         body = {}
         body["content"] = content
         body["receiver_id"] = receiver_id
         body["is_group"] = is_group
+        body["gambar"] = gambar
         body["sender_id"] = req.context["user"]["id"]
-        resouce_response_api(resp=resp, data=services.insert_message_service(class_id, json_object=body, gambar=gambar))
+        resouce_response_api(resp=resp, data=services.insert_message_service(class_id, receiver_id=receiver_id, json_object=body, gambar=gambar))
 
 
 
@@ -41,17 +43,17 @@ class UserChatResource:
         resouce_response_api(resp=resp, data=services.get_messages_for_user_service(user_id, sender_id))
 
 class ChatWithIdResource:
-    def on_put(self, req, resp, chat_id: int, class_id: int):
+    def on_put(self, req, resp, chat_id: int, class_id: int, receiver_id: int):
         gambar = req.get_param("gambar")
         content = req.get_param("content")
-        receiver_id = req.get_param("receiver_id")
+        # receiver_id = req.get_param("receiver_id")
         is_group = req.get_param("is_group")
         body = {}
         body["content"] = content
-        body["receiver_id"] = receiver_id
+        # body["receiver_id"] = receiver_id
         body["is_group"] = is_group
         body["id"] = int(chat_id)
-        resouce_response_api(resp=resp, data=services.update_chat_db(json_object=body, gambar=gambar, class_id=class_id))
+        resouce_response_api(resp=resp, data=services.update_chat_db(json_object=body, gambar=gambar, class_id=class_id, receiver_id=receiver_id))
 
-    def on_delete(self, req, resp, chat_id: int, class_id: int):
-        resouce_response_api(resp=resp, data=services.delete_chat_by_id(id=int(chat_id), class_id=int(class_id)))
+    def on_delete(self, req, resp, chat_id: int, class_id: int, receiver_id: int):
+        resouce_response_api(resp=resp, data=services.delete_chat_by_id(id=int(chat_id), class_id=int(class_id), receiver_id=int(receiver_id)))
