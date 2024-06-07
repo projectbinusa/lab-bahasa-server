@@ -1,6 +1,7 @@
 from datetime import date, datetime
 from pony.orm import *
 
+from entitas.anggota_topic_chat.models import AnggotaTopicChat
 from entitas.answer.models import Answer
 from entitas.kelas_user.models import KelasUser
 from entitas.log_book.models import LogBook
@@ -22,6 +23,7 @@ from entitas.room_user.models import Room_User
 from entitas.schedule.models import Schedule
 from entitas.schedule_instructur.models import Schedule_instuctur
 from entitas.schedule_user.models import Schedule_User
+from entitas.topic_chat.models import TopicChat
 from entitas.training.models import Training
 from entitas.training_user.models import Training_user
 from entitas.user.models import User
@@ -33,7 +35,6 @@ from entitas.chat.models import Chat
 from entitas.anggota_group.models import AnggotaGroup
 from entitas.group.models import Group
 from util.db_util import db2
-from config.config import DOMAIN_FILE_URL
 
 
 # start User
@@ -823,6 +824,7 @@ class AnswerDB(db2.Entity):
         item.updated_date = self.updated_date
         return item
 
+
 class MessageChatDB(db2.Entity):
     _table_ = "message_chat"
     id = PrimaryKey(int, auto=True)
@@ -844,6 +846,7 @@ class MessageChatDB(db2.Entity):
         item.updated_date = self.updated_date
         return item
 
+
 class ChatDB(db2.Entity):
     _table_ = "chat"
     id = PrimaryKey(int, auto=True)
@@ -852,6 +855,7 @@ class ChatDB(db2.Entity):
     sender_id = Optional(int, nullable=True)
     is_group = Optional(int, nullable=True)
     group_id = Optional(int, nullable=True)
+    topic_chat_id = Optional(int, nullable=True)
     gambar = Optional(str, nullable=True)
     class_id = Optional(int, nullable=True)
     created_date = Optional(datetime, nullable=True)
@@ -862,6 +866,7 @@ class ChatDB(db2.Entity):
         item.id = self.id
         item.content = self.content
         item.group_id = self.group_id
+        item.topic_chat_id = self.topic_chat_id
         item.receiver_id = self.receiver_id
         item.sender_id = self.sender_id
         item.is_group = self.is_group
@@ -869,6 +874,7 @@ class ChatDB(db2.Entity):
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
+
 
 class AnggotaGroupDB(db2.Entity):
     _table_ = "anggota_group"
@@ -891,6 +897,7 @@ class AnggotaGroupDB(db2.Entity):
         item.updated_date = self.updated_date
         return item
 
+
 class GroupDB(db2.Entity):
     _table_ = "group"
     id = PrimaryKey(int, auto=True)
@@ -911,6 +918,49 @@ class GroupDB(db2.Entity):
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
+
+
+class TopicChatDB(db2.Entity):
+    _table_ = "topic_chat"
+    id = PrimaryKey(int, auto=True)
+    name = Optional(str, nullable=True)
+    is_removed = Optional(int, nullable=True)
+    class_id = Optional(int, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = TopicChat()
+        item.id = self.id
+        item.name = self.name
+        item.is_removed = self.is_removed
+        item.class_id = self.class_id
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
+
+class AnggotaTopicChatDB(db2.Entity):
+    _table_ = "anggota_topic_chat"
+    id = PrimaryKey(int, auto=True)
+    topic_chat_id = Optional(int, nullable=True)
+    user_id = Optional(int, nullable=True)
+    role = Optional(str, nullable=True)
+    class_id = Optional(int, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = AnggotaTopicChat()
+        item.id = self.id
+        item.topic_chat_id = self.topic_chat_id
+        item.user_id = self.user_id
+        item.role = self.role
+        item.class_id = self.class_id
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
 
 if db2.schema is None:
     db2.generate_mapping(create_tables=False)

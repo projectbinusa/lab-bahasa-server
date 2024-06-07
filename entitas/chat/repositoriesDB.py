@@ -2,26 +2,6 @@ from pony.orm import *
 from database.schema import ChatDB, UserDB, MessageChatDB
 
 
-# @db_session
-# def create_chat(json_object={}, to_model=False):
-#     try:
-#         new_chat = ChatDB(
-#             name=json_object["name"],
-#             is_group=json_object["is_group"],
-#             users=','.join(json_object['users']),
-#             # users=json_object["users"],
-#             # messages=json_object["messages"],
-#             # class_id=json_object['class_id']
-#         )
-#         commit()
-#         if to_model:
-#             return new_chat.to_model()
-#         else:
-#             return new_chat.to_model().to_json()
-#     except Exception as e:
-#         print("error question insert: ", e)
-#     return
-
 @db_session
 def get_all_with_pagination_by_class_id(class_id, page=1, limit=9, filters=[], to_model=False):
     result = []
@@ -117,6 +97,8 @@ def update_chat(class_id=None, json_object=None, to_model=False):
             updated_chat.receiver_id = json_object["receiver_id"]
         if "group_id" in json_object:
             updated_chat.group_id = json_object["group_id"]
+        if "topic_chat_id" in json_object:
+            updated_chat.topic_chat_id = json_object["topic_chat_id"]
         if "class_id" in json_object:
             updated_chat.class_id = json_object["class_id"]
         if "gambar" in json_object:

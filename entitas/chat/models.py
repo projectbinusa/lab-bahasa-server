@@ -7,6 +7,7 @@ class Chat:
             sender_id=0,
             is_group=0,
             group_id=0,
+            topic_chat_id=0,
             gambar='',
             class_id=0,
             created_date=None,
@@ -17,6 +18,7 @@ class Chat:
         self.receiver_id = receiver_id
         self.sender_id = sender_id
         self.group_id = group_id
+        self.topic_chat_id = topic_chat_id
         self.is_group = is_group
         self.gambar = gambar
         self.class_id = class_id
@@ -31,6 +33,7 @@ class Chat:
             "sender_id": self.sender_id,
             "receiver_id": self.receiver_id,
             "group_id": self.group_id,
+            "topic_chat_id": self.topic_chat_id,
             "is_group": self.is_group,
             "gambar": self.gambar,
             "class_id": self.class_id,
@@ -45,6 +48,7 @@ class Chat:
             "sender_id": self.sender_id,
             "receiver_id": self.receiver_id,
             "group_id": self.group_id,
+            "topic_chat_id": self.topic_chat_id,
             "is_group": self.is_group,
             "gambar": self.gambar,
             "class-id": self.class_id,

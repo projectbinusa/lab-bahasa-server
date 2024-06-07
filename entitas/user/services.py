@@ -422,10 +422,10 @@ def create_profile_manage_student_list_service(class_id=0, json_object={}):
 
 
 def update_user_by_class_id(class_id=0, id=0, json_object={}):
-    user = find_by_user_id_and_class_id(id=id, to_model=True)
+    user = find_by_user_id_and_class_id(id=id)
     kelas = find_kelas_user_db_by_id(id=class_id, to_model=True)
     if user is None:
-        raise_error(msg="log book not found")
+        raise_error(msg="user not found")
     if kelas is None:
         raise_error(msg="kelas not found")
     json_object["id"] = user.id
