@@ -15,15 +15,20 @@ def get_chat_db_with_pagination(class_id, page=1, limit=9, filters=[], to_model=
         class_id, page=page, limit=limit, filters=filters, to_model=to_model
     )
 
-def get_chat_db_with_pagination_sender_id_and_receiver_id(class_id, sender_id, receiver_id, page=1, limit=9, filters=[], to_model=False):
+def get_chat_db_with_pagination_sender_id_and_receiver_id(class_id=0, receiver_id=0, sender_id=0, page=1, limit=9, filters=[], to_model=False):
+    print("class_id in service ==> ", class_id)
+    print("sender_id in service ==> ", sender_id)
+    print("receiver_id in service ==> ", receiver_id)
     kelas = find_by_id(id=class_id)
-    receiver_id = repositoriesDB.get_by_receiver_id(receiver_id=receiver_id)
+    receiver = repositoriesDB.get_by_receiver_id(receiver_id=receiver_id)
+    sender = repositoriesDB.get_by_sender_id(sender_id=sender_id)
     if kelas is None:
         raise_error(msg="kelas not found")
-    if receiver_id is None:
+    if receiver is None:
         raise_error(msg="receiver_id in chat not found")
-    return repositoriesDB.get_all_with_pagination_by_class_id_and_sender_id_receiver_id(
-        class_id, sender_id, receiver_id, page=page, limit=limit, filters=filters, to_model=to_model
+    if sender is None:
+        raise_error(msg="sender_id in chat not found")
+    return repositoriesDB.get_all_with_pagination_by_class_id_and_sender_id_receiver_id(class_id=class_id, sender_id=sender_id, receiver_id=receiver_id, page=page, limit=limit, filters=filters, to_model=to_model
     )
 
 def update_chat_db(class_id, gambar=None, json_object={}):
