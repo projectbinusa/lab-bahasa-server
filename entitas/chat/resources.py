@@ -36,6 +36,7 @@ class UserChatResource:
         # user_id = req.context["user"]["id"]
         resouce_response_api(resp=resp, data=services.get_messages_for_user_service(user_id, sender_id))
 
+
 class ChatWithIdResource:
     def on_put(self, req, resp, chat_id: int, class_id: int, receiver_id: int):
         gambar = req.get_param("gambar")
@@ -51,3 +52,43 @@ class ChatWithIdResource:
 
     def on_delete(self, req, resp, chat_id: int, class_id: int, receiver_id: int):
         resouce_response_api(resp=resp, data=services.delete_chat_by_id(id=int(chat_id), class_id=int(class_id), receiver_id=int(receiver_id)))
+
+
+class ChatByClassIdAndTopicChatIdResource:
+    def on_get(self, req, resp, class_id: int, topic_chat_id: int):
+        # print(f"Request Path: {req.path}")
+        # print(f"Request Params: {req.params}")
+        # print(f"Received class_id: {class_id}, topic_chat_id: {topic_chat_id}")
+
+        filters = generate_filters_resource(req=req, params_int=['id'], params_string=['content'])
+        filters.append({'field': 'class_id', 'value': class_id})
+        filters.append({'field': 'topic_chat_id', 'value': topic_chat_id})
+        page = int(req.get_param("page", required=False, default=1))
+        limit = int(req.get_param("limit", required=False, default=9))
+
+        data, pagination = services.get_chat_db_with_pagination_by_topic_chat_id(
+            class_id, topic_chat_id, page=page, limit=limit, filters=filters
+        )
+
+        resouce_response_api(resp=resp, data=data, pagination=pagination)
+
+
+class ChatByClassIdAndGroupIdResource:
+    def on_get(self, req, resp, class_id: int, group_id: int):
+        # print(f"Request Path: {req.path}")
+        # print(f"Request Params: {req.params}")
+        # print(f"Received class_id: {class_id}, group_id: {group_id}")
+
+        filters = generate_filters_resource(req=req, params_int=['id'], params_string=['content'])
+        filters.append({'field': 'class_id', 'value': class_id})
+        filters.append({'field': 'group_id', 'value': group_id})
+        page = int(req.get_param("page", required=False, default=1))
+        limit = int(req.get_param("limit", required=False, default=9))
+
+        data, pagination = services.get_chat_db_with_pagination_by_group_id(
+            class_id=class_id, group_id=group_id, page=page, limit=limit, filters=filters
+        )
+
+        resouce_response_api(resp=resp, data=data, pagination=pagination)
+
+
