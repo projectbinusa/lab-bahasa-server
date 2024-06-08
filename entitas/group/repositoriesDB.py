@@ -1,6 +1,7 @@
 from pony.orm import *
 from database.schema import GroupDB
 
+
 @db_session
 def create_group_by_class_id(class_id, json_object={}, to_model=False):
     try:
@@ -18,6 +19,7 @@ def create_group_by_class_id(class_id, json_object={}, to_model=False):
     except Exception as e:
         print("error group insert: ", e)
     return
+
 
 @db_session
 def get_all_with_pagination_by_class_id(class_id, page=1, limit=9, filters=[], to_model=False):
@@ -50,6 +52,7 @@ def get_all_with_pagination_by_class_id(class_id, page=1, limit=9, filters=[], t
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
 
+
 @db_session
 def update_group_chat(class_id=None, json_object=None, to_model=False):
     try:
@@ -81,3 +84,12 @@ def delete_anggota_group_by_id_by_class_id(id=None, class_id=None):
     except Exception as e:
         print("error Group delete: ", e)
         return False
+
+
+@db_session
+def find_by_group_id_and_class_id(id=None, class_id=0):
+    data_in_db = select(s for s in GroupDB if s.id == id and s.class_id == class_id)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
+

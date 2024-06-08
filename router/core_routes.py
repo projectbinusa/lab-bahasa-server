@@ -26,6 +26,7 @@ def core_routes(api):
     api.add_route('/api/group/{group_id}/class/{class_id}', GroupWithIdResources())
     api.add_route('/api/anggota_group/{group_id}/class/{class_id}', AnggotaGroupResources())
     api.add_route('/api/delete_anggota_group/{anggota_group_id}/class/{class_id}', AnggotaGroupWithIdResources())
+    api.add_route('/api/delete_group/{anggota_group_id}/{group_id}/class/{class_id}', GroupDeletionResources())
     api.add_route('/api/class/{class_id}/topic_chat', TopicChatResources())
     api.add_route('/api/topic_chat/{topic_chat_id}/class/{class_id}', TopicChatWithIdResources())
     api.add_route('/api/anggota_topic_chat/{topic_chat_id}/class/{class_id}', AnggotaTopicChatResources())
