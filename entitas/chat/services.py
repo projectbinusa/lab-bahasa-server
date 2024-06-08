@@ -18,15 +18,20 @@ def get_chat_db_with_pagination(class_id, page=1, limit=9, filters=[], to_model=
         class_id, page=page, limit=limit, filters=filters, to_model=to_model
     )
 
-def get_chat_db_with_pagination_sender_id_and_receiver_id(class_id, sender_id, receiver_id, page=1, limit=9, filters=[], to_model=False):
+def get_chat_db_with_pagination_sender_id_and_receiver_id(class_id=0, receiver_id=0, sender_id=0, page=1, limit=9, filters=[], to_model=False):
+    print("class_id in service ==> ", class_id)
+    print("sender_id in service ==> ", sender_id)
+    print("receiver_id in service ==> ", receiver_id)
     kelas = find_by_id(id=class_id)
-    receiver_id = repositoriesDB.get_by_receiver_id(receiver_id=receiver_id)
+    receiver = repositoriesDB.get_by_receiver_id(receiver_id=receiver_id)
+    sender = repositoriesDB.get_by_sender_id(sender_id=sender_id)
     if kelas is None:
         raise_error(msg="kelas not found")
-    if receiver_id is None:
+    if receiver is None:
         raise_error(msg="receiver_id in chat not found")
-    return repositoriesDB.get_all_with_pagination_by_class_id_and_sender_id_receiver_id(
-        class_id, sender_id, receiver_id, page=page, limit=limit, filters=filters, to_model=to_model
+    if sender is None:
+        raise_error(msg="sender_id in chat not found")
+    return repositoriesDB.get_all_with_pagination_by_class_id_and_sender_id_receiver_id(class_id=class_id, sender_id=sender_id, receiver_id=receiver_id, page=page, limit=limit, filters=filters, to_model=to_model
     )
 
 def update_chat_db(class_id, receiver_id=0, gambar=None, json_object={}):
@@ -62,12 +67,28 @@ def get_chat_db_with_pagination_by_group_id(class_id=0, group_id=0, page=1, limi
     )
 
 
-def update_chat_db(class_id, gambar=None, json_object={}):
+
+def update_chat_db(class_id, sender_id=0, receiver_id=0, gambar=None, json_object={}):
+    print("receiverid di services > ", receiver_id)
+    kelas = find_by_id(id=class_id)
+    sender = repositoriesDB.get_by_sender_id(sender_id=sender_id)
+    receiver = repositoriesDB.get_by_receiver_id(receiver_id=receiver_id)
+    if kelas is None:
+        raise_error(msg="kelas not found")
+    if sender is None:
+        raise_error(msg="sender_id not found")
+    if receiver is None:
+        raise_error(msg="receiver_id in chat not found")
+    else:
+        receiver_id = receiver.id
     temp_file_start = str(uuid.uuid4()) + gambar.filename.replace(" ", "")
     with open(CHAT_FOLDER + temp_file_start, "wb") as f:
         f.write(gambar.file.read())
     json_object["gambar"] = DOMAIN_FILE_URL + '/files/' + temp_file_start
-    return repositoriesDB.update_chat(class_id, receiver_id, json_object)
+    json_object["class_id"] = class_id
+    # json_object["receiver_id"] = receiver_id
+    json_object["sender_id"] = sender_id
+    return repositoriesDB.update_chat(receiver_id=receiver_id, json_object=json_object)
 
 
 def delete_chat_by_id(id=0, class_id=0, receiver_id=0):

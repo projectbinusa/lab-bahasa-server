@@ -20,12 +20,18 @@ class ChatResource:
 
 
 class ChatByClassIdAndSenderIdAndReceiverId:
-    def on_get(self, req, resp, class_id, receiver_id):
+    def on_get(self, req, resp, class_id: int, receiver_id: int):
         filters = generate_filters_resource(req=req, params_int=['id'], params_string=['content'])
+        print("class_id in resources ==>", class_id)
+        print("receiver_id in resources ==>", receiver_id)
+        print("sender_id in resources ==>", req.context['user']['id'])
+        filters.append({"field": "class_id", "value": int(class_id)})
+        filters.append({"field": "sender_id", "value": req.context['user']['id']})
+        filters.append({"field": "receiver_id", "value": int(receiver_id)})
         page = int(req.get_param("page", required=False, default=1))
         limit = int(req.get_param("limit", required=False, default=9))
         data, pagination = services.get_chat_db_with_pagination_sender_id_and_receiver_id(
-            class_id, sender_id=req.context['user']['id'], receiver_id=receiver_id, page=page, limit=limit, filters=filters
+            class_id=class_id, receiver_id=receiver_id, sender_id=req.context['user']['id'], page=page, limit=limit, filters=filters
         )
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 
@@ -38,14 +44,14 @@ class UserChatResource:
 
 
 class ChatWithIdResource:
-    def on_put(self, req, resp, chat_id: int, class_id: int, receiver_id: int):
+    def on_put(self, req, resp, chat_id: int, class_id: int):
         gambar = req.get_param("gambar")
         content = req.get_param("content")
-        # receiver_id = req.get_param("receiver_id")
+        receiver_id = int(req.get_param("receiver_id"))
         is_group = req.get_param("is_group")
         body = {}
         body["content"] = content
-        # body["receiver_id"] = receiver_id
+        body["receiver_id"] = receiver_id
         body["is_group"] = is_group
         body["id"] = int(chat_id)
         resouce_response_api(resp=resp, data=services.update_chat_db(json_object=body, gambar=gambar, class_id=class_id, receiver_id=receiver_id))
