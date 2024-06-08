@@ -1,5 +1,6 @@
 from entitas.kelas_user import services
 from entitas.topic_chat import repositoriesDB
+from util.other_util import raise_error
 
 
 def insert_topic_chat_db(class_id, json_object={}):
@@ -26,3 +27,12 @@ def delete_topic_chat_by_id(id=0, class_id=0):
     if not services.find_kelas_user_db_by_id(class_id):
         return {"class id not found"}
     return repositoriesDB.delete_anggota_topic_by_id_by_class_id(id, class_id)
+
+
+def find_topic_chat_db_by_id(id=0, to_model=False):
+    result = repositoriesDB.find_by_id(id=id)
+    if result is None:
+        raise_error('topic chat id not found')
+    if to_model:
+        return result
+    return result.to_response()

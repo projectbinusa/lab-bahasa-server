@@ -51,7 +51,7 @@ class Chat:
             "topic_chat_id": self.topic_chat_id,
             "is_group": self.is_group,
             "gambar": self.gambar,
-            "class-id": self.class_id,
+            "class_id": self.class_id,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None,
         }
