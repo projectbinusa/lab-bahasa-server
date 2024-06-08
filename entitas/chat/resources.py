@@ -1,3 +1,7 @@
+import json
+
+import falcon
+
 from entitas.chat import services
 from util.entitas_util import generate_filters_resource, resouce_response_api
 
@@ -97,4 +101,38 @@ class ChatByClassIdAndGroupIdResource:
 
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 
+class ChatByClassIdAndGroupIdWithIdResource:
+    def on_put(self, req, resp, chat_id: int, class_id: int, group_id: int):
+        gambar = req.get_param("gambar")
+        sender_id = req.get_param("sender_id")
+        content = req.get_param("content")
+        receiver_id = int(req.get_param("receiver_id"))
+        is_group = req.get_param("is_group")
+        body = {}
+        body["content"] = content
+        body["receiver_id"] = receiver_id
+        body["sender_id"] = sender_id
+        body["is_group"] = is_group
+        body["id"] = int(chat_id)
+        body["class_id"] = class_id
+        body["group_id"] = group_id
+        resouce_response_api(resp=resp,
+                             data=services.update_chat_by_group_id_and_class_id(json_object=body, gambar=gambar,
+                                                                                class_id=class_id, group_id=group_id))
 
+    def on_delete(self, req, resp, chat_id: int, group_id: int, class_id: int):
+        resouce_response_api(resp=resp, data=services.delete_chat_by_group_id_and_class_id(id=int(chat_id), group_id=int(group_id), class_id=int(class_id)))
+
+class ChatByClassIdAndByGroupIdResource:
+    def on_get(self, req, resp, chat_id: int, group_id: int, class_id: int):
+        chat_data = services.get_chat_by_id_and_by_group_id_and_by_class_id(
+            id=int(chat_id),
+            group_id=int(group_id),
+            class_id=int(class_id)
+        )
+        if chat_data:
+            resp.status = falcon.HTTP_200
+            resp.body = json.dumps({"chat_data": chat_data.to_json()})
+        else:
+            resp.status = falcon.HTTP_404
+            resp.body = json.dumps({"message": "Chat not found"})

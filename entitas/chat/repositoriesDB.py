@@ -327,3 +327,27 @@ def get_by_group_id(group_id=None):
     if data_in_db.first() is None:
         return None
     return data_in_db.first().to_model()
+
+@db_session
+def delete_chat_by_group_id_and_class_id(id=None, group_id=None, class_id=None):
+    try:
+        chat_entry = ChatDB.get(id=id, group_id=group_id, class_id=class_id)
+        if chat_entry:
+            chat_entry.delete()
+            commit()
+            return True
+        else:
+            print(f"No chat entry found with group_id={group_id} and class_id={class_id}")
+    except Exception as e:
+        print("error Chat delete: ", e)
+    return False
+
+
+@db_session
+def get_chat_by_id_and_by_group_id_and_by_class_id(id=None, group_id=None, class_id=None):
+    data_in_db = select(s for s in ChatDB if s.id == id and s.group_id == group_id and s.class_id == class_id)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
+
+
