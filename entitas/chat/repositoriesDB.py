@@ -164,36 +164,28 @@ def get_all_with_pagination_by_class_id_and_group_id(class_id, group_id, page=1,
     }
 
 
+
+
 @db_session
-def update_chat(class_id=None, json_object=None, to_model=False):
+def update_chat(receiver_id, json_object={}, to_model={}):
     try:
         updated_chat = ChatDB[json_object["id"]]
-        if "is_group" in json_object:
-            updated_chat.is_group = json_object["is_group"]
-        if "content" in json_object:
-            updated_chat.content = json_object["content"]
-        if "sender_id" in json_object:
-            updated_chat.sender_id = json_object["sender_id"]
-        if "receiver_id" in json_object:
-            updated_chat.receiver_id = json_object["receiver_id"]
-        if "group_id" in json_object:
-            updated_chat.group_id = json_object["group_id"]
-        if "topic_chat_id" in json_object:
-            updated_chat.topic_chat_id = json_object["topic_chat_id"]
-        if "class_id" in json_object:
-            updated_chat.class_id = json_object["class_id"]
-        if "gambar" in json_object:
-            updated_chat.gambar = json_object["gambar"]
-
+        updated_chat.is_group = json_object["is_group"]
+        updated_chat.content = json_object["content"]
+        updated_chat.sender_id = json_object["sender_id"]
+        updated_chat.receiver_id = int(receiver_id)
+        updated_chat.class_id = json_object["class_id"]
+        updated_chat.gambar = json_object["gambar"]
         commit()
-
         if to_model:
+            print(updated_chat.to_model())
             return updated_chat.to_model()
         else:
+            print(updated_chat.to_model().to_response())
             return updated_chat.to_model().to_response()
     except Exception as e:
-        print("error chatDb update_chat " + str(e))
-        return
+        print("error Chat update: ", e)
+    return None
 
 
 @db_session
