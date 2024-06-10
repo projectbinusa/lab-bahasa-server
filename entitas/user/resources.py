@@ -417,9 +417,9 @@ class ResetPasswordResource:
         resp.media = {'message': message}
 
 class EditClassIdUserResource:
-    def on_put(self, req, resp, update_class_id_user: int):
+    def on_put(self, req, resp):
         body = req.media
-        resouce_response_api(resp=resp, data=services.update_class_id_user(id=int(update_class_id_user), json_object=body
+        resouce_response_api(resp=resp, data=services.update_class_id_user(id=req.context["user"]["id"], json_object=body
         ))
 
 

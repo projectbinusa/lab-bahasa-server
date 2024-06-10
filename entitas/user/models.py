@@ -133,6 +133,7 @@ class User:
             "name": self.name,
             "email": self.email,
             "role": self.role,
+            "class_id": self.class_id,
             "last_login": str(self.last_login) if self.last_login is not None else None,
             "token": self.token,
             "created_date": str(self.created_date) if self.created_date is not None else None,
