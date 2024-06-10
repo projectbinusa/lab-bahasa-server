@@ -84,35 +84,108 @@ def get_all_with_pagination_by_class_id_and_sender_id_receiver_id(class_id, send
 
 
 @db_session
-def update_chat(class_id=None, json_object=None, to_model=False):
+def get_all_with_pagination_by_class_id_and_topic_chat_id(class_id, topic_chat_id, page=1, limit=9, filters=[],
+                                                          to_model=False):
+    result = []
+
+    total_record = 0
     try:
-        updated_chat = ChatDB.get(id=json_object["id"], class_id=class_id)
-        if "is_group" in json_object:
-            updated_chat.is_group = json_object["is_group"]
-        if "content" in json_object:
-            updated_chat.content = json_object["content"]
-        if "sender_id" in json_object:
-            updated_chat.sender_id = json_object["sender_id"]
-        if "receiver_id" in json_object:
-            updated_chat.receiver_id = json_object["receiver_id"]
-        if "group_id" in json_object:
-            updated_chat.group_id = json_object["group_id"]
-        if "topic_chat_id" in json_object:
-            updated_chat.topic_chat_id = json_object["topic_chat_id"]
-        if "class_id" in json_object:
-            updated_chat.class_id = json_object["class_id"]
-        if "gambar" in json_object:
-            updated_chat.gambar = json_object["gambar"]
+        data_in_db = select(s for s in ChatDB if s.class_id == class_id and s.topic_chat_id == topic_chat_id).order_by(
+            desc(ChatDB.id))
 
+        for item in filters:
+            if item["field"] == "id":
+                data_in_db = data_in_db.filter(lambda d: d.id == item["value"])
+            elif item["field"] == "content":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.content)
+            elif item["field"] == "class_id":
+                data_in_db = data_in_db.filter(lambda d: item["value"] == d.class_id)
+            elif item["field"] == "topic_chat_id":
+                data_in_db = data_in_db.filter(lambda d: item["value"] == d.topic_chat_id)
+
+        total_record = data_in_db.count()
+
+        if limit > 0:
+            data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
+
+        for item in data_in_db:
+            if to_model:
+                result.append(item.to_model())
+            else:
+                result.append(item.to_model().to_response())
+
+    except Exception as e:
+        print("error getAllWithPaginationByTopicChatId: ", e)
+
+    return result, {
+        "total": total_record,
+        "page": page,
+        "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
+    }
+
+
+@db_session
+def get_all_with_pagination_by_class_id_and_group_id(class_id, group_id, page=1, limit=9, filters=[],
+                                                     to_model=False):
+    result = []
+    total_record = 0
+    try:
+        data_in_db = select(s for s in ChatDB if s.class_id == class_id and s.group_id == group_id).order_by(
+            desc(ChatDB.id))
+
+        for item in filters:
+            if item["field"] == "id":
+                data_in_db = data_in_db.filter(lambda d: d.id == item["value"])
+            elif item["field"] == "content":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.content)
+            elif item["field"] == "class_id":
+                data_in_db = data_in_db.filter(lambda d: item["value"] == d.class_id)
+            elif item["field"] == "group_id":
+                data_in_db = data_in_db.filter(lambda d: item["value"] == d.group_id)
+
+        total_record = data_in_db.count()
+
+        if limit > 0:
+            data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
+
+        for item in data_in_db:
+            if to_model:
+                result.append(item.to_model())
+            else:
+                result.append(item.to_model().to_response())
+
+    except Exception as e:
+        print("error getAllWithPaginationByGroupId: ", e)
+
+    return result, {
+        "total": total_record,
+        "page": page,
+        "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
+    }
+
+
+
+
+@db_session
+def update_chat(receiver_id, json_object={}, to_model={}):
+    try:
+        updated_chat = ChatDB[json_object["id"]]
+        updated_chat.is_group = json_object["is_group"]
+        updated_chat.content = json_object["content"]
+        updated_chat.sender_id = json_object["sender_id"]
+        updated_chat.receiver_id = int(receiver_id)
+        updated_chat.class_id = json_object["class_id"]
+        updated_chat.gambar = json_object["gambar"]
         commit()
-
         if to_model:
+            print(updated_chat.to_model())
             return updated_chat.to_model()
         else:
+            print(updated_chat.to_model().to_response())
             return updated_chat.to_model().to_response()
     except Exception as e:
-        print("error chatDb update_chat " + str(e))
-        return
+        print("error Chat update: ", e)
+    return None
 
 
 @db_session
@@ -127,12 +200,13 @@ def delete_chat_by_id_and_by_class_id(id=None, class_id=None):
 
 
 @db_session
-def insert_private_chat(class_id, json_object={}, to_model=False):
+def insert_private_chat(receiver_id, json_object={}, to_model=False):
+    print(receiver_id)
     try:
         new_chat = ChatDB(
-            class_id=class_id,
+            class_id=json_object["class_id"],
             sender_id=json_object["sender_id"],
-            receiver_id=json_object["receiver_id"],
+            receiver_id=receiver_id,
             content=json_object["content"],
             is_group=json_object["is_group"],
             gambar=json_object["gambar"]
@@ -143,23 +217,22 @@ def insert_private_chat(class_id, json_object={}, to_model=False):
         else:
             return new_chat.to_model().to_response()
     except Exception as e:
-        print("error Message insert: ", e)
+        print("error Chat insert: ", e)
     return None
+
 
 @db_session
 def get_chats_for_user(user_id, sender_id=None):
     try:
         if sender_id:
             chats = select(m for m in ChatDB if (m.receiver_id == user_id and m.sender_id == sender_id) or
-                                                        (m.receiver_id == sender_id and m.sender_id == user_id))
+                           (m.receiver_id == sender_id and m.sender_id == user_id))
         else:
             chats = select(m for m in ChatDB if m.receiver_id == user_id or m.sender_id == user_id)
         return [m.to_model() for m in chats]
     except Exception as e:
         print("error getting chats for user: ", e)
         return []
-
-
 
 
 # @db_session
@@ -193,6 +266,7 @@ def get_chats_for_user(user_id, sender_id=None):
 def get_chat(chat_id):
     return ChatDB.get(id=chat_id)
 
+
 @db_session
 def get_user_chats(user_id):
     user = UserDB.get(id=user_id)
@@ -222,6 +296,7 @@ def get_by_class_id(class_id=None):
         return None
     return data_in_db.first().to_model()
 
+
 @db_session
 def get_by_sender_id(sender_id=None):
     data_in_db = select(s for s in ChatDB if s.sender_id == sender_id)
@@ -229,9 +304,50 @@ def get_by_sender_id(sender_id=None):
         return None
     return data_in_db.first().to_model()
 
+
 @db_session
-def get_by_receiver_id(receiver_id=None):
+def get_by_receiver_id(receiver_id=0):
     data_in_db = select(s for s in ChatDB if s.receiver_id == receiver_id)
     if data_in_db.first() is None:
         return None
     return data_in_db.first().to_model()
+
+
+@db_session
+def get_by_topic_chat_id(topic_chat_id=None):
+    data_in_db = select(s for s in ChatDB if s.topic_chat_id == topic_chat_id)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
+
+
+@db_session
+def get_by_group_id(group_id=None):
+    data_in_db = select(s for s in ChatDB if s.group_id == group_id)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
+
+@db_session
+def delete_chat_by_group_id_and_class_id(id=None, group_id=None, class_id=None):
+    try:
+        chat_entry = ChatDB.get(id=id, group_id=group_id, class_id=class_id)
+        if chat_entry:
+            chat_entry.delete()
+            commit()
+            return True
+        else:
+            print(f"No chat entry found with group_id={group_id} and class_id={class_id}")
+    except Exception as e:
+        print("error Chat delete: ", e)
+    return False
+
+
+@db_session
+def get_chat_by_id_and_by_group_id_and_by_class_id(id=None, group_id=None, class_id=None):
+    data_in_db = select(s for s in ChatDB if s.id == id and s.group_id == group_id and s.class_id == class_id)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
+
+

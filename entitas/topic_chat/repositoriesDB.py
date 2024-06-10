@@ -1,6 +1,7 @@
 from pony.orm import *
 
 from database.schema import TopicChatDB
+from util.other_util import raise_error
 
 
 @db_session
@@ -51,6 +52,14 @@ def get_all_with_pagination_by_class_id(class_id, page=1, limit=9, filters=[], t
         "page": page,
         "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
     }
+
+
+@db_session
+def find_by_id(id=None):
+    data_in_db = select(s for s in TopicChatDB if s.id == id)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
 
 
 @db_session

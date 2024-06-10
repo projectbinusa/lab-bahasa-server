@@ -150,10 +150,13 @@ def update(json_object={}, to_model={}):
 
 @db_session
 def class_active(json_object={}, to_model={}):
+    print("json object di repo ==> ", json_object)
     try:
         updated_kelas_user = KelasUserDB[json_object["id"]]
         updated_kelas_user.user_id = json_object["user_id"]
-        updated_kelas_user.is_active = json_object["is_active"]
+        updated_kelas_user.user_name = json_object["user_name"]
+        if "is_active" in json_object:
+            updated_kelas_user.is_active = json_object["is_active"]
         commit()
         if to_model:
             print(updated_kelas_user.to_model())

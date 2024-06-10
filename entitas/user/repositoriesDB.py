@@ -258,7 +258,7 @@ def insert(json_object={}, to_model=False):
             birth_place=json_object["birth_place"],
             email=json_object["email"],
             picture=json_object["picture"],
-            active=1,
+            active=0,
             password=encrypt_string(json_object["new_password"]),
             token=str(uuid.uuid4()),
             description=json_object['description'],
@@ -809,7 +809,7 @@ def create_password_reset_token(email):
         return None
     code = str(random.randint(100000, 999999))
     user.reset_code = code
-    user.code_expiry = datetime.datetime.now() + datetime.timedelta(minutes=15)
+    user.code_expiry = datetime.datetime.now() + datetime.timedelta(minutes=60)
     commit()
     return code
 
@@ -923,4 +923,5 @@ def import_users_from_csv(file_path='management_name_list.csv', to_model=False):
                     return user.to_model().to_response()
     # except Exception as e:
     # return None
+
 

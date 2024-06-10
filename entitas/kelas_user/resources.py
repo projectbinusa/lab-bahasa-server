@@ -47,5 +47,14 @@ class KelasUserActive:
     def on_put(self, req, resp, class_id: int):
         body = {}
         body["id"] = int(class_id)
-        # body['user_id'] = req.context["user"]["id"]
+        body["is_active"] = req.media.get("is_active", 1)
+        body["user_id"] = req.context["user"]["id"]
+        body["user_name"] = req.context["user"]["name"]
+        resouce_response_api(resp=resp, data=services.kelas_user_active_db(json_object=body))
+
+class KelasUserNotActive:
+    def on_put(self, req, resp, class_id: int):
+        body = {}
+        body["id"] = int(class_id)
+        body["is_active"] = req.media.get("is_active", 0)
         resouce_response_api(resp=resp, data=services.kelas_user_active_db(json_object=body))
