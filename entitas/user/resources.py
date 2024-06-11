@@ -330,6 +330,7 @@ class ManagementListResource:
     def on_get(self, req, resp, class_id):
         filters = generate_filters_resource(req=req, params_int=['id'])
         filters.append({'field': 'class_id', 'value': class_id})
+        filters.append({'field': 'role', 'value': "student"})
         page = int(req.get_param("page", required=False, default=1))
         limit = int(req.get_param("limit", required=False, default=9))
         data, pagination = services.get_list_by_class_id(

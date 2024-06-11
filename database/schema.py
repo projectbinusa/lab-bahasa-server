@@ -77,6 +77,7 @@ class UserDB(db2.Entity):
     password_prompt = Optional(str, nullable=True)
     gender = Optional(str, nullable=True)
     reset_code = Optional(str, nullable=True)
+    comment = Optional(str, nullable=True)
     code_expiry = Optional(datetime, nullable=True)
     signed_time = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
@@ -121,6 +122,7 @@ class UserDB(db2.Entity):
         item.password_prompt = self.password_prompt
         item.gender = self.gender
         item.code_expiry = self.code_expiry
+        item.comment = self.comment
         item.reset_code = self.reset_code
         item.signed_time = self.signed_time
         item.created_date = self.created_date
@@ -721,6 +723,7 @@ class KelasUserDB(db2.Entity):
     name = Optional(str, nullable=True)
     is_active = Optional(int, nullable=True)
     user_id = Optional(int, nullable=True)
+    user_name = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -732,6 +735,7 @@ class KelasUserDB(db2.Entity):
         item.is_active = self.is_active
         item.name = self.name
         item.user_id = self.user_id
+        item.user_name = self.user_name
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item

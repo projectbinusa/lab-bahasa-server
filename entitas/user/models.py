@@ -27,6 +27,7 @@ class User:
             npwp='',
             bank_name='',
             bank_account='',
+            comment='',
             bank_in_name='',
             id_card='',
             signature='',
@@ -55,6 +56,7 @@ class User:
         self.firebase_token = firebase_token
         self.ws_id = ws_id
         self.activate = activate
+        self.comment = comment
         self.last_login = last_login
         self.hp = hp
         self.token = token
@@ -255,3 +257,41 @@ class User:
             "email": self.email,
             "password": self.password
         }
+
+
+
+def to_response_menage(self):
+    return {
+        "id": self.id,
+        "name": self.name,
+        "email": self.email,
+        "role": self.role,
+        "class_id": self.class_id,
+        "client_id": self.client_id,
+        "gender": self.gender,
+        "departement": self.departement,
+        "password": self.password,
+        "password_prompt": self.password_prompt,
+        "last_login": str(self.last_login) if self.last_login is not None else None,
+        "created_date": str(self.created_date) if self.created_date is not None else None,
+        "updated_date": str(self.updated_date) if self.updated_date is not None else None,
+    }
+
+
+def to_response_get_sigin_student(self):
+    return {
+        "id": self.id,
+        "name": self.name,
+        "email": self.email,
+        "password": self.password,
+        "address": self.address,
+        "client_id": self.client_id,
+        "departement": self.departement,
+        "class_id": self.class_id,
+        "comment": self.comment,
+        "password_prompt": self.password_prompt,
+        "gender": self.gender,
+        "signed_time": str(self.signed_time) if self.signed_time is not None else None,
+        "created_date": str(self.created_date) if self.created_date is not None else None,
+        "updated_date": str(self.updated_date) if self.updated_date is not None else None,
+    }
