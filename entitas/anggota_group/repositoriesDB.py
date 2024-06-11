@@ -57,7 +57,7 @@ def get_group_member_by_group_id_by_class_id(group_id, class_id, page=1, limit=9
 
 
 @db_session
-def find_by_anggota_topic_chat_id_and_group_id(id=None, group_id=0):
+def find_by_anggota_group_id_and_group_id(id=None, group_id=0):
     data_in_db = select(s for s in AnggotaGroupDB if s.id == id and s.group_id == group_id)
     if data_in_db.first() is None:
         return None

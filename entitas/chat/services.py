@@ -3,7 +3,7 @@ import uuid
 from database.schema import ChatDB
 from entitas.chat import repositoriesDB
 from entitas.kelas_user.repositoriesDB import find_by_id
-from entitas.user.repositoriesDB import find_by_id as find_user_by_id
+from entitas.user.repositoriesDB import find_by_id as find_user_by_id, find_by_user_id_and_class_id
 from config.config import CHAT_FOLDER, DOMAIN_FILE_URL
 from entitas.topic_chat import services
 from util.other_util import raise_error
@@ -117,18 +117,60 @@ def insert_message_service(class_id, receiver_id=0, json_object={}, gambar=None)
     # print("json_object i service >>> ", json_object)
     print("receiverid di services > ", receiver_id)
     kelas = find_by_id(id=class_id)
-    receiver_id = repositoriesDB.get_by_receiver_id(receiver_id=receiver_id)
+    receiver = find_by_user_id_and_class_id(id=receiver_id)
     if kelas is None:
         raise_error(msg="kelas not found")
-    if receiver_id is None:
+    if receiver is None:
         raise_error(msg="receiver_id not found")
-        temp_file_start = str(uuid.uuid4()) + gambar.filename.replace(" ", "")
-        with open(CHAT_FOLDER + temp_file_start, "wb") as f:
-            f.write(gambar.file.read())
-        json_object["gambar"] = DOMAIN_FILE_URL + '/files/' + temp_file_start
+    else:
+        receiver_id = receiver.id
+
+    temp_file_start = str(uuid.uuid4()) + gambar.filename.replace(" ", "")
+    with open(CHAT_FOLDER + temp_file_start, "wb") as f:
+        f.write(gambar.file.read())
+    json_object["gambar"] = DOMAIN_FILE_URL + '/files/' + temp_file_start
     json_object["class_id"] = class_id
     # json_object["receiver_id"] = receiver_id
     return repositoriesDB.insert_private_chat(receiver_id=receiver_id, json_object=json_object)
+
+
+def insert_message_group_service(class_id, group_id=0, json_object={}, gambar=None):
+    # print("json_object i service >>> ", json_object)
+    print("receiverid di services > ", group_id)
+    kelas = find_by_id(id=class_id)
+    group = repositoriesDB.get_by_group_id(group_id=group_id)
+    if kelas is None:
+        raise_error(msg="kelas not found")
+    if group is None:
+        raise_error(msg="group_id not found")
+    else:
+        group_id = group.id
+    temp_file_start = str(uuid.uuid4()) + gambar.filename.replace(" ", "")
+    with open(CHAT_FOLDER + temp_file_start, "wb") as f:
+        f.write(gambar.file.read())
+    json_object["gambar"] = DOMAIN_FILE_URL + '/files/' + temp_file_start
+    json_object["class_id"] = int(class_id)
+    # json_object["group_id"] = group_id
+    return repositoriesDB.insert_group_chat(group_id=group_id, json_object=json_object)
+
+def insert_message_topic_service(class_id, topic_chat_id=0, json_object={}, gambar=None):
+    # print("json_object i service >>> ", json_object)
+    print("receiverid di services > ", topic_chat_id)
+    kelas = find_by_id(id=class_id)
+    topic = repositoriesDB.get_by_topic_chat_id(topic_chat_id=topic_chat_id)
+    if kelas is None:
+        raise_error(msg="kelas not found")
+    if topic is None:
+        raise_error(msg="topic_chat_id not found")
+    else:
+        topic_chat_id = topic.id
+    temp_file_start = str(uuid.uuid4()) + gambar.filename.replace(" ", "")
+    with open(CHAT_FOLDER + temp_file_start, "wb") as f:
+        f.write(gambar.file.read())
+    json_object["gambar"] = DOMAIN_FILE_URL + '/files/' + temp_file_start
+    json_object["class_id"] = int(class_id)
+    # json_object["topic_chat_id"] = topic_chat_id
+    return repositoriesDB.insert_group_chat(topic_chat_id=topic_chat_id, json_object=json_object)
 
 def get_messages_for_user_service(user_id, sender_id=None):
     return repositoriesDB.get_chats_for_user(user_id, sender_id)

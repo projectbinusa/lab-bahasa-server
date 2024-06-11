@@ -206,10 +206,73 @@ def insert_private_chat(receiver_id, json_object={}, to_model=False):
         new_chat = ChatDB(
             class_id=json_object["class_id"],
             sender_id=json_object["sender_id"],
-            receiver_id=receiver_id,
+            receiver_id=int(receiver_id),
             content=json_object["content"],
             is_group=json_object["is_group"],
             gambar=json_object["gambar"]
+        )
+        commit()
+        if to_model:
+            return new_chat.to_model()
+        else:
+            return new_chat.to_model().to_response()
+    except Exception as e:
+        print("error Chat insert: ", e)
+    return None
+
+@db_session
+def insert_private_chat(receiver_id, json_object={}, to_model=False):
+    print(receiver_id)
+    try:
+        new_chat = ChatDB(
+            class_id=json_object["class_id"],
+            sender_id=json_object["sender_id"],
+            receiver_id=int(receiver_id),
+            content=json_object["content"],
+            is_group=json_object["is_group"],
+            gambar=json_object.get("gambar")
+        )
+        commit()
+        if to_model:
+            return new_chat.to_model()
+        else:
+            return new_chat.to_model().to_response()
+    except Exception as e:
+        print("error Chat insert: ", e)
+    return None
+
+@db_session
+def insert_group_chat(group_id, json_object={}, to_model=False):
+    # print(group_id)
+    try:
+        new_chat = ChatDB(
+            class_id=json_object["class_id"],
+            sender_id=json_object["sender_id"],
+            group_id=int(group_id),
+            content=json_object["content"],
+            is_group=json_object["is_group"],
+            gambar=json_object.get("gambar")
+        )
+        commit()
+        if to_model:
+            return new_chat.to_model()
+        else:
+            return new_chat.to_model().to_response()
+    except Exception as e:
+        print("error Chat insert: ", e)
+    return None
+
+@db_session
+def insert_chat_chat(topic_chat_id, json_object={}, to_model=False):
+    # print(topic_chat_id)
+    try:
+        new_chat = ChatDB(
+            class_id=json_object["class_id"],
+            sender_id=json_object["sender_id"],
+            topic_chat_id=int(topic_chat_id),
+            content=json_object["content"],
+            is_group=json_object["is_group"],
+            gambar=json_object.get("gambar")
         )
         commit()
         if to_model:
