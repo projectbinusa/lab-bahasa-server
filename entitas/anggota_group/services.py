@@ -18,7 +18,7 @@ def delete_anggota_group_chat_by_id(id=0, class_id=0):
 
 
 def delete_group_by_anggota_group_id_and_class_id(group_id, class_id, anggota_group_id):
-    if not find_by_anggota_topic_chat_id_and_group_id(anggota_group_id, group_id):
+    if not find_by_anggota_group_id_and_group_id(anggota_group_id, group_id):
         raise ValueError("Anggota is not authorized to delete this group.")
     return delete_group_by_group_id_and_class_id(group_id, class_id, anggota_group_id)
 
