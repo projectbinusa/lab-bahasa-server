@@ -10,7 +10,7 @@ class ChatResource:
     def on_post(self, req, resp, class_id):
         gambar = req.get_param("gambar")
         content = req.get_param("content")
-        receiver_id = req.get_param("receiver_id")
+        receiver_id = int(req.get_param("receiver_id"))
         print("receiver_id di resources >>", req.get_param("receiver_id"))
         is_group = req.get_param("is_group")
         body = {}
@@ -83,6 +83,22 @@ class ChatByClassIdAndTopicChatIdResource:
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 
 
+    def on_post(self, req, resp, class_id: int, topic_chat_id: int):
+        gambar = req.get_param("gambar")
+        content = req.get_param("content")
+        # topic_chat_id = req.get_param("topic_chat_id")
+        print("topic_chat_id di resources >>", req.get_param("topic_chat_id"))
+        is_group = req.get_param("is_group")
+        body = {}
+        body["content"] = content
+        # body["topic_chat_id"] = topic_chat_id
+        body["is_group"] = is_group
+        body["gambar"] = gambar
+        body["sender_id"] = req.context["user"]["id"]
+        resouce_response_api(resp=resp, data=services.insert_message_group_service(class_id, topic_chat_id, json_object=body,
+                                                                                   gambar=gambar))
+
+
 class ChatByClassIdAndGroupIdResource:
     def on_get(self, req, resp, class_id: int, group_id: int):
         # print(f"Request Path: {req.path}")
@@ -100,6 +116,22 @@ class ChatByClassIdAndGroupIdResource:
         )
 
         resouce_response_api(resp=resp, data=data, pagination=pagination)
+
+    def on_post(self, req, resp, class_id: int, group_id: int):
+        gambar = req.get_param("gambar")
+        content = req.get_param("content")
+        # group_id = req.get_param("group_id")
+        print("group_id di resources >>", req.get_param("group_id"))
+        is_group = req.get_param("is_group")
+        body = {}
+        body["content"] = content
+        # body["group_id"] = group_id
+        body["is_group"] = is_group
+        body["gambar"] = gambar
+        body["sender_id"] = req.context["user"]["id"]
+        resouce_response_api(resp=resp, data=services.insert_message_group_service(class_id, group_id, json_object=body,
+                                                                                   gambar=gambar))
+
 
 class ChatByClassIdAndGroupIdWithIdResource:
     def on_put(self, req, resp, chat_id: int, class_id: int, group_id: int):

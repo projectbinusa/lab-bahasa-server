@@ -41,7 +41,12 @@ def update_kelas_user_db(json_object={}, file=None):
     json_object["file"] = DOMAIN_FILE_URL + '/files/' + temp_file
     return repositoriesDB.update(json_object=json_object)
 
+
 def kelas_user_active_db(json_object={}):
+    kelas_user_ids = repositoriesDB.get_kelas_user_ids_by_user_id(json_object.get("user_id", 0))
+    if len(kelas_user_ids) >= 1:
+        raise_error(msg="Anda sudah memilih satu kelas")
+
     return repositoriesDB.class_active(json_object=json_object)
 
 def insert_kelas_user_db(json_object={}, file=None):
