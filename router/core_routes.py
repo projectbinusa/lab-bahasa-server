@@ -18,6 +18,7 @@ def core_routes(api):
     api.add_route('/api/verify-code', VerifyCodeResource())
     api.add_route('/api/reset-password', ResetPasswordResource())
     api.add_route('/api/chat/class/{class_id}', ChatResource())
+    # api.add_route('/api/chat/class/{class_id}/group/{group_id}', ChatGroupResource())
     api.add_route('/api/chat/class/{class_id}/receiver/{receiver_id}', ChatByClassIdAndSenderIdAndReceiverId())
     api.add_route('/api/chat/{chat_id}/class/{class_id}', ChatWithIdResource())
     api.add_route('/api/message_chat', MessageChatResource())
