@@ -136,6 +136,14 @@ def find_question_by_id(id=None):
 
 
 @db_session
+def find_question_by_class_id(class_id=None):
+    data_in_db = select(s for s in QuestionDB if s.class_id == class_id)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
+
+
+@db_session
 def create_competition(json_object={}, to_model=False):
     try:
         new_competition = QuestionDB(

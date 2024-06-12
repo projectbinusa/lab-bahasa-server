@@ -8,19 +8,40 @@ from util.entitas_util import generate_filters_resource, resouce_response_api
 
 class ChatResource:
     def on_post(self, req, resp, class_id):
-        gambar = req.get_param("gambar")
-        content = req.get_param("content")
-        receiver_id = int(req.get_param("receiver_id"))
-        print("receiver_id di resources >>", req.get_param("receiver_id"))
-        is_group = req.get_param("is_group")
-        body = {}
-        body["content"] = content
-        body["receiver_id"] = receiver_id
-        body["is_group"] = is_group
-        body["gambar"] = gambar
-        body["sender_id"] = req.context["user"]["id"]
-        resouce_response_api(resp=resp, data=services.insert_message_service(class_id, receiver_id=receiver_id, json_object=body, gambar=gambar))
+        try:
+            gambar = req.get_param("gambar")
+            content = req.get_param("content")
+            is_group = req.get_param("is_group")
 
+            if not content:
+                raise ValueError("Content is required")
+
+            body = {
+                "content": content,
+                "is_group": is_group,
+                "sender_id": req.context["user"]["id"],
+            }
+
+            if gambar:
+                body["gambar"] = gambar
+
+            # Log payload yang diterima
+            print(f"Received payload: {body}")
+
+            resouce_response_api(
+                resp=resp,
+                data=services.insert_message_service(
+                    class_id=class_id,
+                    json_object=body,
+                    gambar=gambar
+                )
+            )
+
+        except Exception as e:
+            # Log kesalahan dan tangani error 500
+            print(f"Error in ChatResource.on_post: {e}")
+            resp.status = falcon.HTTP_500
+            resp.body = json.dumps({"error": str(e)})
 
 
 class ChatByClassIdAndSenderIdAndReceiverId:
@@ -109,7 +130,7 @@ class ChatByClassIdAndGroupIdResource:
         filters.append({'field': 'class_id', 'value': class_id})
         filters.append({'field': 'group_id', 'value': group_id})
         page = int(req.get_param("page", required=False, default=1))
-        limit = int(req.get_param("limit", required=False, default=9))
+        limit = int(req.get_param("limit", required=False, default=100))
 
         data, pagination = services.get_chat_db_with_pagination_by_group_id(
             class_id=class_id, group_id=group_id, page=page, limit=limit, filters=filters
@@ -120,15 +141,16 @@ class ChatByClassIdAndGroupIdResource:
     def on_post(self, req, resp, class_id: int, group_id: int):
         gambar = req.get_param("gambar")
         content = req.get_param("content")
-        # group_id = req.get_param("group_id")
-        print("group_id di resources >>", req.get_param("group_id"))
         is_group = req.get_param("is_group")
-        body = {}
-        body["content"] = content
-        # body["group_id"] = group_id
-        body["is_group"] = is_group
-        body["gambar"] = gambar
-        body["sender_id"] = req.context["user"]["id"]
+
+        body = {
+            "content": content,
+            "is_group": is_group,
+            "sender_id": req.context["user"]["id"]
+        }
+        if gambar is not None:
+            body["gambar"] = gambar
+
         resouce_response_api(resp=resp, data=services.insert_message_group_service(class_id, group_id, json_object=body,
                                                                                    gambar=gambar))
 
