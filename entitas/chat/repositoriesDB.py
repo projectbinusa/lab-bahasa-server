@@ -230,7 +230,7 @@ def insert_private_chat(receiver_id, json_object={}, to_model=False):
             receiver_id=int(receiver_id),
             content=json_object["content"],
             is_group=json_object["is_group"],
-            gambar=json_object.get("gambar")
+            gambar=json_object["gambar"]
         )
         commit()
         if to_model:
@@ -241,17 +241,20 @@ def insert_private_chat(receiver_id, json_object={}, to_model=False):
         print("error Chat insert: ", e)
     return None
 
+
 @db_session
 def insert_group_chat(group_id, json_object={}, to_model=False):
-    # print(group_id)
     try:
+        # Check if 'gambar' exists in json_object, else set to None
+        gambar = json_object.get("gambar", None)
+
         new_chat = ChatDB(
             class_id=json_object["class_id"],
             sender_id=json_object["sender_id"],
             group_id=int(group_id),
             content=json_object["content"],
             is_group=json_object["is_group"],
-            gambar=json_object.get("gambar")
+            gambar=gambar  # Use the gambar variable
         )
         commit()
         if to_model:
@@ -261,6 +264,7 @@ def insert_group_chat(group_id, json_object={}, to_model=False):
     except Exception as e:
         print("error Chat insert: ", e)
     return None
+
 
 @db_session
 def insert_chat_chat(topic_chat_id, json_object={}, to_model=False):
@@ -296,7 +300,6 @@ def get_chats_for_user(user_id, sender_id=None):
     except Exception as e:
         print("error getting chats for user: ", e)
         return []
-
 
 # @db_session
 # def add_user_to_chat(chat_id, user_id):

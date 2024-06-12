@@ -7,6 +7,7 @@ from entitas.kelas_user.repositoriesDB import find_kelas_user_db_by_id, find_by_
 from entitas.question import repositoriesDB
 from datetime import datetime, timedelta
 
+from entitas.question.repositoriesDB import find_question_by_class_id
 from entitas.user.repositoriesDB import find_by_user_id_and_class_id
 from util.other_util import raise_error
 
@@ -26,7 +27,10 @@ def insert_question_db(user_name='', class_id=0, user_id=0, json_object={}):
     return repositoriesDB.insert(json_object=json_object)
 
 
-def get_question_db_with_pagination(page=1, limit=9, filters=[], to_model=False):
+def get_question_db_with_pagination(page=1, limit=9, filters=[], to_model=False, class_id=0):
+    kelas = find_question_by_class_id(class_id=class_id)
+    if kelas is None:
+        raise_error(msg="class_id not found")
     return repositoriesDB.get_all_with_pagination(
         page=page, limit=limit, filters=filters, to_model=to_model
     )
