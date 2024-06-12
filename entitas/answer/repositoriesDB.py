@@ -64,6 +64,13 @@ def find_by_id(id=None):
         return None
     return data_in_db.first().to_model()
 
+@db_session
+def find_by_question_id_class_id(question_id=None, class_id=None):
+    data_in_db = select(s for s in AnswerDB if s.question_id == question_id and s.class_id == class_id)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
+
 
 @db_session
 def find_by_id_answer_time_user(answer_time_user=None):
@@ -85,10 +92,7 @@ def find_by_answer_id_and_class_id(class_id=0, id=0):
 def update(json_object={}, to_model={}):
     try:
         updated_answer = AnswerDB[json_object["id"]]
-        updated_answer.question_id = json_object["question_id"]
-        updated_answer.answer = json_object["answer"]
-        updated_answer.user_id = json_object["user_id"]
-        updated_answer.answer_time_user = json_object["answer_time_user"]
+        updated_answer.score = json_object["score"]
         updated_answer.class_id = json_object["class_id"]
         commit()
         if to_model:
@@ -130,6 +134,7 @@ def create_profile_answer(json_object={}, to_model=False):
             question_id=json_object['question_id'],
             answer=json_object['answer'],
             user_id=json_object['user_id'],
+            user_name=json_object['user_name'],
             answer_time_user=json_object['answer_time_user'],
             class_id=json_object['class_id']
         )

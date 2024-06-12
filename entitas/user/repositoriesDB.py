@@ -746,8 +746,8 @@ def create_profile_manage_student_list(json_object={}, to_model=False):
             departement = json_object["departement"],
             client_id = json_object["client_id"],
             class_id = json_object["class_id"],
-            password = json_object["password"],
-            password_prompt = json_object["password_prompt"],
+            password = encrypt_string(json_object["password"]),
+            password_prompt = encrypt_string(json_object["password_prompt"]),
         )
         commit()
         if to_model:

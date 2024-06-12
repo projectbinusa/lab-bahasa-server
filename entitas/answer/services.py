@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from falcon import HTTPBadRequest
 
 from entitas.answer import repositoriesDB
-from entitas.answer.repositoriesDB import update, get_all_with_pagination
+from entitas.answer.repositoriesDB import update, get_all_with_pagination, find_existing_answer_by_question_id
 from entitas.kelas_user.repositoriesDB import find_kelas_user_db_by_id
 from entitas.user.repositoriesDB import find_by_id
 from entitas.question.repositoriesDB import find_question_by_id, find_by_id_answer_time, \
@@ -80,61 +80,48 @@ def insert_answer_db(json_object={}):
 # from datetime import datetime, timedelta
 
 def check_answer(json_object, answer_time_user_str):
-    # Temukan batas waktu berdasarkan question_id dan class_id
     question = find_question_by_id(json_object['question_id'])
     if not question:
         raise ValueError("Question not found")
 
-    # Waktu jawaban siswa sebagai datetime object
-    answer_time_user = datetime.strptime(answer_time_user_str, '%H:%M:%S').time()
-
-    # Kalkulasi batas waktu sebagai start_time + answer_time_limit
+    answer_time_user = json_object["answer_time_user"]
     end_time = question.answer_time
+    print(answer_time_user)
+    print(end_time)
 
-    # Ubah answer_time_user ke datetime.timedelta
-    answer_time_user = datetime.combine(datetime.today(), answer_time_user) - datetime.combine(datetime.today(), datetime.min.time())
+    # answer_time_user = datetime.combine(datetime.today(), answer_time_user) - datetime.combine(datetime.today(), datetime.min.time())
 
-    # Periksa apakah waktu jawaban siswa melebihi batas waktu
     if answer_time_user > end_time:
         raise ValueError("Waktu telah habis")
 
-    # Jika tepat waktu, kembalikan True
     return True
 
+import pytz
 
 def create_answer_service(json_object={}):
     class_id = json_object['class_id']
     user_id = json_object['user_id']
     question_id = json_object['question_id']
 
-    print("class id di service => ", class_id)
-    print("user id di service => ", user_id)
-    print("question id di service => ", question_id)
+    # Zona waktu WIB (UTC+7)
+    wib = pytz.timezone('Asia/Jakarta')
+    answer_time_user_str = datetime.now(wib).strftime('%H:%M')
 
-    # Format waktu saat ini sebagai waktu jawaban siswa
-    answer_time_user_str = datetime.now().strftime('%H:%M:%S')
     json_object['answer_time_user'] = answer_time_user_str
-    print("answer_time_user ==> ", answer_time_user_str)
-    # Periksa apakah jawaban siswa tepat waktu
-    # check_answer(json_object, answer_time_user)
-    answer = check_answer(json_object, answer_time_user_str)
-    print(answer)
-    # if answer:
-    #     raise ValueError("Jawabn melebihi batas waktu")
 
-    # Periksa apakah pertanyaan sudah dijawab oleh pengguna lain
-    existing_answer = repositoriesDB.find_existing_answer_by_question_id(question_id)
-    if existing_answer:
-        raise ValueError("Question has already been answered by another user")
+    check_answer(json_object, answer_time_user_str)
 
-    # Sisipkan jawaban ke dalam database
-    answer_info = repositoriesDB.create_profile_answer(json_object=json_object)
-
-    question = find_question_by_id(id=question_id)
+    question = find_question_by_id(question_id)
     if question is None:
         raise ValueError("Question not found")
 
-    # Cari kelas berdasarkan jawaban dan class_id
+    if question.type == 'first_to_answer':
+        existing_answer = find_existing_answer_by_question_id(question_id)
+        if existing_answer:
+            raise ValueError("Question has already been answered by another user")
+
+    answer_info = repositoriesDB.create_profile_answer(json_object=json_object)
+
     kelas_user = repositoriesDB.find_by_answer_id_and_class_id(class_id=class_id)
     user = find_by_id(id=user_id)
 
@@ -146,6 +133,7 @@ def create_answer_service(json_object={}):
         raise ValueError("User not found")
 
     return answer_info
+
 
 
 # def create_answer_service(class_id=0, json_object={}, user_id=0):

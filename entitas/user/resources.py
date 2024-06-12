@@ -360,9 +360,9 @@ class ManagementListWithByIdResources:
         resouce_response_api(resp=resp, data=services.update_user_by_class_id(id=int(management_list_id), json_object=body, class_id=class_id
         ))
 
-    def on_delete(self, req, resp, management_name_list_id: int, class_id: int):
+    def on_delete(self, req, resp, management_list_id: int, class_id: int):
         resouce_response_api(resp=resp,
-                             data=services.delete_user_by_class_id(id=int(management_name_list_id), class_id=class_id))
+                             data=services.delete_user_by_class_id(id=int(management_list_id), class_id=class_id))
 
     def on_get(self, req, resp, class_id: int, management_list_id: int):
         log_book_data = services.find_management_list_by_ids(

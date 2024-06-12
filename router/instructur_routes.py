@@ -55,7 +55,7 @@ def instructur_routes(api):
     api.add_route("/api/instructur/class/{class_id}/management_name_list", ManagementListResource())
     # api.add_route("/api/instructur/class/{class_id}/management_name_list/{management_name_list_id}", ManagementListWithByIdResources())
     api.add_route("/api/instructur/management_name_list", UserDeleteByIds())
-    api.add_route("/api/instructur/response_competition", QuestionResource())
+    api.add_route("/api/instructur/class/{class_id}/response_competition", QuestionResource())
     api.add_route("/api/instructur/response_competition/{response_competition_id}", QuestionWithIdResource())
     api.add_route("/api/instructur/class/{class_id}/login_limits", LoginLimitResource())
     api.add_route("/api/instructur/class/{class_id}/login_limits/{login_limits_id}", LoginLimitWithIdResource())
