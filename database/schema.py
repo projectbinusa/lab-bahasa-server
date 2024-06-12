@@ -35,6 +35,7 @@ from entitas.chat.models import Chat
 from entitas.anggota_group.models import AnggotaGroup
 from entitas.group.models import Group
 from util.db_util import db2
+from datetime import datetime, timedelta
 
 
 # start User
@@ -813,8 +814,10 @@ class AnswerDB(db2.Entity):
     question_id = Optional(int, nullable=True)
     answer = Optional(str, 100000, nullable=True)
     user_id = Optional(int, nullable=True)
+    user_name = Optional(str, nullable=True)
     answer_time_user = Optional(str, nullable=True)
     class_id = Optional(int, nullable=True)
+    score = Optional(int, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -824,8 +827,10 @@ class AnswerDB(db2.Entity):
         item.question_id = self.question_id
         item.answer = self.answer
         item.user_id = self.user_id
+        item.user_name = self.user_name
         item.answer_time_user = self.answer_time_user
         item.class_id = self.class_id
+        item.score = self.score
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item

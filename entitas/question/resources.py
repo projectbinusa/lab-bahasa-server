@@ -19,9 +19,12 @@ class QuestionResource:
     # def on_post(self, req, resp):
     #     resouce_response_api(resp=resp, data=services.insert_question_db(json_object=req.media))
 
-    def on_post(self, req, resp):
-        json_object = req.media
-        resouce_response_api(resp=resp, data=services.insert_question_db(json_object=json_object))
+    def on_post(self, req, resp, class_id: int):
+        print(class_id)
+        body = req.media
+        # body["class_id"] = int(class_id),
+        # body["user_name"] = req.context["user"]["name"],
+        resouce_response_api(resp=resp, data=services.insert_question_db( user_name=req.context["user"]["name"], class_id=class_id, user_id=req.context["user"]["id"], json_object=body))
 
 
 class QuestionWithIdResource:

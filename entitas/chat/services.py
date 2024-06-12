@@ -2,6 +2,7 @@ import uuid
 
 from database.schema import ChatDB
 from entitas.chat import repositoriesDB
+from entitas.group.repositoriesDB import find_by_group_id_and_class_id
 from entitas.kelas_user.repositoriesDB import find_by_id
 from entitas.user.repositoriesDB import find_by_id as find_user_by_id, find_by_user_id_and_class_id
 from config.config import CHAT_FOLDER, DOMAIN_FILE_URL
@@ -117,7 +118,7 @@ def insert_message_service(class_id, receiver_id=0, json_object={}, gambar=None)
     # print("json_object i service >>> ", json_object)
     print("receiverid di services > ", receiver_id)
     kelas = find_by_id(id=class_id)
-    receiver = find_by_user_id_and_class_id(id=receiver_id)
+    receiver = find_by_user_id_and_class_id(id=receiver_id, class_id=class_id)
     if kelas is None:
         raise_error(msg="kelas not found")
     if receiver is None:
@@ -138,7 +139,7 @@ def insert_message_group_service(class_id, group_id=0, json_object={}, gambar=No
     # print("json_object i service >>> ", json_object)
     print("receiverid di services > ", group_id)
     kelas = find_by_id(id=class_id)
-    group = repositoriesDB.get_by_group_id(group_id=group_id)
+    group = find_by_group_id_and_class_id(id=group_id, class_id=class_id)
     if kelas is None:
         raise_error(msg="kelas not found")
     if group is None:
