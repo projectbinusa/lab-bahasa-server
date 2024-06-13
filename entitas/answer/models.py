@@ -4,6 +4,7 @@ class Answer:
             id=0,
             question_id=0,
             answer='',
+            score='',
             user_id=0,
             answer_time_user='',
             class_id=0,
@@ -14,6 +15,7 @@ class Answer:
         self.question_id = question_id
         self.answer = answer
         self.user_id = user_id
+        self.score = score
         self.answer_time_user = answer_time_user
         self.class_id = class_id
         # self.created_date = created_date
@@ -25,6 +27,7 @@ class Answer:
             "question_id": self.question_id,
             "answer": self.answer,
             "user_id": self.user_id,
+            "score": self.score,
             "answer_time_user": str(self.answer_time_user),
             "class_id": self.class_id,
             # "created_date": str(self.created_date) if self.created_date is not None else None,
@@ -37,6 +40,7 @@ class Answer:
             "question_id": self.question_id,
             "answer": self.answer,
             "user_id": self.user_id,
+            "score": self.score,
             "answer_time_user": str(self.answer_time_user),
             "class_id": self.class_id,
             # "created_date": str(self.created_date) if self.created_date is not None else None,

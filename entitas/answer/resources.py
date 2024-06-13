@@ -16,25 +16,21 @@ class AnswerResource:
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 
     def on_post(self, req, resp, class_id: int):
-        print("class id di resources => ", class_id)
-        print("user id di resources => ", req.context["user"]["id"])
-
-        # Ambil question_id dan answer dari payload JSON
         question_id = req.media.get('question_id')
         answer = req.media.get('answer')
 
         if question_id is None or answer is None:
-            # Handle the absence of question_id or answer appropriately
-            print("question_id or answer is missing from the request")
-            resouce_response_api(resp=resp, data={"error": "question_id or answer is missing"}, status=400)
+            resouce_response_api(resp=resp, data={"error": "question_id or answer is missing"})
             return
 
         body = {
             "user_id": req.context['user']['id'],
+            "user_name": req.context['user']['name'],
             "class_id": class_id,
             "question_id": question_id,
             "answer": answer
         }
+        # try:
         result = services.create_answer_service(json_object=body)
         resouce_response_api(resp=resp, data=result)
         # except ValueError as e:
@@ -56,12 +52,16 @@ class AnswerWithIdResource:
         resouce_response_api(resp=resp,
                              data=services.delete_answer_by_class_id(class_id=class_id, id=int(answer_id)))
 
-    def on_get(self, resp, class_id: int, answer_id: int):
-        log_book_data = services.find_answer_by_class_id(
-            class_id=int(class_id),
-            answer_id=int(answer_id),
-        )
-        resouce_response_api(resp=resp, data=log_book_data)
+    # def on_get(self, resp, class_id: int, answer_id: int):
+    #     log_book_data = services.find_answer_by_class_id(
+    #         class_id=int(class_id),
+    #         answer_id=int(answer_id),
+    #     )
+    #     resouce_response_api(resp=resp, data=log_book_data)
+
+    def on_get(self, req, resp, class_id: int, answer_id: int):
+        resouce_response_api(resp=resp, data=services.find_answer_by_class_id(answer_id=int(answer_id), class_id=int(class_id)))
+
 
 # class AnswerByClassIdAndUserIdResource:
 #     def on_get(self, req, resp, class_id):

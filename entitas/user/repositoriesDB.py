@@ -240,6 +240,15 @@ def find_by_user_id_and_class_id(class_id=0, id=0):
         return None
     return data_in_db.first().to_model()
 
+
+@db_session
+def find_instructur_by_class_id(class_id=0):
+    data_in_db = select(s for s in UserDB if s.class_id == class_id and s.role == "instructur")
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
+
+
 @db_session
 def insert(json_object={}, to_model=False):
     if 'description' not in json_object:
@@ -746,8 +755,8 @@ def create_profile_manage_student_list(json_object={}, to_model=False):
             departement = json_object["departement"],
             client_id = json_object["client_id"],
             class_id = json_object["class_id"],
-            password = json_object["password"],
-            password_prompt = json_object["password_prompt"],
+            password = encrypt_string(json_object["password"]),
+            password_prompt = encrypt_string(json_object["password_prompt"]),
         )
         commit()
         if to_model:

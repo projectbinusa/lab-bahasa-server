@@ -109,7 +109,7 @@ def find_by_id(id=None):
 @db_session
 def find_by_whiteboard_id_and_class_id(class_id=0):
     try:
-        data_in_db = select(s for s in WhiteboardDB if s.class_id == class_id)
+        data_in_db = select(s for s in WhiteboardDB if s.id == class_id)
         return data_in_db.first().to_model() if data_in_db.first() else None
     except Exception as e:
         print("Error:", e)
@@ -168,14 +168,12 @@ def delete_whiteboard_by_id(id=None):
 
 
 @db_session
-def create_profile_manage_student_list(json_object=None, to_model=False):
+def create_profile_manage_student_list(user_id, json_object=None, to_model=False):
     try:
         # Create new user with the generated class_id
         new_user = WhiteboardDB(
-            user_id=json_object['user_id'],
-            username=json_object['username'],
+            user_id=user_id,
             class_id=json_object['class_id'],
-            class_name=json_object['class_name']
         )
 
         commit()

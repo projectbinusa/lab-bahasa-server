@@ -58,6 +58,14 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
 @db_session
 def insert(json_object={}, to_model=False):
     try:
+        # think_time_str = json_object["think_time"]
+        # think_time = datetime.strptime(think_time_str, '%H:%M:%S').time()
+        # think_time_delta = timedelta(hours=think_time.hour, minutes=think_time.minute, seconds=think_time.second)
+        #
+        # answer_time_str = json_object.get("answer_time", "00:00:00")  # Default to "00:00:00" if not provided
+        # answer_time = datetime.strptime(answer_time_str, '%H:%M:%S').time()
+        # answer_time_delta = timedelta(hours=answer_time.hour, minutes=answer_time.minute, seconds=answer_time.second)
+
         new_question = QuestionDB(
             name=json_object["name"],
             class_id=json_object["class_id"],
@@ -75,6 +83,7 @@ def insert(json_object={}, to_model=False):
     except Exception as e:
         print("error question insert: ", e)
     return
+
 
 
 @db_session
@@ -121,6 +130,14 @@ def delete_by_id(id=None):
 @db_session
 def find_question_by_id(id=None):
     data_in_db = select(s for s in QuestionDB if s.id == id)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
+
+
+@db_session
+def find_question_by_class_id(class_id=None):
+    data_in_db = select(s for s in QuestionDB if s.class_id == class_id)
     if data_in_db.first() is None:
         return None
     return data_in_db.first().to_model()

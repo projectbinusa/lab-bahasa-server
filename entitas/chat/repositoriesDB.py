@@ -125,37 +125,31 @@ def get_all_with_pagination_by_class_id_and_topic_chat_id(class_id, topic_chat_i
 
 
 @db_session
-def get_all_with_pagination_by_class_id_and_group_id(class_id, group_id, page=1, limit=9, filters=[],
-                                                     to_model=False):
+def get_all_with_pagination_by_class_id_and_group_id(class_id=0, group_id=0, page=1, limit=9, filters=[], order_by="-created_date", to_model=False):
+    data_in_db = select(m for m in ChatDB if m.class_id == class_id and m.group_id == group_id)
+
+    for item in filters:
+        if item["field"] == "content":
+            data_in_db = data_in_db.filter(lambda d: item["value"] in d.content)
+        elif item["field"] == "class_id":
+            data_in_db = data_in_db.filter(lambda d: item["value"] == d.class_id)
+        elif item["field"] == "group_id":
+            data_in_db = data_in_db.filter(lambda d: item["value"] == d.group_id)
+
+    total_record = data_in_db.count()
+
+    if limit > 0:
+        if order_by == "-created_date":
+            data_in_db = data_in_db.order_by(desc(ChatDB.created_date)).page(pagenum=page, pagesize=limit)
+        else:
+            data_in_db = data_in_db.order_by(ChatDB.created_date).page(pagenum=page, pagesize=limit)
+
     result = []
-    total_record = 0
-    try:
-        data_in_db = select(s for s in ChatDB if s.class_id == class_id and s.group_id == group_id).order_by(
-            desc(ChatDB.id))
-
-        for item in filters:
-            if item["field"] == "id":
-                data_in_db = data_in_db.filter(lambda d: d.id == item["value"])
-            elif item["field"] == "content":
-                data_in_db = data_in_db.filter(lambda d: item["value"] in d.content)
-            elif item["field"] == "class_id":
-                data_in_db = data_in_db.filter(lambda d: item["value"] == d.class_id)
-            elif item["field"] == "group_id":
-                data_in_db = data_in_db.filter(lambda d: item["value"] == d.group_id)
-
-        total_record = data_in_db.count()
-
-        if limit > 0:
-            data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
-
-        for item in data_in_db:
-            if to_model:
-                result.append(item.to_model())
-            else:
-                result.append(item.to_model().to_response())
-
-    except Exception as e:
-        print("error getAllWithPaginationByGroupId: ", e)
+    for item in data_in_db:
+        if to_model:
+            result.append(item.to_model())
+        else:
+            result.append(item.to_model().to_response())
 
     return result, {
         "total": total_record,
@@ -230,7 +224,7 @@ def insert_private_chat(receiver_id, json_object={}, to_model=False):
             receiver_id=int(receiver_id),
             content=json_object["content"],
             is_group=json_object["is_group"],
-            gambar=json_object.get("gambar")
+            gambar=json_object["gambar"]
         )
         commit()
         if to_model:
@@ -241,17 +235,20 @@ def insert_private_chat(receiver_id, json_object={}, to_model=False):
         print("error Chat insert: ", e)
     return None
 
+
 @db_session
 def insert_group_chat(group_id, json_object={}, to_model=False):
-    # print(group_id)
     try:
+        gambar = json_object.get("gambar", None)
+        content = json_object.get("content", None)
+
         new_chat = ChatDB(
             class_id=json_object["class_id"],
             sender_id=json_object["sender_id"],
             group_id=int(group_id),
-            content=json_object["content"],
+            content=content,
             is_group=json_object["is_group"],
-            gambar=json_object.get("gambar")
+            gambar=gambar
         )
         commit()
         if to_model:
@@ -261,6 +258,7 @@ def insert_group_chat(group_id, json_object={}, to_model=False):
     except Exception as e:
         print("error Chat insert: ", e)
     return None
+
 
 @db_session
 def insert_chat_chat(topic_chat_id, json_object={}, to_model=False):
@@ -296,7 +294,6 @@ def get_chats_for_user(user_id, sender_id=None):
     except Exception as e:
         print("error getting chats for user: ", e)
         return []
-
 
 # @db_session
 # def add_user_to_chat(chat_id, user_id):
@@ -385,8 +382,8 @@ def get_by_topic_chat_id(topic_chat_id=None):
 
 
 @db_session
-def get_by_group_id(group_id=None):
-    data_in_db = select(s for s in ChatDB if s.group_id == group_id)
+def get_by_group_id(group_id=None, order_by="-created_date"):
+    data_in_db = select(m for m in ChatDB if m.group_id == group_id).order_by(desc(ChatDB.created_date))
     if data_in_db.first() is None:
         return None
     return data_in_db.first().to_model()

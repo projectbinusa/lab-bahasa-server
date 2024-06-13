@@ -128,6 +128,13 @@ def find_by_kelas_user_id_and_user_id(id=None, user_id=0):
         return None
     return data_in_db.first().to_model()
 
+@db_session
+def find_by_kelas_user_id_and_user_id_and_role(id=None):
+    data_in_db = select(s for s in KelasUserDB if s.id == id)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
+
 
 @db_session
 def update(json_object={}, to_model={}):

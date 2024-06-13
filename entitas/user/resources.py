@@ -328,7 +328,7 @@ class ManagementListResource:
     #     'auth_disabled': True
     # }
     def on_get(self, req, resp, class_id):
-        filters = generate_filters_resource(req=req, params_int=['id'])
+        filters = generate_filters_resource(req=req, params_int=['id', 'name'])
         filters.append({'field': 'class_id', 'value': class_id})
         filters.append({'field': 'role', 'value': "student"})
         page = int(req.get_param("page", required=False, default=1))
@@ -360,9 +360,9 @@ class ManagementListWithByIdResources:
         resouce_response_api(resp=resp, data=services.update_user_by_class_id(id=int(management_list_id), json_object=body, class_id=class_id
         ))
 
-    def on_delete(self, req, resp, management_name_list_id: int, class_id: int):
+    def on_delete(self, req, resp, management_list_id: int, class_id: int):
         resouce_response_api(resp=resp,
-                             data=services.delete_user_by_class_id(id=int(management_name_list_id), class_id=class_id))
+                             data=services.delete_user_by_class_id(id=int(management_list_id), class_id=class_id))
 
     def on_get(self, req, resp, class_id: int, management_list_id: int):
         log_book_data = services.find_management_list_by_ids(

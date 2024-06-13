@@ -7,21 +7,25 @@ from util.entitas_util import generate_filters_resource, resouce_response_api
 
 
 class QuestionResource:
-    def on_get(self, req, resp):
+    def on_get(self, req, resp, class_id: int):
         filters = generate_filters_resource(req=req, params_int=['id'], params_string=['user_name'])
         page = int(req.get_param("page", required=False, default=1))
         limit = int(req.get_param("limit", required=False, default=9))
+        filters.append({'field': 'class_id', 'value': class_id})
         data, pagination = services.get_question_db_with_pagination(
-            page=page, limit=limit, filters=filters
+           class_id=class_id, page=page, limit=limit, filters=filters
         )
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 
     # def on_post(self, req, resp):
     #     resouce_response_api(resp=resp, data=services.insert_question_db(json_object=req.media))
 
-    def on_post(self, req, resp):
-        json_object = req.media
-        resouce_response_api(resp=resp, data=services.insert_question_db(json_object=json_object))
+    def on_post(self, req, resp, class_id: int):
+        print(class_id)
+        body = req.media
+        # body["class_id"] = int(class_id),
+        # body["user_name"] = req.context["user"]["name"],
+        resouce_response_api(resp=resp, data=services.insert_question_db( user_name=req.context["user"]["name"], class_id=class_id, user_id=req.context["user"]["id"], json_object=body))
 
 
 class QuestionWithIdResource:

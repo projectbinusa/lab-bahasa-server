@@ -7,14 +7,30 @@ from entitas.kelas_user.repositoriesDB import find_kelas_user_db_by_id, find_by_
 from entitas.question import repositoriesDB
 from datetime import datetime, timedelta
 
+from entitas.question.repositoriesDB import find_question_by_class_id
+from entitas.user.repositoriesDB import find_by_user_id_and_class_id
 from util.other_util import raise_error
 
 
-def insert_question_db(json_object={}):
+def insert_question_db(user_name='', class_id=0, user_id=0, json_object={}):
+    print(user_id)
+    print(class_id)
+    user = find_by_user_id_and_class_id(id=user_id, class_id=class_id)
+    kelas = find_by_id(id=class_id)
+    if user is None:
+        raise_error(msg="user not found")
+    if kelas is None:
+        raise_error(msg="kelas not found")
+    json_object["user_id"] = user_id
+    json_object["class_id"] = class_id
+    json_object["user_name"] = user_name
     return repositoriesDB.insert(json_object=json_object)
 
 
-def get_question_db_with_pagination(page=1, limit=9, filters=[], to_model=False):
+def get_question_db_with_pagination(page=1, limit=9, filters=[], to_model=False, class_id=0):
+    kelas = find_question_by_class_id(class_id=class_id)
+    if kelas is None:
+        raise_error(msg="class_id not found")
     return repositoriesDB.get_all_with_pagination(
         page=page, limit=limit, filters=filters, to_model=to_model
     )
@@ -28,15 +44,15 @@ def update_question_db(json_object={}):
     return repositoriesDB.update(json_object=json_object)
 
 
-def start_competition(class_id, question_id):
-    question = repositoriesDB.find_question_by_id(question_id)
-    if not question:
-        raise ValueError("Question not found")
-
-    question.class_id = class_id
-    question.created_date = datetime.now()
-    commit()
-    return question.to_json()
+# def start_competition(class_id, question_id, json_object={}):
+#     question = repositoriesDB.find_question_by_id(question_id)
+#     if not question:
+#         raise ValueError("Question not found")
+#
+#     question.class_id = class_id
+#     question.created_date = datetime.now()
+#     commit()
+#     return question.to_json()
 
 
 def submit_answer(user_id, question_id, answer, type):
@@ -82,11 +98,15 @@ def get_question_by_class_id_and_user_id(class_id=0, page=1, user_id=0, limit=9,
         raise_error(msg="user not found")
     return repositoriesDB.get_all_with_pagination(page=page, limit=limit, filters=filters, to_model=to_model)
 
-def start_competition(json_object={}):
-    class_id = json_object.get('class_id')
+
+def start_competition(question_id, class_id, json_object={}):
+    question = repositoriesDB.find_question_by_id(question_id)
+    if question is None:
+        raise ValueError("Question not found")
+    kelas = find_by_id(id=class_id)
     # Optional: Validate other fields as well
-    if not class_id:
-        raise ValueError("class_id is required")
+    if kelas is None:
+        raise ValueError("class_id not found")
 
     # Check if an active competition exists and return it or create a new one
     # existing_competition = get_active_competition(class_id)
