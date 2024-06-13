@@ -55,7 +55,6 @@ def get_chat_db_with_pagination_by_topic_chat_id(class_id=0, topic_chat_id=0, pa
         class_id, topic_chat_id, page=page, limit=limit, filters=filters, to_model=to_model
     )
 
-
 def get_chat_db_with_pagination_by_group_id(class_id=0, group_id=0, page=1, limit=9, filters=[], to_model=False):
     kelas = repositoriesDB.get_by_class_id(class_id=class_id)
     group = repositoriesDB.get_by_group_id(group_id=group_id)
@@ -64,7 +63,7 @@ def get_chat_db_with_pagination_by_group_id(class_id=0, group_id=0, page=1, limi
     if group is None:
         raise_error(msg="group id not found")
     return repositoriesDB.get_all_with_pagination_by_class_id_and_group_id(
-        class_id=class_id, group_id=group_id, page=page, limit=limit, filters=filters, to_model=to_model
+        class_id=class_id, group_id=group_id, page=page, limit=limit, filters=filters, order_by="-created_date", to_model=to_model
     )
 
 
@@ -155,20 +154,16 @@ def insert_message_group_service(class_id, group_id=0, json_object={}, gambar=No
     if group is None:
         raise_error(msg="group_id not found")
 
-    # Assign the actual group ID
     group_id = group.id
 
-    # Only process the image if it exists
     if gambar is not None:
         temp_file_start = str(uuid.uuid4()) + gambar.filename.replace(" ", "")
         with open(CHAT_FOLDER + temp_file_start, "wb") as f:
             f.write(gambar.file.read())
         json_object["gambar"] = DOMAIN_FILE_URL + '/files/' + temp_file_start
 
-    # Populate the JSON object with class and group IDs
     json_object["class_id"] = int(class_id)
 
-    # Insert the group chat record into the database
     return repositoriesDB.insert_group_chat(group_id=group_id, json_object=json_object)
 
 

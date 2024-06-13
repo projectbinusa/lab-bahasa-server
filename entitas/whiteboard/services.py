@@ -1,4 +1,5 @@
 from entitas.kelas_user.repositoriesDB import find_kelas_user_db_by_id
+from entitas.user.repositoriesDB import find_by_user_id_and_class_id
 from entitas.whiteboard import repositoriesDB
 from entitas.whiteboard.repositoriesDB import update, find_by_whiteboard_id_and_class_id, get_all_with_pagination
 from util.other_util import raise_error
@@ -73,13 +74,40 @@ def update_whiteboard_by_class_id(class_id=0, id=0, json_object={}):
     #     return None
 
 
-def create_whiteboard_service(class_id=0, json_object={}):
-    kelas_user = repositoriesDB.find_by_whiteboard_id_and_class_id(class_id=class_id)
-    if kelas_user is not None:
-        repositoriesDB.update_delete_by_id(id=kelas_user.id, is_deleted=False)
-        return True
-    json_object['class_id'] = class_id
-    return repositoriesDB.create_profile_manage_student_list(json_object=json_object)
+def find_white_board_db_by_id_and_class_id(class_id=0, to_model=False):
+    account = repositoriesDB.find_by_whiteboard_id_and_class_id(class_id=class_id)
+    if account is None:
+        return None
+    if to_model:
+        return account
+    return account.to_response()
+
+
+def create_whiteboard_service(class_id, user_ids, json_object):
+    if not isinstance(user_ids, list):
+        raise ValueError("user_ids must be a list")
+
+    for user_id in user_ids:
+        print(f"Processing user_id: {user_id}")  # Debug print to ensure user_id is passed correctly
+        kelas_user = find_white_board_db_by_id_and_class_id(class_id=class_id, to_model=True)
+        user = find_by_user_id_and_class_id(id=user_id, class_id=class_id)
+
+        if user is None:
+            raise_error(msg=f"user_id {user_id} not found")
+
+        if kelas_user is not None:
+            repositoriesDB.update_delete_by_id(id=kelas_user.id, is_deleted=False)
+        else:
+            user_id = user.id  # Ensure user_id is correctly set
+
+        json_object['class_id'] = class_id
+        json_object['user_id'] = user_id
+
+        repositoriesDB.create_profile_manage_student_list(user_id=user_id, json_object=json_object)
+
+    return True
+
+    return results
 
 
 def delete_whiteboard_db_by_id(id=0):

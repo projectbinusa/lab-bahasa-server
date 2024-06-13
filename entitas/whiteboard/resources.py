@@ -1,3 +1,5 @@
+import falcon
+
 from entitas.whiteboard import services
 from util.entitas_util import generate_filters_resource, resouce_response_api
 
@@ -14,8 +16,18 @@ class WhiteboardResource:
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 
     def on_post(self, req, resp, class_id):
-        resouce_response_api(resp=resp,
-                             data=services.create_whiteboard_service(class_id, json_object=req.media))
+        body = req.media
+        user_ids = body.get('user_id')
+
+        if not isinstance(user_ids, list):
+            resp.status = falcon.HTTP_400
+            resp.media = {"error": "user_id must be a list"}
+            return
+
+        resouce_response_api(
+            resp=resp,
+            data=services.create_whiteboard_service(class_id=class_id, user_ids=user_ids, json_object=body)
+        )
 
 
 class WhiteboardWithIdResource:

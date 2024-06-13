@@ -3,6 +3,7 @@ import json
 import falcon
 
 from entitas.chat import services
+from entitas.chat.services import get_chat_db_with_pagination_by_group_id
 from util.entitas_util import generate_filters_resource, resouce_response_api
 
 
@@ -103,29 +104,29 @@ class ChatByClassIdAndTopicChatIdResource:
 
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 
-
     def on_post(self, req, resp, class_id: int, topic_chat_id: int):
+        # Ambil data dari body JSON
+        body = req.media
+
+        # Ambil file gambar dari form data
         gambar = req.get_param("gambar")
-        content = req.get_param("content")
-        # topic_chat_id = req.get_param("topic_chat_id")
-        print("topic_chat_id di resources >>", req.get_param("topic_chat_id"))
-        is_group = req.get_param("is_group")
-        body = {}
-        body["content"] = content
-        # body["topic_chat_id"] = topic_chat_id
-        body["is_group"] = is_group
-        body["gambar"] = gambar
+
+        # Tambahkan sender_id ke body
         body["sender_id"] = req.context["user"]["id"]
-        resouce_response_api(resp=resp, data=services.insert_message_group_service(class_id, topic_chat_id, json_object=body,
-                                                                                   gambar=gambar))
+
+        # Panggil service untuk menyimpan pesan grup
+        try:
+            resouce_response_api(resp=resp,
+                                 data=services.insert_message_group_service(class_id, topic_chat_id, json_object=body,
+                                                                            gambar=gambar))
+        except Exception as e:
+            print("Error while inserting message:", e)
+            resp.status = falcon.HTTP_500  # Atur status response sesuai kebutuhan
+            resp.media = {"error": "Failed to insert message"}  # Response jika terjadi kesalahan
 
 
 class ChatByClassIdAndGroupIdResource:
     def on_get(self, req, resp, class_id: int, group_id: int):
-        # print(f"Request Path: {req.path}")
-        # print(f"Request Params: {req.params}")
-        # print(f"Received class_id: {class_id}, group_id: {group_id}")
-
         filters = generate_filters_resource(req=req, params_int=['id'], params_string=['content'])
         filters.append({'field': 'class_id', 'value': class_id})
         filters.append({'field': 'group_id', 'value': group_id})
@@ -150,6 +151,8 @@ class ChatByClassIdAndGroupIdResource:
         }
         if gambar is not None:
             body["gambar"] = gambar
+        if content is not None:
+            body["content"] = content
 
         resouce_response_api(resp=resp, data=services.insert_message_group_service(class_id, group_id, json_object=body,
                                                                                    gambar=gambar))
