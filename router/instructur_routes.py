@@ -74,4 +74,5 @@ def instructur_routes(api):
     api.add_route("/api/instructur/class/{class_id}/import/management_name_list", ImportManagementNameList())
     api.add_route("/api/instructur/class_active/{class_id}", KelasUserActive())
     api.add_route("/api/instructur/class_not_active/{class_id}", KelasUserNotActive())
-
+    api.add_route('/api/instructur/class/export', KelasUserExportResource())
+    api.add_route('/api/instructur/class/import', KelasUserImportResource())

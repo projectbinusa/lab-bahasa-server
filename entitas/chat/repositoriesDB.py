@@ -261,16 +261,18 @@ def insert_group_chat(group_id, json_object={}, to_model=False):
 
 
 @db_session
-def insert_chat_chat(topic_chat_id, json_object={}, to_model=False):
-    # print(topic_chat_id)
+def insert_topic_chat(topic_chat_id, json_object={}, to_model=False):
     try:
+        gambar = json_object.get("gambar", None)
+        content = json_object.get("content", None)
+
         new_chat = ChatDB(
             class_id=json_object["class_id"],
             sender_id=json_object["sender_id"],
             topic_chat_id=int(topic_chat_id),
-            content=json_object["content"],
+            content=content,
             is_group=json_object["is_group"],
-            gambar=json_object.get("gambar")
+            gambar=gambar
         )
         commit()
         if to_model:
