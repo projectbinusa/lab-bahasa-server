@@ -747,6 +747,7 @@ class LoginLimitsDB(db2.Entity):
     id = PrimaryKey(int, auto=True)
     class_id = Optional(int, nullable=True)
     end_time = Optional(str, nullable=True)
+    verifikasi_password = Optional(int, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -755,6 +756,7 @@ class LoginLimitsDB(db2.Entity):
         item.id = self.id
         item.class_id = self.class_id
         item.end_time = self.end_time
+        item.verifikasi_password = self.verifikasi_password
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
