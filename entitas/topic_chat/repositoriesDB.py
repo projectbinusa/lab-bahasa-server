@@ -91,3 +91,11 @@ def delete_anggota_topic_by_id_by_class_id(id=None, class_id=None):
     except Exception as e:
         print("error Group delete: ", e)
         return False
+
+
+@db_session
+def find_by_topic_chat_id_and_class_id(id=None, class_id=0):
+    data_in_db = select(s for s in TopicChatDB if s.id == id and s.class_id == class_id)
+    if data_in_db.first() is None:
+        return None
+    return data_in_db.first().to_model()
