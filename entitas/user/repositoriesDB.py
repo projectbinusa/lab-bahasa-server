@@ -748,15 +748,15 @@ def update_profile_manage_student_list(json_object=None, to_model=False):
 def create_profile_manage_student_list(json_object={}, to_model=False):
     try:
         new_user = UserDB(
-            name = json_object["name"],
-            email = json_object["email"],
-            role = json_object["role"],
-            gender = json_object["gender"],
-            departement = json_object["departement"],
-            client_id = json_object["client_id"],
-            class_id = json_object["class_id"],
-            password = encrypt_string(json_object["password"]),
-            password_prompt = encrypt_string(json_object["password_prompt"]),
+            name=json_object["name"],
+            email=json_object["email"],
+            role=json_object["role"],
+            gender=json_object["gender"],
+            departement=json_object["departement"],
+            client_id=json_object["client_id"],
+            class_id=json_object["class_id"],
+            password=json_object.get("password", ""),  # Store plain text password
+            password_prompt=json_object.get("password_prompt", ""),  # Store plain text password prompt
         )
         commit()
         if to_model:
