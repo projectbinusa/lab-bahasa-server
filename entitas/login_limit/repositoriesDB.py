@@ -156,6 +156,7 @@ def insert(json_object={}, to_model=False):
         new_login_limits = LoginLimitsDB(
             class_id=json_object['class_id'],
             end_time=json_object['end_time'],
+            verifikasi_password=json_object['verifikasi_password']
         )
         commit()
         if to_model:

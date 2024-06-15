@@ -105,24 +105,22 @@ class ChatByClassIdAndTopicChatIdResource:
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 
     def on_post(self, req, resp, class_id: int, topic_chat_id: int):
-        # Ambil data dari body JSON
-        body = req.media
-
-        # Ambil file gambar dari form data
         gambar = req.get_param("gambar")
+        content = req.get_param("content")
+        is_group = req.get_param("is_group")
 
-        # Tambahkan sender_id ke body
-        body["sender_id"] = req.context["user"]["id"]
+        body = {
+            "content": content,
+            "is_group": is_group,
+            "sender_id": req.context["user"]["id"]
+        }
+        if gambar is not None:
+            body["gambar"] = gambar
+        if content is not None:
+            body["content"] = content
 
-        # Panggil service untuk menyimpan pesan grup
-        try:
-            resouce_response_api(resp=resp,
-                                 data=services.insert_message_group_service(class_id, topic_chat_id, json_object=body,
-                                                                            gambar=gambar))
-        except Exception as e:
-            print("Error while inserting message:", e)
-            resp.status = falcon.HTTP_500  # Atur status response sesuai kebutuhan
-            resp.media = {"error": "Failed to insert message"}  # Response jika terjadi kesalahan
+        resouce_response_api(resp=resp, data=services.insert_message_topic_service(class_id, topic_chat_id, json_object=body,
+                                                                                   gambar=gambar))
 
 
 class ChatByClassIdAndGroupIdResource:
