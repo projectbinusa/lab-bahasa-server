@@ -5,6 +5,7 @@ class Chat:
             content="",
             receiver_id=0,
             sender_id=0,
+            sender_name='',
             is_group=0,
             group_id=0,
             topic_chat_id=0,
@@ -17,6 +18,7 @@ class Chat:
         self.content = content
         self.receiver_id = receiver_id
         self.sender_id = sender_id
+        self.sender_name = sender_name
         self.group_id = group_id
         self.topic_chat_id = topic_chat_id
         self.is_group = is_group
@@ -31,6 +33,7 @@ class Chat:
             "content": self.content,
             # "receiver_id": self.receiver_id,
             "sender_id": self.sender_id,
+            "sender_name": self.sender_name,
             "receiver_id": self.receiver_id,
             "group_id": self.group_id,
             "topic_chat_id": self.topic_chat_id,
@@ -46,6 +49,7 @@ class Chat:
             "id": self.id,
             "content": self.content,
             "sender_id": self.sender_id,
+            "sender_name": self.sender_name,
             "receiver_id": self.receiver_id,
             "group_id": self.group_id,
             "topic_chat_id": self.topic_chat_id,
