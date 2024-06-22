@@ -161,13 +161,12 @@ def get_all_with_pagination_by_class_id_and_group_id(class_id=0, group_id=0, pag
 
 
 @db_session
-def update_chat(receiver_id, json_object={}, to_model={}):
+def update_chat(json_object={}, to_model={}):
     try:
         updated_chat = ChatDB[json_object["id"]]
         updated_chat.is_group = json_object["is_group"]
         updated_chat.content = json_object["content"]
         updated_chat.sender_id = json_object["sender_id"]
-        updated_chat.receiver_id = int(receiver_id)
         updated_chat.class_id = json_object["class_id"]
         updated_chat.gambar = json_object["gambar"]
         commit()

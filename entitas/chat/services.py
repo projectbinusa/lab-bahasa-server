@@ -200,14 +200,20 @@ def get_messages_for_user_service(user_id, sender_id=None):
 
 # services.py
 def update_chat_by_group_id_and_class_id(class_id, group_id, gambar=None, json_object={}):
-    temp_file_start = str(uuid.uuid4()) + gambar.filename.replace(" ", "")
-    with open(CHAT_FOLDER + temp_file_start, "wb") as f:
-        f.write(gambar.file.read())
-    json_object["gambar"] = DOMAIN_FILE_URL + '/files/' + temp_file_start
+    try:
+        if gambar:
+            temp_file_start = str(uuid.uuid4()) + gambar.filename.replace(" ", "")
+            with open(CHAT_FOLDER + temp_file_start, "wb") as f:
+                f.write(gambar.file.read())
+            json_object["gambar"] = DOMAIN_FILE_URL + '/files/' + temp_file_start
+        else:
+            json_object["gambar"] = None  # atau bisa diatur menjadi None sesuai kebutuhan
+    except Exception as e:
+        print("Error handling gambar:", e)
+
     json_object["class_id"] = class_id
     json_object["group_id"] = group_id
-    receiver_id = json_object["receiver_id"]
-    return repositoriesDB.update_chat(receiver_id=receiver_id, json_object=json_object)
+    return repositoriesDB.update_chat(json_object=json_object)
 
 def delete_chat_by_group_id_and_class_id(id=0, class_id=0, group_id=0):
     return repositoriesDB.delete_chat_by_group_id_and_class_id(id, group_id, class_id)

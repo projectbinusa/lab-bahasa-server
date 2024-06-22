@@ -162,11 +162,9 @@ class ChatByClassIdAndGroupIdWithIdResource:
         gambar = req.get_param("gambar")
         sender_id = req.get_param("sender_id")
         content = req.get_param("content")
-        receiver_id = int(req.get_param("receiver_id"))
         is_group = req.get_param("is_group")
         body = {}
         body["content"] = content
-        body["receiver_id"] = receiver_id
         body["sender_id"] = sender_id
         body["is_group"] = is_group
         body["id"] = int(chat_id)

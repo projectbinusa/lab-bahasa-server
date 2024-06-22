@@ -406,16 +406,22 @@ def insert_manage_name_list_db(json_object={}):
 def create_profile_manage_student_list_service(class_id=0, json_object={}):
     kelas_user = repositoriesDB.find_by_user_id_and_class_id(class_id=class_id)
     client = repositoriesDB.generate_new_client_id()
-    # user_name = find_by_id(id=json_object['user_id'])
-    print("class_id ====>",class_id, "data ==>", json_object)
+
     if kelas_user is not None:
         repositoriesDB.update_delete_by_id(id=kelas_user.id, is_deleted=False)
         return True
+
     json_object['class_id'] = class_id
     json_object['role'] = "student"
     json_object['client_id'] = client
+
+    # Remove encryption before saving
+    json_object['password'] = json_object.get('password', '')  # Plain text password
+    json_object['password_prompt'] = json_object.get('password_prompt', '')  # Plain text password prompt
+
     insert_manage_name_list_db(json_object=json_object)
     return True
+
 
 # def create_profile_manage_student_list_service(json_object={}):
 #     return repositoriesDB.create_profile_manage_student_list(json_object=json_object)
