@@ -45,12 +45,16 @@ def find_answer_db_by_id(id=0, to_model=False):
     return result.to_response()
 
 
-def get_list_by_class_id(class_id=0, page=1, limit=9, filters=[], to_model=False):
+def get_list_by_class_id(class_id=0, page=1, limit=9, filters=[], answer="", to_model=False):
     kelas = find_kelas_user_db_by_id(id=class_id, to_model=True)
     print("ini class id =====>", class_id)
     if kelas is None:
         raise_error(msg="class not found")
-    return get_all_with_pagination(page=page, limit=limit, filters=filters, to_model=to_model)
+    return get_answer_db_with_pagination(page=page, limit=limit, filters=filters, answer=answer, to_model=to_model)
+
+def get_answer_db_with_pagination(page=1, limit=9, answer="", to_model=False, filters=[], to_response="to_response"):
+    return repositoriesDB.get_all_with_pagination(page=page, limit=limit, answer=answer, to_model=to_model, filters=filters, to_response=to_response)
+
 
 
 def update_services_db(json_object={}):
