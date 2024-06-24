@@ -20,16 +20,12 @@ def get_all(to_model=True):
 
 
 @db_session
-def get_all_with_pagination(
-        page=1,
-        limit=9,
-        to_model=False,
-        filters=[],
-):
+def get_all_with_pagination(page=1, limit=9, to_model=False, filters=[], to_response="to_response", answer=None):
     result = []
     total_record = 0
     try:
         data_in_db = select(s for s in AnswerDB)
+
         for item in filters:
             if item["field"] == "id":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.id)
@@ -38,11 +34,14 @@ def get_all_with_pagination(
             elif item["field"] == "user_id":
                 data_in_db = data_in_db.filter(lambda d: item["value"] == d.user_id)
 
+        if answer:
+            data_in_db = data_in_db.filter(lambda d: answer.lower() in d.answer.lower())
+
         total_record = data_in_db.count()
+
         if limit > 0:
             data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
-        else:
-            data_in_db = data_in_db
+
         for item in data_in_db:
             if to_model:
                 result.append(item.to_model())
@@ -50,6 +49,7 @@ def get_all_with_pagination(
                 result.append(item.to_model().to_response())
     except Exception as e:
         print("error Answer getAllWithPagination: ", e)
+
     return result, {
         "total": total_record,
         "page": page,
