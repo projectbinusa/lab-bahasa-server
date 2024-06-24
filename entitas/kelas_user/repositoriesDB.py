@@ -219,27 +219,3 @@ def find_kelas_user_db_by_id(id=0, to_model=False):
     if to_model:
         return result
     return result.to_response()
-
-
-@db_session
-def import_users_from_csv(file_path='kelas_user.xlsx', to_model=False):
-    # try:
-        with open(file_path, mode='r', newline='', encoding='utf-8') as file:
-            reader = csv.reader(file, delimiter=';')  # Gunakan delimiter yang sesuai
-            next(reader)  # Lewati baris header
-            for row in reader:
-                user = KelasUserDB(
-                    name=row[0],
-                    description=row[1],
-                    file=row[2],
-                    user_id=row[3],
-                    user_name=row[4],
-                    is_active=row[5],
-                )
-                commit()
-                if to_model:
-                    return user.to_model()
-                else:
-                    return user.to_model().to_response()
-    # except Exception as e:
-    # return None

@@ -140,6 +140,66 @@ def get_all_with_pagination_managements(
 
 
 @db_session
+def get_all_with_pagination_managements_export(
+        page=1,
+        limit=9,
+        to_model=False,
+        filters=[],
+        to_response="to_response",
+        name=None,
+        role=None,
+        class_id=None
+):
+    result = []
+    total_record = 0
+    try:
+        # Base query with optional role filter
+        data_in_db = select(s for s in UserDB if (role is None or s.role == role))
+
+        # Apply class_id filter if provided
+        if class_id is not None:
+            data_in_db = data_in_db.filter(lambda d: d.class_id == class_id)
+
+        # Apply additional filters if provided
+        for item in filters:
+            if item["field"] == "client_id":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.client_id)
+            elif item["field"] == "name":
+                data_in_db = data_in_db.filter(lambda d: d.name in item["value"])
+
+        if name:
+            data_in_db = data_in_db.filter(lambda d: d.name == name)
+
+        data_in_db = data_in_db.order_by(desc(UserDB.id))
+
+        # Calculate the total number of records
+        total_record = data_in_db.count()
+
+        # Apply pagination if limit is greater than 0
+        if limit > 0:
+            data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
+
+        # Format the results according to the specified response type
+        for item in data_in_db:
+            if to_model:
+                result.append(item.to_model())
+            else:
+                if to_response == "to_response_profile":
+                    result.append(item.to_model().to_response_profile())
+                else:
+                    result.append(item.to_model().to_response_managements_list())
+
+    except Exception as e:
+        print("error UserDB getAllWithPagination1: ", e)
+
+    return result, {
+        "total": total_record,
+        "page": page,
+        "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
+    }
+
+
+@db_session
 def find_by_id(id=None):
     data_in_db = select(s for s in UserDB if s.id == id)
     if data_in_db.first() is None:

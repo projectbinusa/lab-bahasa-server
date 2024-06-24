@@ -1,3 +1,4 @@
+import logging
 import uuid
 from random import random
 
@@ -9,6 +10,7 @@ from entitas.login_limit.repositoriesDB import find_by_login_limits_id_and_class
 from entitas.user import repositoriesDB
 from util.constant import EMAIL_MUST_FILL, PASSWORD_MUST_FILL
 from util.entitas_util import *
+from util.excel_util import import_from_excel, export_to_excel
 from util.jwt_util import jwt_encode, check_valid_email
 from util.other_util import encrypt_string, get_random_string, raise_error, raise_forbidden
 from datetime import datetime
@@ -28,6 +30,7 @@ def get_user_db_with_pagination(
         to_response=to_response,
     )
 
+
 def get_user_db_with_pagination_manage_list(page=1, limit=9, filters=[], to_model=False, to_response="to_response"):
     return repositoriesDB.get_all_with_pagination_managements(
         page=page, limit=limit, filters=filters, to_model=to_model, to_response=to_response
@@ -40,6 +43,7 @@ def get_list_by_class_id(class_id=0, page=1, limit=9, filters=[], to_model=False
     if kelas is None:
         raise_error(msg="class not found")
     return get_user_db_with_pagination(page=page, limit=limit, filters=filters, to_model=to_model)
+
 
 def find_user_db_by_id(id=0, to_model=False):
     account = repositoriesDB.find_by_id(id=id)
@@ -202,6 +206,7 @@ def check_login_status(user, last_login):
     last_login = datetime.strptime(last_login, '%Y-%m-%d %H:%M:%S')
     return "Tepat waktu" if last_login <= end_time else "Terlambat"
 
+
 def find_user_db_by_token(token="", to_model=False):
     return repositoriesDB.find_by_token(token=token, to_model=to_model)
 
@@ -213,6 +218,7 @@ def update_profile_id_user_db(json_object={}):
     if account is None:
         raise_error(msg="akun tidak ditemukan")
     return repositoriesDB.update_profile(json_object=json_object, to_model=False)
+
 
 def update_profile_id_user_by_admin(json_object={}, picture=None, bank_book_photo=None, id_card=None):
     if json_object is None:
@@ -400,6 +406,7 @@ def update_menage_name_list_db(json_object={}):
 def insert_manage_name_list_db(json_object={}):
     return repositoriesDB.create_profile_manage_student_list(json_object=json_object)
 
+
 # def import_users_from_csv(file_path):
 #     return repositoriesDB.import_users_from_csv(file_path=file_path)
 
@@ -451,6 +458,7 @@ def delete_user_by_class_id(class_id=0, id=0):
         raise_error(msg="Failed to delete")
     return True
 
+
 # def delete_management_name_list_by_id(id=0):
 #     return repositoriesDB.delete_management_name_list_by_id(id=id)
 
@@ -465,6 +473,7 @@ def find_management_list_by_ids(class_id=0, management_list_id=0):
         raise_error(msg="class not found")
     return management_list.to_response()
 
+
 # def find_management_list_db_by_id(id=0, to_model=False):
 #     result = repositoriesDB.find_by_id(id=id)
 #     if result is None:
@@ -474,6 +483,8 @@ def find_management_list_by_ids(class_id=0, management_list_id=0):
 #     return result.to_response()
 
 from util.mail_service import MailService
+
+
 def request_password_reset(email):
     mail_service = MailService()
 
@@ -502,11 +513,13 @@ def reset_password_service(email, token, new_password):
         raise ValueError('Token tidak valid atau telah kedaluwarsa')
     return "Password has been reset successfully."
 
+
 def verify_reset_code_service(email, code):
     if verify_password_reset_token(email, code):
         return "Code verified successfully."
     else:
         raise ValueError('Invalid or expired code')
+
 
 def update_class_id_user(json_object={}, id=0):
     user = find_by_id(id=id)
@@ -516,15 +529,43 @@ def update_class_id_user(json_object={}, id=0):
     json_object["id"] = user.id
     return repositoriesDB.edit_class_id_user(json_object=json_object)
 
-def export_users(file_path='management_name_list.csv', id=0):
-    user = find_kelas_user_db_by_id(id=id)
-    if user is None:
-        raise_error("class not found")
-    return export_users_to_csv(file_path=file_path)
+
+def export_user_to_excel(file_path, class_id):
+    data, _ = get_all_with_pagination_managements_export(page=1, limit=0, filters=[], to_model=False, role="student",
+                                                         class_id=class_id)
+
+    formatted_data = []
+    for idx, item in enumerate(data, start=1):
+        item.pop("created_time", None)
+        item.pop("updated_time", None)
+        item["id"] = idx
+        formatted_data.append(item)
+
+    # Export to Excel
+    export_to_excel(formatted_data, file_path)
+    return file_path
 
 
-def import_users(file_path='management_name_list.csv', id=0):
-    user = find_kelas_user_db_by_id(id=id)
-    if user is None:
-        raise_error("class not found")
-    return import_users_from_csv(file_path=file_path)
+def import_user_from_excel(file_path):
+    try:
+        data = import_from_excel(file_path)  # Mengimpor data dari file Excel
+
+        success_count = 0
+        errors = []
+
+        for item in data:
+            user = find_kelas_user_db_by_id(id=item.get("id"))
+            if user is None:
+                errors.append(f"User with id {item.get('id')} not found")
+            else:
+                repositoriesDB.insert(json_object=item)
+                success_count += 1
+
+        if errors:
+            return False, errors  # Mengembalikan pesan error jika ada user yang tidak ditemukan
+        else:
+            return True, None  # Mengembalikan berhasil tanpa pesan error
+
+    except Exception as e:
+        logging.error(f"Error occurred during file processing: {str(e)}")
+        raise  # Mengangkat kembali exception untuk ditangani di lapisan panggilan yang lebih tinggi
