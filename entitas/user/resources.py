@@ -1,14 +1,10 @@
-import json
 import os
-from urllib.request import urlopen
 
-import falcon
-import requests
+from falcon_multipart.middleware import MultipartMiddleware
 
 from config.config import DOMAIN_FILE_URL, LOG_BOOK_FOLDER
 from entitas.user import services, repositoriesDB
-from entitas.baseResponse.models import BaseResponse
-from entitas.user.services import verify_reset_code_service, request_password_reset, reset_password_service
+from entitas.user.services import *
 from util.entitas_util import generate_filters_resource, resouce_response_api
 
 
@@ -62,8 +58,10 @@ class UserResource:
         resouce_response_api(resp=resp, data=services.insert_user_db(json_object=body, picture=picture,
                                                                      bank_book_photo=bank_book_photo, id_card=id_card))
 
+
 class RegisterGuruResource:
     auth = {"auth_disabled": True}
+
     def on_post(self, req, resp):
         resouce_response_api(resp=resp, data=services.register_guru(json_object=req.media))
 
@@ -81,6 +79,7 @@ class UserWithIdResource:
     def on_delete(self, req, resp, id: int):
         resouce_response_api(resp=resp, data=services.delete_user_by_id(id=int(id)))
 
+
 class UserDeleteByIds:
     def on_delete(self, req, resp):
         ids = req.media.get('ids', [])
@@ -91,6 +90,7 @@ class UserDeleteByIds:
             return
         result = services.delete_user_by_ids(ids=ids)
         resouce_response_api(resp=resp, data=result)
+
 
 class UserLoginResource:
     auth = {"auth_disabled": True}
@@ -336,6 +336,7 @@ class ManagementListResource:
         data, pagination = services.get_list_by_class_id(
             class_id=class_id, page=page, limit=limit, filters=filters)
         resouce_response_api(resp=resp, data=data, pagination=pagination)
+
     # def on_post(self, req, resp, class_id):
     #     print("di resources ==> ", class_id)
     #     resouce_response_api(resp=resp,
@@ -357,8 +358,10 @@ class ManagementListWithByIdResources:
 
     def on_put(self, req, resp, management_list_id: int, class_id: int):
         body = req.media
-        resouce_response_api(resp=resp, data=services.update_user_by_class_id(id=int(management_list_id), json_object=body, class_id=class_id
-        ))
+        resouce_response_api(resp=resp,
+                             data=services.update_user_by_class_id(id=int(management_list_id), json_object=body,
+                                                                   class_id=class_id
+                                                                   ))
 
     def on_delete(self, req, resp, management_list_id: int, class_id: int):
         resouce_response_api(resp=resp,
@@ -370,7 +373,6 @@ class ManagementListWithByIdResources:
             management_list_id=int(management_list_id),
         )
         resouce_response_api(resp=resp, data=log_book_data)
-
 
 
 class ForgotPasswordResource:
@@ -394,6 +396,7 @@ class VerifyCodeResource:
     auth = {
         'auth_disabled': True
     }
+
     def on_post(self, req, resp):
         data = req.media
         email = data.get('email')
@@ -403,10 +406,12 @@ class VerifyCodeResource:
         message = verify_reset_code_service(email, code)
         resp.media = {'message': message}
 
+
 class ResetPasswordResource:
     auth = {
         'auth_disabled': True
     }
+
     def on_post(self, req, resp):
         data = req.media
         email = data.get('email')
@@ -417,39 +422,65 @@ class ResetPasswordResource:
         message = reset_password_service(email, token, new_password)
         resp.media = {'message': message}
 
+
 class EditClassIdUserResource:
     def on_put(self, req, resp):
         body = req.media
-        resouce_response_api(resp=resp, data=services.update_class_id_user(id=req.context["user"]["id"], json_object=body
-        ))
+        resouce_response_api(resp=resp,
+                             data=services.update_class_id_user(id=req.context["user"]["id"], json_object=body
+                                                                ))
 
 
-# Resources
 class ExportManagementList:
-    def on_get(self, req, resp, class_id: int):
-        file_path = "tmp/management_name_list.csv"
-        success, error = services.export_users(file_path, id=class_id)
-        if success:  # Remove the file after download
-            resp.content_type = 'application/octet-stream'
-            resp.downloadable_as = 'management_name_list.csv'
-            with open(file_path, 'r', encoding='utf-8') as f:
-                resp.body = f.read()
-            os.remove(file_path)
-            # resp.body = data
-        else:
-            resouce_response_api(resp=resp, data={"error": error})
+    def on_get(self, req, resp, class_id):
+        user = find_kelas_user_db_by_id(id=class_id)
+        if user is None:
+            raise_error("class not found")
+
+        file_path = 'management_name_list.xlsx'
+        export_user_to_excel(file_path, class_id)  # Pass class_id here
+
+        resp.status = falcon.HTTP_200
+        resp.content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        resp.downloadable_as = 'management_name_list.xlsx'
+        resp.stream = open(file_path, 'rb')
+
+
+middleware = [MultipartMiddleware()]
+
 
 class ImportManagementNameList:
-    def on_post(self, req, resp, class_id: int):
+    def on_post(self, req, resp, class_id):
         uploaded_file = req.get_param('file')
-        if uploaded_file.filename.endswith('.csv'):
+
+        if uploaded_file.filename.endswith('.xlsx'):
             file_path = "tmp/" + uploaded_file.filename
-            with open(file_path, 'wb') as f:
-                f.write(uploaded_file.file.read())
-            success = services.import_users(file_path, id=class_id)
-            if success:
-                resp.media = {"message": "Import successful"}
-            # else:
-            #     resp.media = {"error": error}
+
+            try:
+                with open(file_path, 'wb') as f:
+                    f.write(uploaded_file.file.read())
+
+                # Proses import data dari file Excel
+                success, errors = self.import_user_from_excel(file_path)
+
+                if success:
+                    resp.media = {"message": "Import successful"}
+                if errors:
+                    resp.media = {"errors": errors}
+
+            except Exception as e:
+                logging.error(f"Error occurred during file processing: {str(e)}")
+                resp.media = {"error": "An error occurred during file processing"}
+
+            finally:
+                # Hapus file sementara setelah selesai atau terjadi kesalahan
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+
         else:
-            resp.media = {"error": "Only CSV files are allowed for import"}
+            resp.media = {"error": "Only xlsx files are allowed for import"}
+
+
+# Implementasi aplikasi Falcon
+app = falcon.App(middleware=middleware)
+app.add_route('/api/instructur/class/{class_id}/import/management_name_list', ImportManagementNameList())
