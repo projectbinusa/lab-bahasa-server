@@ -411,4 +411,95 @@ def get_chat_by_id_and_by_group_id_and_by_class_id(id=None, group_id=None, class
         return None
     return data_in_db.first().to_model()
 
+@db_session
+def insert_group_chat(receiver_id, json_object={}, to_model=False):
+    try:
+        gambar = json_object.get("gambar", None)
+        content = json_object.get("content", None)
+
+        new_chat = ChatDB(
+            class_id=json_object["class_id"],
+            sender_id=json_object["sender_id"],
+            receiver_id=int(receiver_id),
+            content=content,
+            gambar=gambar
+        )
+        commit()
+        if to_model:
+            return new_chat.to_model()
+        else:
+            return new_chat.to_model().to_response()
+    except Exception as e:
+        print("error Chat insert: ", e)
+    return None
+
+@db_session
+def update_chat_by_receiver_id_and_class_id(json_object={}, to_model=False):
+    try:
+        updated_chat = ChatDB[json_object["id"]]
+        updated_chat.content = json_object["content"]
+        updated_chat.class_id = json_object["class_id"]
+        if json_object["gambar"] is not None:
+            updated_chat.gambar = json_object["gambar"]
+        else:
+            print("gambar is None or not provided")
+
+        commit()
+        if to_model:
+            print(updated_chat.to_model())
+            return updated_chat.to_model()
+        else:
+            print(updated_chat.to_model().to_response())
+            return updated_chat.to_model().to_response()
+    except Exception as e:
+        print("error Chat di repositories update: ", e)
+    return None
+
+@db_session
+def get_all_with_pagination_by_class_id_and_receiver_id(class_id=0, receiver_id=0, page=1, limit=9, filters=[], order_by="-created_date", to_model=False):
+    data_in_db = select(m for m in ChatDB if m.class_id == class_id and m.receiver_id == receiver_id)
+
+    for item in filters:
+        if item["field"] == "content":
+            data_in_db = data_in_db.filter(lambda d: item["value"] in d.content)
+        elif item["field"] == "class_id":
+            data_in_db = data_in_db.filter(lambda d: item["value"] == d.class_id)
+        elif item["field"] == "receiver_id":
+            data_in_db = data_in_db.filter(lambda d: item["value"] == d.receiver_id)
+
+    total_record = data_in_db.count()
+
+    if limit > 0:
+        if order_by == "-created_date":
+            data_in_db = data_in_db.order_by(desc(ChatDB.created_date)).page(pagenum=page, pagesize=limit)
+        else:
+            data_in_db = data_in_db.order_by(ChatDB.created_date).page(pagenum=page, pagesize=limit)
+
+    result = []
+    for item in data_in_db:
+        if to_model:
+            result.append(item.to_model())
+        else:
+            result.append(item.to_model().to_response())
+
+    return result, {
+        "total": total_record,
+        "page": page,
+        "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
+    }
+
+@db_session
+def delete_chat_by_receiver_id_and_class_id(id=None, receiver_id=None, class_id=None):
+    try:
+        chat_entry = ChatDB.get(id=id, receiver_id=receiver_id, class_id=class_id)
+        if chat_entry:
+            chat_entry.delete()
+            commit()
+            return True
+        else:
+            print(f"No chat entry found with receiver_id={receiver_id} and class_id={class_id}")
+    except Exception as e:
+        print("error Chat delete: ", e)
+    return False
+
 
