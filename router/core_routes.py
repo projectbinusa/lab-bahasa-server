@@ -37,3 +37,5 @@ def core_routes(api):
     api.add_route('/api/chat/class/{class_id}/group/{group_id}', ChatByClassIdAndGroupIdResource())
     api.add_route('/api/chat/chat/{chat_id}/class/{class_id}/group/{group_id}', ChatByClassIdAndGroupIdWithIdResource())
     api.add_route('/api/chat/{chat_id}/class-id/{class_id}/group-id{group_id}', ChatByClassIdAndByGroupIdResource())
+    api.add_route('/api/chat/class-id/{class_id}/receiver-id{receiver_id}', ChatByClassIdAndByReceiverIdResource())
+    api.add_route('/api/chat/chat/{chat_id}/class/{class_id}/receiver/{receiver_id}', ChatByClassIdAndReceiverIdWithIdResource())

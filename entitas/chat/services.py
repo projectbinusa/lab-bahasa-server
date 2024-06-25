@@ -220,3 +220,64 @@ def delete_chat_by_group_id_and_class_id(id=0, class_id=0, group_id=0):
 
 def get_chat_by_id_and_by_group_id_and_by_class_id(id=None, group_id=None, class_id=None):
     return repositoriesDB.get_chat_by_id_and_by_group_id_and_by_class_id(id=id, group_id=group_id, class_id=class_id)
+
+def insert_message_group_service_by_receiver_id(class_id, receiver_id=0, json_object={}, gambar=None):
+    # Print debug information
+    # print("receiverid di services >", receiver_id)
+
+    # Find the class and group by their IDs
+    kelas = find_by_id(id=class_id)  # Ubah nama fungsi di sini
+    receiver = find_user_by_id(id=receiver_id)  # Ubah nama fungsi di sini
+
+    # Error handling if class or group is not found
+    if kelas is None:
+        raise_error(msg="kelas not found")
+    if receiver is None:
+        raise_error(msg="receiver not found")
+
+    receiver_id = receiver.id
+
+    if gambar is not None:
+        temp_file_start = str(uuid.uuid4()) + gambar.filename.replace(" ", "")
+        with open(CHAT_FOLDER + temp_file_start, "wb") as f:
+            f.write(gambar.file.read())
+        json_object["gambar"] = DOMAIN_FILE_URL + '/files/' + temp_file_start
+
+    json_object["class_id"] = int(class_id)
+
+    return repositoriesDB.insert_group_chat(receiver_id=receiver_id, json_object=json_object)
+
+def update_chat_by_receiver_id_and_class_id(class_id, receiver_id, gambar=None, json_object={}):
+    try:
+        if gambar is not None and hasattr(gambar, 'file'):
+            temp_file_start = str(uuid.uuid4()) + gambar.filename.replace(" ", "")
+            with open(CHAT_FOLDER + temp_file_start, "wb") as f:
+                f.write(gambar.file.read())
+            json_object["gambar"] = DOMAIN_FILE_URL + '/files/' + temp_file_start
+        else:
+            json_object["gambar"] = None  # atau bisa diatur menjadi None sesuai kebutuhan
+    except Exception as e:
+        print("Error handling gambar:", e)
+
+    json_object["class_id"] = class_id
+    json_object["receiver_id"] = receiver_id
+
+    # Debugging
+    print("Updated json_object: ", json_object)
+
+    return repositoriesDB.update_chat_by_receiver_id_and_class_id(json_object=json_object)
+
+def get_chat_db_with_pagination_by_receiver_id_and_class_id(class_id=0, receiver_id=0, page=1, limit=9, filters=[], to_model=False):
+    kelas = repositoriesDB.get_by_class_id(class_id=class_id)
+    user = find_user_by_id(id=receiver_id)
+    if kelas is None:
+        raise_error(msg="class id not found")
+    if user is None:
+        raise_error(msg="receiver_id id not found")
+    return repositoriesDB.get_all_with_pagination_by_class_id_and_receiver_id(
+        class_id=class_id, receiver_id=receiver_id, page=page, limit=limit, filters=filters, order_by="-created_date", to_model=to_model
+    )
+
+def delete_chat_by_receiver_id_and_class_id(id=0, class_id=0, receiver_id=0):
+    return repositoriesDB.delete_chat_by_receiver_id_and_class_id(id, receiver_id, class_id)
+
