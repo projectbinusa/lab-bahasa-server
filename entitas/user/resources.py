@@ -461,3 +461,16 @@ class ImportManagementNameList:
                 resp.media = {"error": "Only CSV files are allowed for import"}
             # else:
             #     resp.media = {"error": error}
+
+
+class StudentLoginResource:
+    auth = {"auth_disabled": True}
+
+    def on_post(self, req, resp):
+        body = req.media
+        domain = ""
+        if "ORIGIN" in req.headers:
+            domain = req.headers["ORIGIN"]
+        resouce_response_api(resp=resp, data=services.student_login_db(
+            json_object=body, domain=domain
+        ), pagination={})
