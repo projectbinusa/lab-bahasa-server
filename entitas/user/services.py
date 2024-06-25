@@ -541,3 +541,34 @@ def import_users(file_path='management_name_list.csv', id=0):
     if user is None:
         raise_error("class not found")
     return import_users_from_csv(file_path=file_path)
+
+def student_login_db(json_object={}, domain=""):
+    account_info = repositoriesDB.student_post_login(json_object=json_object)
+
+    if account_info is None:
+        raise_forbidden('Email atau password tidak sesuai')
+
+    if account_info.active == 0:
+        raise_error("Email belum diaktivasi")
+
+    # Di sini, tidak ada pengecekan password yang perlu dilakukan
+    # Kita asumsikan bahwa autentikasi dengan email sudah cukup untuk mendapatkan account_info
+
+    login_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    # Tentukan domain_result sesuai kebutuhan aplikasi Anda
+    domain_result = ""  # Misalnya, domain_result bisa diisi dengan domain yang digunakan pengguna
+
+    # Update last_login dari account_info
+    account_info.last_login = login_time
+
+    # Simpan informasi login_status
+    login_status = "Login berhasil"  # Ini bisa berupa pesan status atau informasi tambahan lainnya
+
+    # Kemas informasi akun dan status login dalam respons
+    account = account_info.to_response_login()
+    account["domain"] = domain_result
+    account["comment"] = login_status
+
+    # Encode respons menggunakan JWT sebelum dikirimkan kembali ke pengguna
+    return jwt_encode(account, TYPE_TOKEN_USER)

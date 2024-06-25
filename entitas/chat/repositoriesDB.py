@@ -412,7 +412,7 @@ def get_chat_by_id_and_by_group_id_and_by_class_id(id=None, group_id=None, class
     return data_in_db.first().to_model()
 
 @db_session
-def insert_group_chat(receiver_id, json_object={}, to_model=False):
+def insert_receiver_chat(receiver_id, json_object={}, to_model=False):
     try:
         gambar = json_object.get("gambar", None)
         content = json_object.get("content", None)
