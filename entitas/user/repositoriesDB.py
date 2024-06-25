@@ -3,7 +3,8 @@ import datetime
 import errno
 import json
 import uuid
-import datetime
+from uuid import uuid4
+from datetime import datetime
 
 from openpyxl.workbook import Workbook
 from pony.orm import *
@@ -1032,4 +1033,28 @@ def import_users_from_csv(file_path='management_name_list.csv', to_model=False):
     except Exception as e:
         print(f"Error importing from CSV: {e}")
         return None
+
+@db_session
+def student_post_login(json_object={}):
+    print(f"Login attempt: {json_object}")  # Debug log
+
+    email = json_object.get("email", "")
+    password = json_object.get("password", "")
+
+    # Cek apakah email ditemukan di database
+    if email and not password:
+        # Jika password tidak disertakan, coba cari berdasarkan email saja
+        account_db = UserDB.get(email=email)
+    else:
+        # Jika password disertakan, lakukan pencarian berdasarkan email dan password
+        account_db = UserDB.get(email=email, password=password)
+
+    if account_db is not None:
+        # Update token dan last_login
+        account_db.token = str(uuid4())
+        account_db.last_login = datetime.now()
+        commit()
+        return account_db.to_model()
+
+    return None
 

@@ -261,7 +261,7 @@ def insert_message_group_service_by_receiver_id(class_id, receiver_id=0, json_ob
 
     json_object["class_id"] = int(class_id)
 
-    return repositoriesDB.insert_group_chat(receiver_id=receiver_id, json_object=json_object)
+    return repositoriesDB.insert_receiver_chat(receiver_id=receiver_id, json_object=json_object)
 
 
 def update_chat_by_receiver_id_and_class_id(class_id, receiver_id, gambar=None, json_object={}):
