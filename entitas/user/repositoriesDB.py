@@ -5,12 +5,14 @@ import json
 import uuid
 import datetime
 
+from openpyxl.workbook import Workbook
 from pony.orm import *
 
 from database.schema import UserDB, KelasUserDB
 from entitas.kelas_user.repositoriesDB import find_kelas_user_db_by_id
 from util.other_util import raise_error
 from util.other_util import encrypt_string
+from openpyxl.styles import Alignment, Font, PatternFill
 
 
 @db_session
@@ -207,7 +209,6 @@ def find_by_id(id=None):
     return data_in_db.first().to_model()
 
 
-
 @db_session
 def find_by_list_id(list_id=[]):
     result = []
@@ -279,6 +280,7 @@ def delete_by_id(id=None):
     except Exception as e:
         print("Error Account deleteById" + str(e))
     return None
+
 
 @db_session
 def delete_by_ids(ids=[]):
@@ -722,7 +724,7 @@ def get_all_with_pagination_by_class_id(class_id, page=1, limit=9, filters=[], t
     result = []
     total_record = 0
     # try:
-    data_in_db = select(s for s in UserDB if s.class_is == class_is).order_by(
+    data_in_db = select(s for s in UserDB if s.class_id == class_id).order_by(
         desc(UserDB.id))
     for item in filters:
         if item["field"] == "id":
@@ -827,6 +829,7 @@ def create_profile_manage_student_list(json_object={}, to_model=False):
         print("error management name list insert: ", e)
     return None
 
+
 # @db_session
 # def create_profile_manage_student_list(json_object={}, to_model=False):
 #     try:
@@ -870,6 +873,7 @@ def find_last_client_id():
 
 import random
 
+
 @db_session
 def create_password_reset_token(email):
     user = UserDB.get(email=email)
@@ -882,6 +886,7 @@ def create_password_reset_token(email):
     commit()
     return code
 
+
 @db_session
 def verify_password_reset_token(email, code):
     user = UserDB.get(email=email, reset_code=code)
@@ -890,6 +895,7 @@ def verify_password_reset_token(email, code):
     if user and user.code_expiry > datetime.datetime.now():
         return user
     return None
+
 
 @db_session
 def reset_password(email, code, new_password):
@@ -901,6 +907,7 @@ def reset_password(email, code, new_password):
     user.code_expiry = None
     commit()
     return user.to_model()
+
 
 @db_session
 def verify_reset_code(email, code):
@@ -925,6 +932,7 @@ def generate_new_client_id():
         print("Error generate clientId: " + str(e))
         return None
 
+
 @db_session
 def edit_class_id_user(json_object=None, to_model=False):
     try:
@@ -942,39 +950,63 @@ def edit_class_id_user(json_object=None, to_model=False):
         print("error UserDB update_profile: " + str(e))
         return
 
+
 @db_session
 def get_user(user_id):
     return UserDB.get(id=user_id)
 
 
 @db_session
-def export_users_to_csv(file_path='management_name_list.csv'):
+def export_management_name_list(class_id: int):
     try:
-        users = select(u for u in UserDB)[:]
-        with open(file_path, mode='w', newline='', encoding='utf-8') as file:
-            writer = csv.writer(file, delimiter=';')  # Using tab as delimiter
-            writer.writerow(["#", "Client ID", "Name", "Email", "Gender", "Departement", "Kelas", "Password",
-                             "Password Prompt"])  # header
-            for user in users:
-                writer.writerow(
-                    [user.id, user.client_id, user.name, user.email, user.gender, user.departement, user.class_id,
-                     user.password, user.password_prompt])
-        return True, None
-    except IOError as e:
-        if e.errno == errno.EACCES:
-            return False, f"[Errno 13] Permission denied: '{file_path}'"
-        else:
-            return False, str(e)
+        # Filter data based on class_id and role student
+        users = select(u for u in UserDB if u.class_id == class_id and u.role == 'student').order_by(desc(UserDB.id))[:]
+
+        # Create workbook and worksheet
+        wb = Workbook()
+        ws = wb.active
+        ws.title = 'Management Name List'
+
+        # Header row formatting
+        header = ["#", "Client ID", "Name", "Email", "Gender", "Department", "Class ID", "Password", "Password Prompt"]
+        ws.append(header)
+        for cell in ws[1]:
+            cell.font = Font(bold=True)
+            cell.fill = PatternFill(start_color="C0C0C0", end_color="C0C0C0", fill_type="solid")
+            cell.alignment = Alignment(horizontal="center", vertical="center")
+
+        # Data rows
+        for index, user in enumerate(users, start=1):
+            row = [
+                index,
+                user.client_id,
+                user.name,
+                user.email,
+                user.gender,
+                user.departement,
+                user.class_id,
+                user.password,
+                user.password_prompt
+            ]
+            ws.append(row)
+
+        # Save workbook
+        file_path = 'tmp/management_name_list.xlsx'
+        wb.save(file_path)
+
+        return True, None, file_path  # Return success and file path
+
     except Exception as e:
-        print(e)
-        return False, str(e)
+        return False, str(e), None  # Return error message
+
 
 @db_session
 def import_users_from_csv(file_path='management_name_list.csv', to_model=False):
-    # try:
+    try:
         with open(file_path, mode='r', newline='', encoding='utf-8') as file:
-            reader = csv.reader(file, delimiter=';')  # Gunakan delimiter yang sesuai
-            next(reader)  # Lewati baris header
+            reader = csv.reader(file, delimiter=';')  # Use the correct delimiter
+            next(reader)  # Skip the header row
+
             for row in reader:
                 user = UserDB(
                     name=row[0],
@@ -986,11 +1018,18 @@ def import_users_from_csv(file_path='management_name_list.csv', to_model=False):
                     password_prompt=encrypt_string(row[6])
                 )
                 commit()
+
                 if to_model:
                     return user.to_model()
                 else:
                     return user.to_model().to_response()
-    # except Exception as e:
-    # return None
 
+    except UnicodeDecodeError as e:
+        # Handle the UnicodeDecodeError here
+        print(f"UnicodeDecodeError: {e}")
+        return None
+
+    except Exception as e:
+        print(f"Error importing from CSV: {e}")
+        return None
 

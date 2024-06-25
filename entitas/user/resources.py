@@ -1,7 +1,5 @@
 import os
 
-from falcon_multipart.middleware import MultipartMiddleware
-
 from config.config import DOMAIN_FILE_URL, LOG_BOOK_FOLDER
 from entitas.user import services, repositoriesDB
 from entitas.user.services import *
@@ -432,55 +430,34 @@ class EditClassIdUserResource:
 
 
 class ExportManagementList:
-    def on_get(self, req, resp, class_id):
-        user = find_kelas_user_db_by_id(id=class_id)
-        if user is None:
-            raise_error("class not found")
+    def on_get(self, req, resp, class_id: int):
+        try:
+            success, error, file_path = export_management_name_list(class_id)
 
-        file_path = 'management_name_list.xlsx'
-        export_user_to_excel(file_path, class_id)  # Pass class_id here
+            if success:
+                resp.content_type = 'application/octet-stream'
+                resp.downloadable_as = 'management_name_list.xlsx'
+                with open(file_path, 'rb') as f:
+                    resp.body = f.read()
+                os.remove(file_path)
+            else:
+                resouce_response_api(resp=resp, data={"error": error})
 
-        resp.status = falcon.HTTP_200
-        resp.content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        resp.downloadable_as = 'management_name_list.xlsx'
-        resp.stream = open(file_path, 'rb')
-
-
-middleware = [MultipartMiddleware()]
+        except Exception as e:
+            resouce_response_api(resp=resp, data={"error": str(e)})
 
 
 class ImportManagementNameList:
-    def on_post(self, req, resp, class_id):
+    def on_post(self, req, resp, class_id: int):
         uploaded_file = req.get_param('file')
-
-        if uploaded_file.filename.endswith('.xlsx'):
+        if uploaded_file.filename.endswith('.csv'):
             file_path = "tmp/" + uploaded_file.filename
-
-            try:
-                with open(file_path, 'wb') as f:
-                    f.write(uploaded_file.file.read())
-
-                # Proses import data dari file Excel
-                success, errors = self.import_user_from_excel(file_path)
-
-                if success:
-                    resp.media = {"message": "Import successful"}
-                if errors:
-                    resp.media = {"errors": errors}
-
-            except Exception as e:
-                logging.error(f"Error occurred during file processing: {str(e)}")
-                resp.media = {"error": "An error occurred during file processing"}
-
-            finally:
-                # Hapus file sementara setelah selesai atau terjadi kesalahan
-                if os.path.exists(file_path):
-                    os.remove(file_path)
-
-        else:
-            resp.media = {"error": "Only xlsx files are allowed for import"}
-
-
-# Implementasi aplikasi Falcon
-app = falcon.App(middleware=middleware)
-app.add_route('/api/instructur/class/{class_id}/import/management_name_list', ImportManagementNameList())
+            with open(file_path, 'wb') as f:
+                f.write(uploaded_file.file.read())
+            success = services.import_users(file_path, id=class_id)
+            if success:
+                resp.media = {"message": "Import successful"}
+            else:
+                resp.media = {"error": "Only CSV files are allowed for import"}
+            # else:
+            #     resp.media = {"error": error}
