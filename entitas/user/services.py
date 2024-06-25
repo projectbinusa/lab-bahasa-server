@@ -1,4 +1,3 @@
-import logging
 import uuid
 from random import random
 
@@ -530,42 +529,15 @@ def update_class_id_user(json_object={}, id=0):
     return repositoriesDB.edit_class_id_user(json_object=json_object)
 
 
-def export_user_to_excel(file_path, class_id):
-    data, _ = get_all_with_pagination_managements_export(page=1, limit=0, filters=[], to_model=False, role="student",
-                                                         class_id=class_id)
-
-    formatted_data = []
-    for idx, item in enumerate(data, start=1):
-        item.pop("created_time", None)
-        item.pop("updated_time", None)
-        item["id"] = idx
-        formatted_data.append(item)
-
-    # Export to Excel
-    export_to_excel(formatted_data, file_path)
-    return file_path
+def export_users(file_path='management_name_list.csv', id=0):
+    user = find_kelas_user_db_by_id(id=id)
+    if user is None:
+        raise_error("class not found")
+    return export_management_name_list(file_path=file_path)
 
 
-def import_user_from_excel(file_path):
-    try:
-        data = import_from_excel(file_path)  # Mengimpor data dari file Excel
-
-        success_count = 0
-        errors = []
-
-        for item in data:
-            user = find_kelas_user_db_by_id(id=item.get("id"))
-            if user is None:
-                errors.append(f"User with id {item.get('id')} not found")
-            else:
-                repositoriesDB.insert(json_object=item)
-                success_count += 1
-
-        if errors:
-            return False, errors  # Mengembalikan pesan error jika ada user yang tidak ditemukan
-        else:
-            return True, None  # Mengembalikan berhasil tanpa pesan error
-
-    except Exception as e:
-        logging.error(f"Error occurred during file processing: {str(e)}")
-        raise  # Mengangkat kembali exception untuk ditangani di lapisan panggilan yang lebih tinggi
+def import_users(file_path='management_name_list.csv', id=0):
+    user = find_kelas_user_db_by_id(id=id)
+    if user is None:
+        raise_error("class not found")
+    return import_users_from_csv(file_path=file_path)

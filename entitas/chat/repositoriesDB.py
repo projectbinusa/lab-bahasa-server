@@ -503,3 +503,18 @@ def delete_chat_by_receiver_id_and_class_id(id=None, receiver_id=None, class_id=
     return False
 
 
+@db_session
+def delete_chat_by_topic_chat_id_and_class_id(id=None, topic_chat_id=None, class_id=None):
+    try:
+        chat_entry = ChatDB.get(id=id, topic_chat_id=topic_chat_id, class_id=class_id)
+        if chat_entry:
+            chat_entry.delete()
+            commit()
+            return True
+        else:
+            print(f"No chat entry found with topic_chat_id={topic_chat_id} and class_id={class_id}")
+    except Exception as e:
+        print("error Chat delete: ", e)
+    return False
+
+
