@@ -868,6 +868,7 @@ class ChatDB(db2.Entity):
     content = Optional(str, nullable=True)
     receiver_id = Optional(int, nullable=True)
     sender_id = Optional(int, nullable=True)
+    sender_name = Optional(str, nullable=True)
     is_group = Optional(int, nullable=True)
     group_id = Optional(int, nullable=True)
     topic_chat_id = Optional(int, nullable=True)
@@ -884,6 +885,7 @@ class ChatDB(db2.Entity):
         item.topic_chat_id = self.topic_chat_id
         item.receiver_id = self.receiver_id
         item.sender_id = self.sender_id
+        item.sender_name = self.sender_name
         item.is_group = self.is_group
         item.gambar = self.gambar
         item.class_id = self.class_id

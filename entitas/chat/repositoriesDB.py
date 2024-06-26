@@ -170,6 +170,7 @@ def update_chat(json_object={}, to_model={}):
         updated_chat.content = content
         updated_chat.sender_id = json_object["sender_id"]
         updated_chat.class_id = json_object["class_id"]
+        updated_chat.sender_name = json_object["sender_name"]
         updated_chat.gambar = gambar
         commit()
         if to_model:
@@ -224,6 +225,7 @@ def insert_private_chat(receiver_id, json_object={}, to_model=False):
         new_chat = ChatDB(
             class_id=json_object["class_id"],
             sender_id=json_object["sender_id"],
+            sender_name=json_object["sender_name"],
             receiver_id=int(receiver_id),
             content=content,
             is_group=json_object["is_group"],
@@ -248,6 +250,7 @@ def insert_group_chat(group_id, json_object={}, to_model=False):
         new_chat = ChatDB(
             class_id=json_object["class_id"],
             sender_id=json_object["sender_id"],
+            sender_name=json_object["sender_name"],
             group_id=int(group_id),
             content=content,
             is_group=json_object["is_group"],
@@ -272,6 +275,7 @@ def insert_topic_chat(topic_chat_id, json_object={}, to_model=False):
         new_chat = ChatDB(
             class_id=json_object["class_id"],
             sender_id=json_object["sender_id"],
+            sender_name=json_object["sender_name"],
             topic_chat_id=int(topic_chat_id),
             content=content,
             is_group=json_object["is_group"],
@@ -424,6 +428,7 @@ def insert_receiver_chat(receiver_id, json_object={}, to_model=False):
         new_chat = ChatDB(
             class_id=json_object["class_id"],
             sender_id=json_object["sender_id"],
+            sender_name=json_object["sender_name"],
             receiver_id=int(receiver_id),
             content=content,
             gambar=gambar
@@ -443,6 +448,8 @@ def update_chat_by_receiver_id_and_class_id(json_object={}, to_model=False):
         updated_chat = ChatDB[json_object["id"]]
         updated_chat.content = json_object["content"]
         updated_chat.class_id = json_object["class_id"]
+        updated_chat.sender_name = json_object["sender_name"]
+        updated_chat.sender_id = json_object["sender_id"]
         if json_object["gambar"] is not None:
             updated_chat.gambar = json_object["gambar"]
         else:
