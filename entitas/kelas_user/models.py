@@ -33,6 +33,7 @@ class KelasUser:
             "user_name": self.user_name,
             "kode_ruang": self.kode_ruang,
             "is_active": self.is_active,
+            "kode_ruang": self.kode_ruang,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None
         }

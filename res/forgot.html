@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Verify Your Code</title>
+    <meta charset="UTF-8" />
+    <style>
+      .table {
+        display: table;
+        width: 600px;
+        margin: 30px auto;
+        border: 1px solid #888;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        padding: 0;
+        text-align: center;
+      }
+
+      .row {
+        display: table-row;
+      }
+
+      .cell {
+        display: table-cell;
+        padding: 20px 30px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        text-align: center;
+      }
+
+      .cell img {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 20px;
+        border-radius: 50%;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+      }
+
+      .cell h1 {
+        font-size: 24px;
+        margin: 0;
+        color: #333;
+      }
+
+      .cell p {
+        font-size: 16px;
+        color: #333;
+        margin: 0;
+      }
+
+      .cell a {
+        background-color: #28a745;
+        color: #ffffff;
+        padding: 12px 24px;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 16px;
+        display: inline-block;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="table">
+      <div class="row">
+        <div class="cell">
+          <img src="/src/component/Asset/programmer.png" alt="Logo" />
+          <h1>Verifikasi Kode Lab Bahasa</h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="cell">
+          <p>
+            Kami menerima permintaan untuk memverifikasi kode Anda. Silakan
+            gunakan tombol berikut untuk memverifikasi kode Anda
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="cell">
+          <a href="http://localhost:3000/verify-code?token={{ token }}">
+            Kode Verifikasi Password
+          </a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="cell">
+          <p>
+            Jika Anda tidak menggunakan tautan ini dalam waktu 15 menit, tautan
+            tersebut akan kedaluwarsa.
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="cell">
+          <p>Terimakasih</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

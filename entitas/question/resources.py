@@ -43,6 +43,13 @@ class QuestionWithIdResource:
     def on_delete(self, req, resp, response_competition_id: int):
         resouce_response_api(resp=resp, data=services.delete_question_by_id(id=int(response_competition_id)))
 
+    def on_get(self, req, resp, class_id: int, response_competition_id: int):
+        question = services.find_question_db_by_class_id(
+            class_id=int(class_id),
+            response_competition_id=int(response_competition_id),
+        )
+        resouce_response_api(resp=resp, data=question)
+
 
 class StartCompetitionResource:
     def on_post(self, req, resp, class_id):
