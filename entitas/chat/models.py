@@ -18,7 +18,7 @@ class Chat:
         self.content = content
         self.receiver_id = receiver_id
         self.sender_id = sender_id
-        self.sender_iname = sender_name
+        self.sender_name = sender_name
         self.group_id = group_id
         self.topic_chat_id = topic_chat_id
         self.is_group = is_group

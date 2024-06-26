@@ -151,7 +151,8 @@ class ChatByClassIdAndGroupIdResource:
         body = {
             "content": content,
             "is_group": is_group,
-            "sender_id": req.context["user"]["id"]
+            "sender_id": req.context["user"]["id"],
+            "sender_name": req.context["user"]["name"]
         }
         if gambar is not None:
             body["gambar"] = gambar
