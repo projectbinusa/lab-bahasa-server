@@ -31,6 +31,7 @@ class KelasUser:
             "file": self.file,
             "user_id": self.user_id,
             "user_name": self.user_name,
+            "kode_ruang": self.kode_ruang,
             "is_active": self.is_active,
             "kode_ruang": self.kode_ruang,
             "created_date": str(self.created_date) if self.created_date is not None else None,

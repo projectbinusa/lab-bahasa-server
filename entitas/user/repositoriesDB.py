@@ -3,14 +3,18 @@ import datetime
 import errno
 import json
 import uuid
-import datetime
+from uuid import uuid4
+from datetime import datetime
 
+import pandas as pd
+from openpyxl.workbook import Workbook
 from pony.orm import *
 
 from database.schema import UserDB, KelasUserDB
 from entitas.kelas_user.repositoriesDB import find_kelas_user_db_by_id
 from util.other_util import raise_error
 from util.other_util import encrypt_string
+from openpyxl.styles import Alignment, Font, PatternFill
 
 
 @db_session
@@ -140,12 +144,71 @@ def get_all_with_pagination_managements(
 
 
 @db_session
+def get_all_with_pagination_managements_export(
+        page=1,
+        limit=9,
+        to_model=False,
+        filters=[],
+        to_response="to_response",
+        name=None,
+        role=None,
+        class_id=None
+):
+    result = []
+    total_record = 0
+    try:
+        # Base query with optional role filter
+        data_in_db = select(s for s in UserDB if (role is None or s.role == role))
+
+        # Apply class_id filter if provided
+        if class_id is not None:
+            data_in_db = data_in_db.filter(lambda d: d.class_id == class_id)
+
+        # Apply additional filters if provided
+        for item in filters:
+            if item["field"] == "client_id":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.client_id)
+            elif item["field"] == "name":
+                data_in_db = data_in_db.filter(lambda d: d.name in item["value"])
+
+        if name:
+            data_in_db = data_in_db.filter(lambda d: d.name == name)
+
+        data_in_db = data_in_db.order_by(desc(UserDB.id))
+
+        # Calculate the total number of records
+        total_record = data_in_db.count()
+
+        # Apply pagination if limit is greater than 0
+        if limit > 0:
+            data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
+
+        # Format the results according to the specified response type
+        for item in data_in_db:
+            if to_model:
+                result.append(item.to_model())
+            else:
+                if to_response == "to_response_profile":
+                    result.append(item.to_model().to_response_profile())
+                else:
+                    result.append(item.to_model().to_response_managements_list())
+
+    except Exception as e:
+        print("error UserDB getAllWithPagination1: ", e)
+
+    return result, {
+        "total": total_record,
+        "page": page,
+        "total_page": (total_record + limit - 1) // limit if limit > 0 else 1,
+    }
+
+
+@db_session
 def find_by_id(id=None):
     data_in_db = select(s for s in UserDB if s.id == id)
     if data_in_db.first() is None:
         return None
     return data_in_db.first().to_model()
-
 
 
 @db_session
@@ -219,6 +282,7 @@ def delete_by_id(id=None):
     except Exception as e:
         print("Error Account deleteById" + str(e))
     return None
+
 
 @db_session
 def delete_by_ids(ids=[]):
@@ -662,7 +726,7 @@ def get_all_with_pagination_by_class_id(class_id, page=1, limit=9, filters=[], t
     result = []
     total_record = 0
     # try:
-    data_in_db = select(s for s in UserDB if s.class_is == class_is).order_by(
+    data_in_db = select(s for s in UserDB if s.class_id == class_id).order_by(
         desc(UserDB.id))
     for item in filters:
         if item["field"] == "id":
@@ -720,6 +784,8 @@ def update_profile_manage_student_list(json_object=None, to_model=False):
         updated_user = UserDB[json_object["id"]]
         if "name" in json_object:
             updated_user.name = json_object["name"]
+        if "email" in json_object:
+            updated_user.email = json_object["email"]
         if "gender" in json_object:
             updated_user.gender = json_object["gender"]
         if "departement" in json_object:
@@ -729,9 +795,9 @@ def update_profile_manage_student_list(json_object=None, to_model=False):
         if "class_id" in json_object:
             updated_user.class_id = json_object["class_id"]
         if "password" in json_object:
-            updated_user.password = encrypt_string(json_object["password"])
+            updated_user.password = json_object["password"]
         if "password_prompt" in json_object:
-            updated_user.password_prompt = encrypt_string(json_object["password_prompt"])
+            updated_user.password_prompt = json_object["password_prompt"]
 
         commit()
 
@@ -744,8 +810,9 @@ def update_profile_manage_student_list(json_object=None, to_model=False):
         return
 
 
-@db_session
-def create_profile_manage_student_list(json_object={}, to_model=False):
+
+
+def create_profile_manage_student_list(class_id, json_object={}, to_model=False):
     try:
         new_user = UserDB(
             name=json_object["name"],
@@ -766,6 +833,7 @@ def create_profile_manage_student_list(json_object={}, to_model=False):
     except Exception as e:
         print("error management name list insert: ", e)
     return None
+
 
 # @db_session
 # def create_profile_manage_student_list(json_object={}, to_model=False):
@@ -810,6 +878,7 @@ def find_last_client_id():
 
 import random
 
+
 @db_session
 def create_password_reset_token(email):
     user = UserDB.get(email=email)
@@ -822,6 +891,7 @@ def create_password_reset_token(email):
     commit()
     return code
 
+
 @db_session
 def verify_password_reset_token(email, code):
     user = UserDB.get(email=email, reset_code=code)
@@ -830,6 +900,7 @@ def verify_password_reset_token(email, code):
     if user and user.code_expiry > datetime.datetime.now():
         return user
     return None
+
 
 @db_session
 def reset_password(email, code, new_password):
@@ -842,6 +913,7 @@ def reset_password(email, code, new_password):
     commit()
     return user.to_model()
 
+
 @db_session
 def verify_reset_code(email, code):
     user = UserDB.get(email=email, reset_code=code)
@@ -853,17 +925,20 @@ def verify_reset_code(email, code):
 @db_session
 def generate_new_client_id():
     try:
+        # Mengambil user terakhir berdasarkan client_id yang dimulai dengan "0808359"
         last_user = UserDB.select(lambda u: u.client_id.startswith("0808359")).order_by(desc(UserDB.client_id)).first()
         if last_user:
-            last_id_number = int(last_user.client_id[8:])  # Extract the numeric part after "08083591"
+            # Mengambil 2 digit terakhir sebagai nomor ID
+            last_id_number = int(last_user.client_id[-2:])
             new_id_number = last_id_number + 1
         else:
-            new_id_number = 1  # Start from 1 if there are no existing IDs
-        new_client_id = f"0808359{new_id_number:02d}"  # Ensure it has at least 2 digits
+            new_id_number = 1
+        new_client_id = f"0808359{new_id_number:02d}"  # Menggunakan 2 digit format untuk ID baru
         return new_client_id
     except Exception as e:
         print("Error generate clientId: " + str(e))
         return None
+
 
 @db_session
 def edit_class_id_user(json_object=None, to_model=False):
@@ -882,55 +957,108 @@ def edit_class_id_user(json_object=None, to_model=False):
         print("error UserDB update_profile: " + str(e))
         return
 
+
 @db_session
 def get_user(user_id):
     return UserDB.get(id=user_id)
 
 
 @db_session
-def export_users_to_csv(file_path='management_name_list.csv'):
+def export_management_name_list(class_id: int):
     try:
-        users = select(u for u in UserDB)[:]
-        with open(file_path, mode='w', newline='', encoding='utf-8') as file:
-            writer = csv.writer(file, delimiter=';')  # Using tab as delimiter
-            writer.writerow(["#", "Client ID", "Name", "Email", "Gender", "Departement", "Kelas", "Password",
-                             "Password Prompt"])  # header
-            for user in users:
-                writer.writerow(
-                    [user.id, user.client_id, user.name, user.email, user.gender, user.departement, user.class_id,
-                     user.password, user.password_prompt])
-        return True, None
-    except IOError as e:
-        if e.errno == errno.EACCES:
-            return False, f"[Errno 13] Permission denied: '{file_path}'"
-        else:
-            return False, str(e)
+        # Filter data based on class_id and role student
+        users = select(u for u in UserDB if u.class_id == class_id and u.role == 'student').order_by(desc(UserDB.id))[:]
+
+        # Create workbook and worksheet
+        wb = Workbook()
+        ws = wb.active
+        ws.title = 'Management Name List'
+
+        # Header row formatting
+        header = ["#", "Client ID", "Name", "Email", "Gender", "Departement", "Class ID", "Password", "Password Prompt"]
+        ws.append(header)
+        for cell in ws[1]:
+            cell.font = Font(bold=True)
+            cell.fill = PatternFill(start_color="C0C0C0", end_color="C0C0C0", fill_type="solid")
+            cell.alignment = Alignment(horizontal="center", vertical="center")
+
+        # Data rows
+        for index, user in enumerate(users, start=1):
+            row = [
+                index,
+                user.client_id,
+                user.name,
+                user.email,
+                user.gender,
+                user.departement,
+                user.class_id,
+                user.password,
+                user.password_prompt
+            ]
+            ws.append(row)
+
+        # Save workbook
+        file_path = 'tmp/management_name_list.xlsx'
+        wb.save(file_path)
+
+        return True, None, file_path  # Return success and file path
+
     except Exception as e:
-        print(e)
-        return False, str(e)
+        return False, str(e), None  # Return error message
+
 
 @db_session
-def import_users_from_csv(file_path='management_name_list.csv', to_model=False):
-    # try:
-        with open(file_path, mode='r', newline='', encoding='utf-8') as file:
-            reader = csv.reader(file, delimiter=';')  # Gunakan delimiter yang sesuai
-            next(reader)  # Lewati baris header
-            for row in reader:
-                user = UserDB(
-                    name=row[0],
-                    email=row[1],
-                    gender=row[2],
-                    departement=row[3],
-                    class_id=row[4],
-                    password=encrypt_string(row[5]),
-                    password_prompt=encrypt_string(row[6])
-                )
-                commit()
-                if to_model:
-                    return user.to_model()
-                else:
-                    return user.to_model().to_response()
-    # except Exception as e:
-    # return None
+def import_users_from_xlsx(file_path='management_name_list.xlsx', to_model=False):
+    try:
+        df = pd.read_excel(file_path)
+        for index, row in df.iterrows():
+            user = UserDB(
+                client_id=generate_new_client_id(),
+                name=str(row['Name']),
+                email=str(row['Email']),
+                gender=str(row['Gender']),
+                departement=str(row['Departement']),
+                class_id=str(row['Class ID']),
+                password=(str(row['Password'])),
+                password_prompt=(str(row['Password Prompt']))
+            )
+            commit()
 
+            if to_model:
+                return user.to_model()
+            else:
+                return user.to_model().to_response()
+
+    except UnicodeDecodeError as e:
+        print(f"UnicodeDecodeError: {e}")
+        return None
+
+    except Exception as e:
+        print(f"Error importing from XLSX: {e}")
+        return None
+
+
+@db_session
+def student_post_login(json_object={}):
+    print(f"Login attempt: {json_object}")  # Debug log
+
+    email = json_object.get("email", "")
+    password = json_object.get("password", "")
+
+    # Cek apakah email ditemukan di database
+    if email and not password:
+        # Jika password tidak disertakan, coba cari berdasarkan email saja
+        account_db = UserDB.get(email=email)
+    else:
+        # Jika password disertakan, lakukan pencarian berdasarkan email dan password
+        account_db = UserDB.get(email=email, password=password)
+
+    if account_db is not None:
+        # Update token dan last_login
+        account_db.token = str(uuid4())
+        account_db.last_login = datetime.now()
+        commit()
+        return account_db.to_model()
+
+    return None
 

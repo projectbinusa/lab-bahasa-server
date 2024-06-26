@@ -145,7 +145,7 @@ def delete_by_id(id=None):
     return
 
 
-# @db_session
+@db_session
 def update_delete_by_id(id=None, is_deleted=False):
     try:
         WhiteboardDB[id].is_deleted = is_deleted

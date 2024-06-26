@@ -9,6 +9,7 @@ from entitas.login_limit.repositoriesDB import find_by_login_limits_id_and_class
 from entitas.user import repositoriesDB
 from util.constant import EMAIL_MUST_FILL, PASSWORD_MUST_FILL
 from util.entitas_util import *
+from util.excel_util import import_from_excel, export_to_excel
 from util.jwt_util import jwt_encode, check_valid_email
 from util.other_util import encrypt_string, get_random_string, raise_error, raise_forbidden
 from datetime import datetime
@@ -28,6 +29,7 @@ def get_user_db_with_pagination(
         to_response=to_response,
     )
 
+
 def get_user_db_with_pagination_manage_list(page=1, limit=9, filters=[], to_model=False, to_response="to_response"):
     return repositoriesDB.get_all_with_pagination_managements(
         page=page, limit=limit, filters=filters, to_model=to_model, to_response=to_response
@@ -40,6 +42,7 @@ def get_list_by_class_id(class_id=0, page=1, limit=9, filters=[], to_model=False
     if kelas is None:
         raise_error(msg="class not found")
     return get_user_db_with_pagination(page=page, limit=limit, filters=filters, to_model=to_model)
+
 
 def find_user_db_by_id(id=0, to_model=False):
     account = repositoriesDB.find_by_id(id=id)
@@ -202,6 +205,7 @@ def check_login_status(user, last_login):
     last_login = datetime.strptime(last_login, '%Y-%m-%d %H:%M:%S')
     return "Tepat waktu" if last_login <= end_time else "Terlambat"
 
+
 def find_user_db_by_token(token="", to_model=False):
     return repositoriesDB.find_by_token(token=token, to_model=to_model)
 
@@ -213,6 +217,7 @@ def update_profile_id_user_db(json_object={}):
     if account is None:
         raise_error(msg="akun tidak ditemukan")
     return repositoriesDB.update_profile(json_object=json_object, to_model=False)
+
 
 def update_profile_id_user_by_admin(json_object={}, picture=None, bank_book_photo=None, id_card=None):
     if json_object is None:
@@ -400,16 +405,20 @@ def update_menage_name_list_db(json_object={}):
 def insert_manage_name_list_db(json_object={}):
     return repositoriesDB.create_profile_manage_student_list(json_object=json_object)
 
+
 # def import_users_from_csv(file_path):
 #     return repositoriesDB.import_users_from_csv(file_path=file_path)
 
 def create_profile_manage_student_list_service(class_id=0, json_object={}):
-    kelas_user = repositoriesDB.find_by_user_id_and_class_id(class_id=class_id)
+    print("kelas in service => ", class_id)
+    kelas_user = find_kelas_user_db_by_id(id=class_id, to_model=True)
     client = repositoriesDB.generate_new_client_id()
 
-    if kelas_user is not None:
-        repositoriesDB.update_delete_by_id(id=kelas_user.id, is_deleted=False)
-        return True
+    # if kelas_user is not None:
+    #     repositoriesDB.update_delete_by_id(id=kelas_user.id, is_deleted=False)
+    #     return True
+    if kelas_user is None:
+        raise_error(msg="kelas not found")
 
     json_object['class_id'] = class_id
     json_object['role'] = "student"
@@ -419,8 +428,9 @@ def create_profile_manage_student_list_service(class_id=0, json_object={}):
     json_object['password'] = json_object.get('password', '')  # Plain text password
     json_object['password_prompt'] = json_object.get('password_prompt', '')  # Plain text password prompt
 
-    insert_manage_name_list_db(json_object=json_object)
+    create_profile_manage_student_list(class_id=class_id, json_object=json_object)
     return True
+
 
 
 # def create_profile_manage_student_list_service(json_object={}):
@@ -451,6 +461,7 @@ def delete_user_by_class_id(class_id=0, id=0):
         raise_error(msg="Failed to delete")
     return True
 
+
 # def delete_management_name_list_by_id(id=0):
 #     return repositoriesDB.delete_management_name_list_by_id(id=id)
 
@@ -465,6 +476,7 @@ def find_management_list_by_ids(class_id=0, management_list_id=0):
         raise_error(msg="class not found")
     return management_list.to_response()
 
+
 # def find_management_list_db_by_id(id=0, to_model=False):
 #     result = repositoriesDB.find_by_id(id=id)
 #     if result is None:
@@ -474,6 +486,8 @@ def find_management_list_by_ids(class_id=0, management_list_id=0):
 #     return result.to_response()
 
 from util.mail_service import MailService
+
+
 def request_password_reset(email):
     mail_service = MailService()
 
@@ -502,11 +516,13 @@ def reset_password_service(email, token, new_password):
         raise ValueError('Token tidak valid atau telah kedaluwarsa')
     return "Password has been reset successfully."
 
+
 def verify_reset_code_service(email, code):
     if verify_password_reset_token(email, code):
         return "Code verified successfully."
     else:
         raise ValueError('Invalid or expired code')
+
 
 def update_class_id_user(json_object={}, id=0):
     user = find_by_id(id=id)
@@ -516,15 +532,47 @@ def update_class_id_user(json_object={}, id=0):
     json_object["id"] = user.id
     return repositoriesDB.edit_class_id_user(json_object=json_object)
 
+
 def export_users(file_path='management_name_list.csv', id=0):
     user = find_kelas_user_db_by_id(id=id)
     if user is None:
         raise_error("class not found")
-    return export_users_to_csv(file_path=file_path)
+    return export_management_name_list(file_path=file_path)
 
 
-def import_users(file_path='management_name_list.csv', id=0):
+def import_users(file_path='management_name_list.xlsx', id=0):
     user = find_kelas_user_db_by_id(id=id)
     if user is None:
         raise_error("class not found")
-    return import_users_from_csv(file_path=file_path)
+    return import_users_from_xlsx(file_path=file_path)
+
+def student_login_db(json_object={}, domain=""):
+    account_info = repositoriesDB.student_post_login(json_object=json_object)
+
+    if account_info is None:
+        raise_forbidden('Email atau password tidak sesuai')
+
+    if account_info.active == 0:
+        raise_error("Email belum diaktivasi")
+
+    # Di sini, tidak ada pengecekan password yang perlu dilakukan
+    # Kita asumsikan bahwa autentikasi dengan email sudah cukup untuk mendapatkan account_info
+
+    login_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    # Tentukan domain_result sesuai kebutuhan aplikasi Anda
+    domain_result = ""  # Misalnya, domain_result bisa diisi dengan domain yang digunakan pengguna
+
+    # Update last_login dari account_info
+    account_info.last_login = login_time
+
+    # Simpan informasi login_status
+    login_status = "Login berhasil"  # Ini bisa berupa pesan status atau informasi tambahan lainnya
+
+    # Kemas informasi akun dan status login dalam respons
+    account = account_info.to_response_login()
+    account["domain"] = domain_result
+    account["comment"] = login_status
+
+    # Encode respons menggunakan JWT sebelum dikirimkan kembali ke pengguna
+    return jwt_encode(account, TYPE_TOKEN_USER)

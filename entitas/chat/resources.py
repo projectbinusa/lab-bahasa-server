@@ -57,7 +57,8 @@ class ChatByClassIdAndSenderIdAndReceiverId:
         page = int(req.get_param("page", required=False, default=1))
         limit = int(req.get_param("limit", required=False, default=9))
         data, pagination = services.get_chat_db_with_pagination_sender_id_and_receiver_id(
-            class_id=class_id, receiver_id=receiver_id, sender_id=req.context['user']['id'], page=page, limit=limit, filters=filters
+            class_id=class_id, receiver_id=receiver_id, sender_id=req.context['user']['id'], page=page, limit=limit,
+            filters=filters
         )
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 
@@ -80,10 +81,12 @@ class ChatWithIdResource:
         body["receiver_id"] = receiver_id
         body["is_group"] = is_group
         body["id"] = int(chat_id)
-        resouce_response_api(resp=resp, data=services.update_chat_db(json_object=body, gambar=gambar, class_id=class_id, receiver_id=receiver_id))
+        resouce_response_api(resp=resp, data=services.update_chat_db(json_object=body, gambar=gambar, class_id=class_id,
+                                                                     receiver_id=receiver_id))
 
     def on_delete(self, req, resp, chat_id: int, class_id: int, receiver_id: int):
-        resouce_response_api(resp=resp, data=services.delete_chat_by_id(id=int(chat_id), class_id=int(class_id), receiver_id=int(receiver_id)))
+        resouce_response_api(resp=resp, data=services.delete_chat_by_id(id=int(chat_id), class_id=int(class_id),
+                                                                        receiver_id=int(receiver_id)))
 
 
 class ChatByClassIdAndTopicChatIdResource:
@@ -119,8 +122,9 @@ class ChatByClassIdAndTopicChatIdResource:
         if content is not None:
             body["content"] = content
 
-        resouce_response_api(resp=resp, data=services.insert_message_topic_service(class_id, topic_chat_id, json_object=body,
-                                                                                   gambar=gambar))
+        resouce_response_api(resp=resp,
+                             data=services.insert_message_topic_service(class_id, topic_chat_id, json_object=body,
+                                                                        gambar=gambar))
 
 
 class ChatByClassIdAndGroupIdResource:
@@ -175,7 +179,10 @@ class ChatByClassIdAndGroupIdWithIdResource:
                                                                                 class_id=class_id, group_id=group_id))
 
     def on_delete(self, req, resp, chat_id: int, group_id: int, class_id: int):
-        resouce_response_api(resp=resp, data=services.delete_chat_by_group_id_and_class_id(id=int(chat_id), group_id=int(group_id), class_id=int(class_id)))
+        resouce_response_api(resp=resp,
+                             data=services.delete_chat_by_group_id_and_class_id(id=int(chat_id), group_id=int(group_id),
+                                                                                class_id=int(class_id)))
+
 
 class ChatByClassIdAndByGroupIdResource:
     def on_get(self, req, resp, chat_id: int, group_id: int, class_id: int):
@@ -190,3 +197,94 @@ class ChatByClassIdAndByGroupIdResource:
         else:
             resp.status = falcon.HTTP_404
             resp.body = json.dumps({"message": "Chat not found"})
+
+
+class ChatByClassIdAndByReceiverIdResource:
+    def on_get(self, req, resp, class_id: int, receiver_id: int):
+        filters = generate_filters_resource(req=req, params_int=['id'], params_string=['content'])
+        filters.append({'field': 'class_id', 'value': class_id})
+        filters.append({'field': 'receiver_id', 'value': receiver_id})
+        page = int(req.get_param("page", required=False, default=1))
+        limit = int(req.get_param("limit", required=False, default=100))
+
+        data, pagination = services.get_chat_db_with_pagination_by_receiver_id_and_class_id(
+            class_id=class_id, receiver_id=receiver_id, page=page, limit=limit, filters=filters
+        )
+
+        resouce_response_api(resp=resp, data=data, pagination=pagination)
+
+    def on_post(self, req, resp, class_id: int, receiver_id: int):
+        gambar = req.get_param("gambar")
+        content = req.get_param("content")
+        is_group = req.get_param("is_group")
+
+        body = {
+            "content": content,
+            "is_group": is_group,
+            "sender_id": req.context["user"]["id"]
+        }
+        if gambar is not None:
+            body["gambar"] = gambar
+        if content is not None:
+            body["content"] = content
+
+        resouce_response_api(resp=resp, data=services.insert_message_group_service_by_receiver_id(class_id, receiver_id,
+                                                                                                  json_object=body,
+                                                                                                  gambar=gambar))
+
+
+class ChatByClassIdAndReceiverIdWithIdResource:
+    def on_put(self, req, resp, chat_id: int, class_id: int, receiver_id: int):
+        gambar = req.get_param("gambar")
+        content = req.get_param("content")
+        body = {
+            "content": content,
+            "id": int(chat_id),
+            "class_id": class_id,
+            "receiver_id": receiver_id
+        }
+
+        # Debugging
+        print("gambar: ", gambar)
+        print("body: ", body)
+
+        resouce_response_api(
+            resp=resp,
+            data=services.update_chat_by_receiver_id_and_class_id(
+                json_object=body,
+                gambar=gambar,
+                class_id=class_id,
+                receiver_id=receiver_id
+            )
+        )
+
+    def on_delete(self, req, resp, chat_id: int, receiver_id: int, class_id: int):
+        resouce_response_api(resp=resp, data=services.delete_chat_by_receiver_id_and_class_id(id=int(chat_id),
+                                                                                              receiver_id=int(
+                                                                                                  receiver_id),
+                                                                                              class_id=int(class_id)))
+
+
+class ChatByClassIdAndTopicChatIdWithIdResource:
+    def on_put(self, req, resp, chat_id: int, class_id: int, topic_chat_id: int):
+        gambar = req.get_param("gambar")
+        sender_id = req.get_param("sender_id")
+        content = req.get_param("content")
+        is_group = req.get_param("is_group")
+        body = {}
+        body["content"] = content
+        body["sender_id"] = sender_id
+        body["is_group"] = is_group
+        body["id"] = int(chat_id)
+        body["class_id"] = class_id
+        body["topic_chat_id"] = topic_chat_id
+        resouce_response_api(resp=resp,
+                             data=services.update_chat_by_topic_chat_id_and_class_id(json_object=body, gambar=gambar,
+                                                                                     class_id=class_id,
+                                                                                     topic_chat_id=topic_chat_id))
+
+    def on_delete(self, req, resp, chat_id: int, topic_chat_id: int, class_id: int):
+        resouce_response_api(resp=resp,
+                             data=services.delete_chat_by_topic_chat_id_and_class_id(id=int(chat_id),
+                                                                                     topic_chat_id=int(topic_chat_id),
+                                                                                     class_id=int(class_id)))
