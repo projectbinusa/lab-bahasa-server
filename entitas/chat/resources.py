@@ -21,6 +21,7 @@ class ChatResource:
                 "content": content,
                 "is_group": is_group,
                 "sender_id": req.context["user"]["id"],
+                "sender_name": req.context["user"]["name"],
             }
 
             if gambar:
@@ -115,7 +116,8 @@ class ChatByClassIdAndTopicChatIdResource:
         body = {
             "content": content,
             "is_group": is_group,
-            "sender_id": req.context["user"]["id"]
+            "sender_id": req.context["user"]["id"],
+            "sender_name": req.context["user"]["name"]
         }
         if gambar is not None:
             body["gambar"] = gambar
@@ -164,12 +166,14 @@ class ChatByClassIdAndGroupIdResource:
 class ChatByClassIdAndGroupIdWithIdResource:
     def on_put(self, req, resp, chat_id: int, class_id: int, group_id: int):
         gambar = req.get_param("gambar")
-        sender_id = req.get_param("sender_id")
+        sender_id = req.context["user"]["id"]
+        sender_name = req.context["user"]["name"]
         content = req.get_param("content")
         is_group = req.get_param("is_group")
         body = {}
         body["content"] = content
         body["sender_id"] = sender_id
+        body["sender_name"] = sender_name
         body["is_group"] = is_group
         body["id"] = int(chat_id)
         body["class_id"] = class_id
@@ -221,7 +225,8 @@ class ChatByClassIdAndByReceiverIdResource:
         body = {
             "content": content,
             "is_group": is_group,
-            "sender_id": req.context["user"]["id"]
+            "sender_id": req.context["user"]["id"],
+            "sender_name": req.context["user"]["name"]
         }
         if gambar is not None:
             body["gambar"] = gambar
@@ -241,7 +246,9 @@ class ChatByClassIdAndReceiverIdWithIdResource:
             "content": content,
             "id": int(chat_id),
             "class_id": class_id,
-            "receiver_id": receiver_id
+            "receiver_id": receiver_id,
+            "sender_id": req.context["user"]["id"],
+            "sender_name": req.context["user"]["name"]
         }
 
         # Debugging
@@ -268,12 +275,14 @@ class ChatByClassIdAndReceiverIdWithIdResource:
 class ChatByClassIdAndTopicChatIdWithIdResource:
     def on_put(self, req, resp, chat_id: int, class_id: int, topic_chat_id: int):
         gambar = req.get_param("gambar")
-        sender_id = req.get_param("sender_id")
+        sender_id = req.context["user"]["id"]
+        sender_name = req.context["user"]["name"]
         content = req.get_param("content")
         is_group = req.get_param("is_group")
         body = {}
         body["content"] = content
         body["sender_id"] = sender_id
+        body["sender_name"] = sender_name
         body["is_group"] = is_group
         body["id"] = int(chat_id)
         body["class_id"] = class_id

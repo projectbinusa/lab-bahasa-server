@@ -4,8 +4,8 @@ import errno
 import json
 import uuid
 from uuid import uuid4
-from datetime import datetime
 
+import pandas as pd
 from openpyxl.workbook import Workbook
 from pony.orm import *
 
@@ -783,6 +783,8 @@ def update_profile_manage_student_list(json_object=None, to_model=False):
         updated_user = UserDB[json_object["id"]]
         if "name" in json_object:
             updated_user.name = json_object["name"]
+        if "email" in json_object:
+            updated_user.email = json_object["email"]
         if "gender" in json_object:
             updated_user.gender = json_object["gender"]
         if "departement" in json_object:
@@ -792,9 +794,9 @@ def update_profile_manage_student_list(json_object=None, to_model=False):
         if "class_id" in json_object:
             updated_user.class_id = json_object["class_id"]
         if "password" in json_object:
-            updated_user.password = encrypt_string(json_object["password"])
+            updated_user.password = json_object["password"]
         if "password_prompt" in json_object:
-            updated_user.password_prompt = encrypt_string(json_object["password_prompt"])
+            updated_user.password_prompt = json_object["password_prompt"]
 
         commit()
 
@@ -807,8 +809,9 @@ def update_profile_manage_student_list(json_object=None, to_model=False):
         return
 
 
-@db_session
-def create_profile_manage_student_list(json_object={}, to_model=False):
+
+
+def create_profile_manage_student_list(class_id, json_object={}, to_model=False):
     try:
         new_user = UserDB(
             name=json_object["name"],
@@ -873,8 +876,6 @@ def find_last_client_id():
 
 
 import random
-
-
 @db_session
 def create_password_reset_token(email):
     user = UserDB.get(email=email)
@@ -883,7 +884,7 @@ def create_password_reset_token(email):
         return None
     code = str(random.randint(100000, 999999))
     user.reset_code = code
-    user.code_expiry = datetime.datetime.now() + datetime.timedelta(minutes=60)
+    user.code_expiry = datetime.datetime.now() + datetime.timedelta(minutes=15)  # Konsistensi dengan pesan email
     commit()
     return code
 
@@ -911,23 +912,17 @@ def reset_password(email, code, new_password):
 
 
 @db_session
-def verify_reset_code(email, code):
-    user = UserDB.get(email=email, reset_code=code)
-    if user and user.code_expiry > datetime.datetime.now():
-        return True
-    return False
-
-
-@db_session
 def generate_new_client_id():
     try:
+        # Mengambil user terakhir berdasarkan client_id yang dimulai dengan "0808359"
         last_user = UserDB.select(lambda u: u.client_id.startswith("0808359")).order_by(desc(UserDB.client_id)).first()
         if last_user:
-            last_id_number = int(last_user.client_id[8:])  # Extract the numeric part after "08083591"
+            # Mengambil 2 digit terakhir sebagai nomor ID
+            last_id_number = int(last_user.client_id[-2:])
             new_id_number = last_id_number + 1
         else:
-            new_id_number = 1  # Start from 1 if there are no existing IDs
-        new_client_id = f"0808359{new_id_number:02d}"  # Ensure it has at least 2 digits
+            new_id_number = 1
+        new_client_id = f"0808359{new_id_number:02d}"  # Menggunakan 2 digit format untuk ID baru
         return new_client_id
     except Exception as e:
         print("Error generate clientId: " + str(e))
@@ -969,7 +964,7 @@ def export_management_name_list(class_id: int):
         ws.title = 'Management Name List'
 
         # Header row formatting
-        header = ["#", "Client ID", "Name", "Email", "Gender", "Department", "Class ID", "Password", "Password Prompt"]
+        header = ["#", "Client ID", "Name", "Email", "Gender", "Departement", "Class ID", "Password", "Password Prompt"]
         ws.append(header)
         for cell in ws[1]:
             cell.font = Font(bold=True)
@@ -1002,37 +997,35 @@ def export_management_name_list(class_id: int):
 
 
 @db_session
-def import_users_from_csv(file_path='management_name_list.csv', to_model=False):
+def import_users_from_xlsx(file_path='management_name_list.xlsx', to_model=False):
     try:
-        with open(file_path, mode='r', newline='', encoding='utf-8') as file:
-            reader = csv.reader(file, delimiter=';')  # Use the correct delimiter
-            next(reader)  # Skip the header row
+        df = pd.read_excel(file_path)
+        for index, row in df.iterrows():
+            user = UserDB(
+                client_id=generate_new_client_id(),
+                name=str(row['Name']),
+                email=str(row['Email']),
+                gender=str(row['Gender']),
+                departement=str(row['Departement']),
+                class_id=str(row['Class ID']),
+                password=(str(row['Password'])),
+                password_prompt=(str(row['Password Prompt']))
+            )
+            commit()
 
-            for row in reader:
-                user = UserDB(
-                    name=row[0],
-                    email=row[1],
-                    gender=row[2],
-                    departement=row[3],
-                    class_id=row[4],
-                    password=encrypt_string(row[5]),
-                    password_prompt=encrypt_string(row[6])
-                )
-                commit()
-
-                if to_model:
-                    return user.to_model()
-                else:
-                    return user.to_model().to_response()
+            if to_model:
+                return user.to_model()
+            else:
+                return user.to_model().to_response()
 
     except UnicodeDecodeError as e:
-        # Handle the UnicodeDecodeError here
         print(f"UnicodeDecodeError: {e}")
         return None
 
     except Exception as e:
-        print(f"Error importing from CSV: {e}")
+        print(f"Error importing from XLSX: {e}")
         return None
+
 
 @db_session
 def student_post_login(json_object={}):
@@ -1050,9 +1043,8 @@ def student_post_login(json_object={}):
         account_db = UserDB.get(email=email, password=password)
 
     if account_db is not None:
-        # Update token dan last_login
         account_db.token = str(uuid4())
-        account_db.last_login = datetime.now()
+        account_db.last_login = datetime.datetime.now()
         commit()
         return account_db.to_model()
 

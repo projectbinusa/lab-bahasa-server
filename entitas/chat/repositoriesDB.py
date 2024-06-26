@@ -163,12 +163,15 @@ def get_all_with_pagination_by_class_id_and_group_id(class_id=0, group_id=0, pag
 @db_session
 def update_chat(json_object={}, to_model={}):
     try:
+        gambar = json_object.get("gambar", None)
+        content = json_object.get("content", None)
         updated_chat = ChatDB[json_object["id"]]
         updated_chat.is_group = json_object["is_group"]
-        updated_chat.content = json_object["content"]
+        updated_chat.content = content
         updated_chat.sender_id = json_object["sender_id"]
         updated_chat.class_id = json_object["class_id"]
-        updated_chat.gambar = json_object["gambar"]
+        updated_chat.sender_name = json_object["sender_name"]
+        updated_chat.gambar = gambar
         commit()
         if to_model:
             print(updated_chat.to_model())
@@ -192,38 +195,41 @@ def delete_chat_by_id_and_by_class_id(id=None, class_id=None):
     return
 
 
-@db_session
-def insert_private_chat(receiver_id, json_object={}, to_model=False):
-    print(receiver_id)
-    try:
-        new_chat = ChatDB(
-            class_id=json_object["class_id"],
-            sender_id=json_object["sender_id"],
-            receiver_id=int(receiver_id),
-            content=json_object["content"],
-            is_group=json_object["is_group"],
-            gambar=json_object["gambar"]
-        )
-        commit()
-        if to_model:
-            return new_chat.to_model()
-        else:
-            return new_chat.to_model().to_response()
-    except Exception as e:
-        print("error Chat insert: ", e)
-    return None
+# @db_session
+# def insert_private_chat(receiver_id, json_object={}, to_model=False):
+#     print(receiver_id)
+#     try:
+#         new_chat = ChatDB(
+#             class_id=json_object["class_id"],
+#             sender_id=json_object["sender_id"],
+#             receiver_id=int(receiver_id),
+#             content=json_object["content"],
+#             is_group=json_object["is_group"],
+#             gambar=json_object["gambar"]
+#         )
+#         commit()
+#         if to_model:
+#             return new_chat.to_model()
+#         else:
+#             return new_chat.to_model().to_response()
+#     except Exception as e:
+#         print("error Chat insert: ", e)
+#     return None
 
 @db_session
 def insert_private_chat(receiver_id, json_object={}, to_model=False):
     print(receiver_id)
     try:
+        gambar = json_object.get("gambar", None)
+        content = json_object.get("content", None)
         new_chat = ChatDB(
             class_id=json_object["class_id"],
             sender_id=json_object["sender_id"],
+            sender_name=json_object["sender_name"],
             receiver_id=int(receiver_id),
-            content=json_object["content"],
+            content=content,
             is_group=json_object["is_group"],
-            gambar=json_object["gambar"]
+            gambar=gambar
         )
         commit()
         if to_model:
@@ -269,6 +275,7 @@ def insert_topic_chat(topic_chat_id, json_object={}, to_model=False):
         new_chat = ChatDB(
             class_id=json_object["class_id"],
             sender_id=json_object["sender_id"],
+            sender_name=json_object["sender_name"],
             topic_chat_id=int(topic_chat_id),
             content=content,
             is_group=json_object["is_group"],
@@ -421,6 +428,7 @@ def insert_receiver_chat(receiver_id, json_object={}, to_model=False):
         new_chat = ChatDB(
             class_id=json_object["class_id"],
             sender_id=json_object["sender_id"],
+            sender_name=json_object["sender_name"],
             receiver_id=int(receiver_id),
             content=content,
             gambar=gambar
@@ -440,6 +448,8 @@ def update_chat_by_receiver_id_and_class_id(json_object={}, to_model=False):
         updated_chat = ChatDB[json_object["id"]]
         updated_chat.content = json_object["content"]
         updated_chat.class_id = json_object["class_id"]
+        updated_chat.sender_name = json_object["sender_name"]
+        updated_chat.sender_id = json_object["sender_id"]
         if json_object["gambar"] is not None:
             updated_chat.gambar = json_object["gambar"]
         else:

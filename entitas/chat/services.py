@@ -226,6 +226,7 @@ def update_chat_by_group_id_and_class_id(class_id, group_id, gambar=None, json_o
 
     json_object["class_id"] = class_id
     json_object["group_id"] = group_id
+    # json_object["sender_id"] = user_id
     return repositoriesDB.update_chat(json_object=json_object)
 
 
