@@ -29,6 +29,7 @@ from entitas.training_user.models import Training_user
 from entitas.user.models import User
 from entitas.training_material.models import Training_Material
 from entitas.question.models import Question
+from entitas.user_chat.models import UserChat
 from entitas.whiteboard.models import Whiteboard
 from entitas.message_chat.models import MessageChat
 from entitas.chat.models import Chat
@@ -932,6 +933,26 @@ class GroupDB(db2.Entity):
         item.name = self.name
         item.description = self.description
         item.is_removed = self.is_removed
+        item.class_id = self.class_id
+        item.created_date = self.created_date
+        item.updated_date = self.updated_date
+        return item
+
+
+class UserChatDB(db2.Entity):
+    _table_ = "user_chat"
+    id = PrimaryKey(int, auto=True)
+    user_id = Optional(int, nullable=True)
+    user_name = Optional(str, nullable=True)
+    class_id = Optional(int, nullable=True)
+    created_date = Optional(datetime, nullable=True)
+    updated_date = Optional(datetime, nullable=True)
+
+    def to_model(self):
+        item = UserChat()
+        item.id = self.id
+        item.user_id = self.user_id
+        item.user_name = self.user_name
         item.class_id = self.class_id
         item.created_date = self.created_date
         item.updated_date = self.updated_date

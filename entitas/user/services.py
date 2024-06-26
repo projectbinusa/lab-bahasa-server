@@ -97,8 +97,6 @@ def update_password_user_db(json_object={}):
 
 def insert_user_db(json_object={}, picture=None, bank_book_photo=None, id_card=None):
     print(json_object, picture)
-    # if "picture" not in json_object:
-    #     json_object["picture"] = ''
     temp_picture = str(uuid.uuid4()) + picture.filename.replace(" ", "")
     temp_bank = str(uuid.uuid4()) + bank_book_photo.filename.replace(" ", "")
     temp_card = str(uuid.uuid4()) + id_card.filename.replace(" ", "")
@@ -495,8 +493,7 @@ def request_password_reset(email):
     if not token:
         raise ValueError('Email tidak ditemukan')
 
-    # reset_link = f"http://127.0.0.1:9701/reset-password?token={token}&email={email}"
-    reset_link = f"{token} ini adalah kode untuk mengganti password baru, kode tersebut akan kadaluarwa setelah 15 menit. Verify Code terlebih dahulu agar bisa melakukan reset password berikut link untuk verify code http://localhost:3000/verify-code"
+    reset_link = f"{token} ini adalah kode untuk mengganti password baru, kode tersebut akan kadaluarsa setelah 15 menit. Verify Code terlebih dahulu agar bisa melakukan reset password berikut link untuk verify code http://localhost:3000/verify-code"
     body = f"Click the link to reset your password: {reset_link}"
     try:
         mail_service.send_email(

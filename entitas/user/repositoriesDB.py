@@ -4,7 +4,6 @@ import errno
 import json
 import uuid
 from uuid import uuid4
-from datetime import datetime
 
 import pandas as pd
 from openpyxl.workbook import Workbook
@@ -877,8 +876,6 @@ def find_last_client_id():
 
 
 import random
-
-
 @db_session
 def create_password_reset_token(email):
     user = UserDB.get(email=email)
@@ -887,7 +884,7 @@ def create_password_reset_token(email):
         return None
     code = str(random.randint(100000, 999999))
     user.reset_code = code
-    user.code_expiry = datetime.datetime.now() + datetime.timedelta(minutes=60)
+    user.code_expiry = datetime.datetime.now() + datetime.timedelta(minutes=15)  # Konsistensi dengan pesan email
     commit()
     return code
 
@@ -912,14 +909,6 @@ def reset_password(email, code, new_password):
     user.code_expiry = None
     commit()
     return user.to_model()
-
-
-@db_session
-def verify_reset_code(email, code):
-    user = UserDB.get(email=email, reset_code=code)
-    if user and user.code_expiry > datetime.datetime.now():
-        return True
-    return False
 
 
 @db_session
@@ -1054,9 +1043,8 @@ def student_post_login(json_object={}):
         account_db = UserDB.get(email=email, password=password)
 
     if account_db is not None:
-        # Update token dan last_login
         account_db.token = str(uuid4())
-        account_db.last_login = datetime.now()
+        account_db.last_login = datetime.datetime.now()
         commit()
         return account_db.to_model()
 
