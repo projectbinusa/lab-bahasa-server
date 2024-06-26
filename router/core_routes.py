@@ -6,6 +6,8 @@ from entitas.message_chat.resources import *
 from entitas.chat.resources import *
 from entitas.group.resources import *
 from entitas.anggota_group.resources import *
+from entitas.user_chat.resources import UserChatResources, UserChatWithIdResources
+
 
 def core_routes(api):
     api.add_route("/api/echo", EchoResource())
@@ -24,6 +26,8 @@ def core_routes(api):
     api.add_route('/api/message_chat', MessageChatResource())
     api.add_route('/api/message_chat/{message_chat_id}', MessageChatWithIdResource())
     api.add_route('/api/class/{class_id}/group', GroupResources())
+    api.add_route('/api/class/{class_id}/user_chat', UserChatResources())
+    api.add_route('/api/class/{class_id}/user_chat/{user_chat_id}', UserChatWithIdResources())
     api.add_route('/api/group/{group_id}/class/{class_id}', GroupWithIdResources())
     api.add_route('/api/anggota_group/{group_id}/class/{class_id}', AnggotaGroupResources())
     api.add_route('/api/delete_anggota_group/{anggota_group_id}/class/{class_id}', AnggotaGroupWithIdResources())
