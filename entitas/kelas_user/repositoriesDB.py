@@ -1,5 +1,6 @@
 # from falcon.app import req
 import csv
+import uuid
 
 from pony.orm import *
 from database.schema import KelasUserDB
@@ -193,8 +194,10 @@ def delete_by_id(id=None):
 def insert(json_object={}, to_model=False):
     try:
         print("kelas user ==> ", json_object)
+        json_object["kode_ruang"] = str(uuid.uuid4())
         new_kelas_user = KelasUserDB(
             name=json_object["name"],
+            kode_ruang=json_object["kode_ruang"],
             description=json_object["description"],
             file=json_object["file"],
             is_active=json_object["is_active"]

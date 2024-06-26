@@ -410,12 +410,15 @@ def insert_manage_name_list_db(json_object={}):
 #     return repositoriesDB.import_users_from_csv(file_path=file_path)
 
 def create_profile_manage_student_list_service(class_id=0, json_object={}):
-    kelas_user = repositoriesDB.find_by_user_id_and_class_id(class_id=class_id)
+    print("kelas in service => ", class_id)
+    kelas_user = find_kelas_user_db_by_id(id=class_id, to_model=True)
     client = repositoriesDB.generate_new_client_id()
 
-    if kelas_user is not None:
-        repositoriesDB.update_delete_by_id(id=kelas_user.id, is_deleted=False)
-        return True
+    # if kelas_user is not None:
+    #     repositoriesDB.update_delete_by_id(id=kelas_user.id, is_deleted=False)
+    #     return True
+    if kelas_user is None:
+        raise_error(msg="kelas not found")
 
     json_object['class_id'] = class_id
     json_object['role'] = "student"
@@ -425,8 +428,9 @@ def create_profile_manage_student_list_service(class_id=0, json_object={}):
     json_object['password'] = json_object.get('password', '')  # Plain text password
     json_object['password_prompt'] = json_object.get('password_prompt', '')  # Plain text password prompt
 
-    insert_manage_name_list_db(json_object=json_object)
+    create_profile_manage_student_list(class_id=class_id, json_object=json_object)
     return True
+
 
 
 # def create_profile_manage_student_list_service(json_object={}):
@@ -536,11 +540,11 @@ def export_users(file_path='management_name_list.csv', id=0):
     return export_management_name_list(file_path=file_path)
 
 
-def import_users(file_path='management_name_list.csv', id=0):
+def import_users(file_path='management_name_list.xlsx', id=0):
     user = find_kelas_user_db_by_id(id=id)
     if user is None:
         raise_error("class not found")
-    return import_users_from_csv(file_path=file_path)
+    return import_users_from_xlsx(file_path=file_path)
 
 def student_login_db(json_object={}, domain=""):
     account_info = repositoriesDB.student_post_login(json_object=json_object)

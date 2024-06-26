@@ -339,10 +339,11 @@ class ManagementListResource:
     #     print("di resources ==> ", class_id)
     #     resouce_response_api(resp=resp,
     #                          data=services.create_profile_manage_student_list_service(class_id, json_object=req.media))
-    def on_post(self, req, resp, class_id):
+    def on_post(self, req, resp, class_id=int):
+        print("class in resources => ", class_id)
         resouce_response_api(resp=resp,
-                             data=services.create_profile_manage_student_list_service(class_id, json_object=req.media))
-
+                             data=services.create_profile_manage_student_list_service(class_id=class_id,
+                                                                                      json_object=req.media))
 
 class ManagementListWithByIdResources:
     # auth = {
@@ -450,7 +451,7 @@ class ExportManagementList:
 class ImportManagementNameList:
     def on_post(self, req, resp, class_id: int):
         uploaded_file = req.get_param('file')
-        if uploaded_file.filename.endswith('.csv'):
+        if uploaded_file.filename.endswith('.xlsx'):
             file_path = "tmp/" + uploaded_file.filename
             with open(file_path, 'wb') as f:
                 f.write(uploaded_file.file.read())
@@ -458,9 +459,9 @@ class ImportManagementNameList:
             if success:
                 resp.media = {"message": "Import successful"}
             else:
-                resp.media = {"error": "Only CSV files are allowed for import"}
-            # else:
-            #     resp.media = {"error": error}
+                resp.media = {"error": "Only XLSX files are allowed for import"}
+        else:
+            resp.media = {"error": "Only XLSX files are allowed for import"}
 
 
 class StudentLoginResource:

@@ -20,13 +20,13 @@ class KelasUserResource:
         description = req.get_param('description')
         name = req.get_param('name')
         is_active = req.get_param('is_active')
-        body = {}
-        body["description"] = description
-        body["name"] = name
-        body["is_active"] = is_active
+        body = {
+            "description": description,
+            "name": name,
+            "is_active": is_active
+        }
         # body['user_id'] = req.context["user"]["id"]
         resouce_response_api(resp=resp, data=services.insert_kelas_user_db(json_object=body, file=file))
-
 
 class KelasUserWithIdResource:
     def on_get(self, req, resp, class_id: int):
@@ -70,7 +70,7 @@ class KelasUserNotActive:
 class KelasUserExportResource:
     def on_get(self, req, resp):
         try:
-            file_path = 'kelas_user.xlsx'
+            file_path = 'kelas_user.csv'
             export_kelas_user_to_excel(file_path)
             resp.status = HTTP_200
             resp.content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -86,7 +86,7 @@ class KelasUserExportResource:
 class KelasUserImportResource:
     def on_post(self, req, resp):
         uploaded_file = req.get_param('file')
-        if uploaded_file.filename.endswith('.xlsx'):
+        if uploaded_file.filename.endswith('.csv'):
             file_path = "tmp/" + uploaded_file.filename
             with open(file_path, 'wb') as f:
                 f.write(uploaded_file.file.read())
@@ -96,6 +96,6 @@ class KelasUserImportResource:
             if errors:
                 resp.media = {"errors": errors}
         else:
-            resp.media = {"error": "Only xlsx files are allowed for import"}
+            resp.media = {"error": "Only csv files are allowed for import"}
 
 

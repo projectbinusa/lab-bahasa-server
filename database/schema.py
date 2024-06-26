@@ -725,6 +725,7 @@ class KelasUserDB(db2.Entity):
     is_active = Optional(int, nullable=True)
     user_id = Optional(int, nullable=True)
     user_name = Optional(str, nullable=True)
+    kode_ruang = Optional(str, nullable=True)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -737,6 +738,7 @@ class KelasUserDB(db2.Entity):
         item.name = self.name
         item.user_id = self.user_id
         item.user_name = self.user_name
+        item.kode_ruang = self.kode_ruang
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
