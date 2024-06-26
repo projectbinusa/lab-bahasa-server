@@ -1043,7 +1043,6 @@ def student_post_login(json_object={}):
         account_db = UserDB.get(email=email, password=password)
 
     if account_db is not None:
-        # Update token dan last_login
         account_db.token = str(uuid4())
         account_db.last_login = datetime.datetime.now()
         commit()

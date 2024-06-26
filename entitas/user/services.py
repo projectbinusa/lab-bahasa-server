@@ -97,8 +97,6 @@ def update_password_user_db(json_object={}):
 
 def insert_user_db(json_object={}, picture=None, bank_book_photo=None, id_card=None):
     print(json_object, picture)
-    # if "picture" not in json_object:
-    #     json_object["picture"] = ''
     temp_picture = str(uuid.uuid4()) + picture.filename.replace(" ", "")
     temp_bank = str(uuid.uuid4()) + bank_book_photo.filename.replace(" ", "")
     temp_card = str(uuid.uuid4()) + id_card.filename.replace(" ", "")
