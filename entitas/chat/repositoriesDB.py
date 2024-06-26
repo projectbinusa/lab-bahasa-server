@@ -244,6 +244,7 @@ def insert_group_chat(group_id, json_object={}, to_model=False):
         new_chat = ChatDB(
             class_id=json_object["class_id"],
             sender_id=json_object["sender_id"],
+            sender_name=json_object["sender_name"],
             group_id=int(group_id),
             content=content,
             is_group=json_object["is_group"],
