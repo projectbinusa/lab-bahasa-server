@@ -54,6 +54,17 @@ def update_question_db(json_object={}):
 #     commit()
 #     return question.to_json()
 
+def find_question_db_by_class_id(class_id=0, response_competition_id=0, to_model=False):
+    question_by_class = repositoriesDB.find_question_by_class_id(class_id=class_id)
+    question_by_id = repositoriesDB.find_question_by_id(id=response_competition_id)
+    if question_by_class is None:
+        raise_error(msg="question not found")
+    if question_by_id is None:
+        raise_error(msg="question not found")
+    if to_model:
+        return question_by_id
+    return question_by_id.to_response()
+
 
 def submit_answer(user_id, question_id, answer, type):
     question = repositoriesDB.find_question_by_id(question_id)
