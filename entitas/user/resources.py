@@ -328,7 +328,22 @@ class ManagementListResource:
     def on_get(self, req, resp, class_id):
         filters = generate_filters_resource(req=req, params_int=['id', 'name'])
         filters.append({'field': 'class_id', 'value': class_id})
-        filters.append({'field': 'role', 'value': "student"})
+        # filters.append({'field': 'role', 'value': "student"})
+        page = int(req.get_param("page", required=False, default=1))
+        limit = int(req.get_param("limit", required=False, default=9))
+        data, pagination = services.get_list_by_class_id(
+            class_id=class_id, page=page, limit=limit, filters=filters)
+        resouce_response_api(resp=resp, data=data, pagination=pagination)
+
+
+class UserAllResources:
+    # auth = {
+    #     'auth_disabled': True
+    # }
+    def on_get(self, req, resp, class_id):
+        filters = generate_filters_resource(req=req, params_int=['id', 'name'])
+        filters.append({'field': 'class_id', 'value': class_id})
+        filters.append({'field': 'role', 'value': "instructur"})
         page = int(req.get_param("page", required=False, default=1))
         limit = int(req.get_param("limit", required=False, default=9))
         data, pagination = services.get_list_by_class_id(

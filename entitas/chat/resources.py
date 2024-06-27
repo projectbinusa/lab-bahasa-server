@@ -297,3 +297,4 @@ class ChatByClassIdAndTopicChatIdWithIdResource:
                              data=services.delete_chat_by_topic_chat_id_and_class_id(id=int(chat_id),
                                                                                      topic_chat_id=int(topic_chat_id),
                                                                                      class_id=int(class_id)))
+
