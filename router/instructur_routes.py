@@ -52,6 +52,8 @@ def instructur_routes(api):
     api.add_route("/api/instructur/schedule/{schedule_id}/logbook/{log_book_id}", LogBookWithIdResource())
     api.add_route("/api/instructur/class", KelasUserResource())
     api.add_route("/api/instructur/class/{class_id}", KelasUserWithIdResource())
+    api.add_route("/api/instructur/class/{class_id}/user", UserAllResources())
+    api.add_route("/api/instructur/class/{class_id}/response_competition/{response_competition_id}", QuestionWithIdResource())
     api.add_route("/api/instructur/class/{class_id}/management_name_list", ManagementListResource())
     # api.add_route("/api/instructur/class/{class_id}/management_name_list/{management_name_list_id}", ManagementListWithByIdResources())
     api.add_route("/api/instructur/management_name_list", UserDeleteByIds())

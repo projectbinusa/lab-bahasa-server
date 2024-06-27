@@ -29,12 +29,16 @@ class QuestionResource:
 
 
 class QuestionWithIdResource:
+    def on_get(self, req, resp, response_competition_id: int, class_id: int):
+        resouce_response_api(resp=resp, data=services.find_question_by_class_id_db( question_id=int(response_competition_id),
+            class_id=int(class_id)))
+
     def on_put(self, req, resp, response_competition_id: int):
         body = req.media
         body["id"] = int(response_competition_id)
         resouce_response_api(resp=resp, data=services.update_question_db(json_object=body))
 
-    def on_post(self, req, resp, response_competition_id: int):
+    def on_post(self, req, resp, class_id: int, response_competition_id: int):
         body = req.media
         body["id"] = int(response_competition_id)
         body["updated_date"] = datetime.now()
@@ -43,12 +47,6 @@ class QuestionWithIdResource:
     def on_delete(self, req, resp, response_competition_id: int):
         resouce_response_api(resp=resp, data=services.delete_question_by_id(id=int(response_competition_id)))
 
-    def on_get(self, req, resp, class_id: int, response_competition_id: int):
-        question = services.find_question_db_by_class_id(
-            class_id=int(class_id),
-            response_competition_id=int(response_competition_id),
-        )
-        resouce_response_api(resp=resp, data=question)
 
 
 class StartCompetitionResource:

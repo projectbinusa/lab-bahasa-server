@@ -6,6 +6,8 @@ from entitas.message_chat.resources import *
 from entitas.chat.resources import *
 from entitas.group.resources import *
 from entitas.anggota_group.resources import *
+from entitas.user_chat.resources import UserChatResources, UserChatWithIdResources
+
 
 def core_routes(api):
     api.add_route("/api/echo", EchoResource())
@@ -19,11 +21,13 @@ def core_routes(api):
     api.add_route('/api/reset-password', ResetPasswordResource())
     api.add_route('/api/chat/class/{class_id}', ChatResource())
     # api.add_route('/api/chat/class/{class_id}/group/{group_id}', ChatGroupResource())
-    api.add_route('/api/chat/class/{class_id}/receiver/{receiver_id}', ChatByClassIdAndSenderIdAndReceiverId())
+    # api.add_route('/api/chat/class/{class_id}/receiver/{receiver_id}', ChatByClassIdAndSenderIdAndReceiverId())
     api.add_route('/api/chat/{chat_id}/class/{class_id}', ChatWithIdResource())
     api.add_route('/api/message_chat', MessageChatResource())
     api.add_route('/api/message_chat/{message_chat_id}', MessageChatWithIdResource())
     api.add_route('/api/class/{class_id}/group', GroupResources())
+    api.add_route('/api/class/{class_id}/user_chat', UserChatResources())
+    api.add_route('/api/class/{class_id}/user_chat/{user_chat_id}', UserChatWithIdResources())
     api.add_route('/api/group/{group_id}/class/{class_id}', GroupWithIdResources())
     api.add_route('/api/anggota_group/{group_id}/class/{class_id}', AnggotaGroupResources())
     api.add_route('/api/delete_anggota_group/{anggota_group_id}/class/{class_id}', AnggotaGroupWithIdResources())
@@ -37,7 +41,7 @@ def core_routes(api):
     api.add_route('/api/chat/class/{class_id}/group/{group_id}', ChatByClassIdAndGroupIdResource())
     api.add_route('/api/chat/chat/{chat_id}/class/{class_id}/group/{group_id}', ChatByClassIdAndGroupIdWithIdResource())
     api.add_route('/api/chat/{chat_id}/class-id/{class_id}/group-id{group_id}', ChatByClassIdAndByGroupIdResource())
-    api.add_route('/api/chat/class-id/{class_id}/receiver-id/{receiver_id}', ChatByClassIdAndByReceiverIdResource())
+    api.add_route('/api/chat/class/{class_id}/receiver/{receiver_id}', ChatByClassIdAndByReceiverIdResource())
     api.add_route('/api/chat/chat/{chat_id}/class/{class_id}/receiver/{receiver_id}', ChatByClassIdAndReceiverIdWithIdResource())
     api.add_route('/api/chat/update/{chat_id}/class/{class_id}/topic_chat/{topic_chat_id}', ChatByClassIdAndTopicChatIdWithIdResource())
     api.add_route('/api/chat/delete/{chat_id}/class/{class_id}/topic_chat/{topic_chat_id}', ChatByClassIdAndTopicChatIdWithIdResource())
