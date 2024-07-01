@@ -7,8 +7,8 @@ def create_user_chat_by_class_id(class_id, json_object={}, to_model=False):
     try:
         new_user_chat = UserChatDB(
             class_id=class_id,
-            user_id=json_object["user_id"],
-            user_name=json_object["user_name"],
+            user_chat_id=json_object["user_chat_id"],
+            user_chat_name=json_object["user_chat_name"],
         )
         commit()
         if to_model:
@@ -29,10 +29,10 @@ def get_all_with_pagination_by_class_id(class_id, page=1, limit=9, filters=[], t
         for item in filters:
             if item["field"] == "id":
                 data_in_db = data_in_db.filter(id=item["value"])
-            elif item["field"] == "user_id":
-                data_in_db = data_in_db.filter(lambda d: item["value"] in d.user_id)
-            elif item["field"] == "user_name":
-                data_in_db = data_in_db.filter(lambda d: item["value"] in d.user_name)
+            elif item["field"] == "user_chat_id":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.user_chat_id)
+            elif item["field"] == "user_chat_name":
+                data_in_db = data_in_db.filter(lambda d: item["value"] in d.user_chat_name)
 
         total_record = data_in_db.count()
         if limit > 0:
@@ -58,10 +58,10 @@ def get_all_with_pagination_by_class_id(class_id, page=1, limit=9, filters=[], t
 def update_user_chat_chat(class_id=None, json_object=None, to_model=False):
     try:
         updated_user_chat = UserChatDB.get(id=json_object["id"], class_id=class_id)
-        if "user_id" in json_object:
-            updated_user_chat.name = json_object["user_id"]
-        if "user_name" in json_object:
-            updated_user_chat.name = json_object["user_name"]
+        if "user_chat_id" in json_object:
+            updated_user_chat.name = json_object["user_chat_id"]
+        if "user_chat_name" in json_object:
+            updated_user_chat.name = json_object["user_chat_name"]
 
         commit()
 
