@@ -3,14 +3,16 @@ class UserChat:
             self,
             id=0,
             user_id='',
-            user_name='',
+            user_chat_id='',
+            user_chat_name='',
             class_id=0,
             created_date=None,
             updated_date=None,
     ):
         self.id = id
         self.user_id = user_id
-        self.user_name = user_name
+        self.user_chat_id = user_chat_id
+        self.user_chat_name = user_chat_name
         self.class_id = class_id
         self.created_date = created_date
         self.updated_date = updated_date
@@ -19,8 +21,9 @@ class UserChat:
         return {
             "id": self.id,
             "user_id": self.user_id,
+            "user_chat_id": self.user_chat_id,
             "class_id": self.class_id,
-            "user_name": self.user_name,
+            "user_chat_name": self.user_chat_name,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None
         }
@@ -29,7 +32,8 @@ class UserChat:
         return {
             "id": self.id,
             "user_id": self.user_id,
-            "user_name": self.user_name,
+            "user_chat_id": self.user_chat_id,
+            "user_chat_name": self.user_chat_name,
             "class_id": self.class_id,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None

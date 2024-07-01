@@ -1,5 +1,5 @@
 import csv
-import datetime
+from datetime import datetime
 import errno
 import json
 import uuid
@@ -430,7 +430,7 @@ def post_login(json_object={}):
 
     if account_db is not None:
         account_db.token = str(uuid.uuid4())
-        account_db.last_login = datetime.datetime.now()
+        account_db.last_login = datetime.now()
         commit()
         return account_db.to_model()
 
@@ -809,8 +809,7 @@ def update_profile_manage_student_list(json_object=None, to_model=False):
         return
 
 
-
-
+@db_session
 def create_profile_manage_student_list(class_id, json_object={}, to_model=False):
     try:
         new_user = UserDB(
@@ -876,6 +875,8 @@ def find_last_client_id():
 
 
 import random
+
+
 @db_session
 def create_password_reset_token(email):
     user = UserDB.get(email=email)
@@ -1044,9 +1045,8 @@ def student_post_login(json_object={}):
 
     if account_db is not None:
         account_db.token = str(uuid4())
-        account_db.last_login = datetime.datetime.now()
+        account_db.last_login = datetime.now()
         commit()
         return account_db.to_model()
 
     return None
-
