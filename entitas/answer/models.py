@@ -6,6 +6,7 @@ class Answer:
             answer='',
             score='',
             user_id=0,
+            user_name=0,
             answer_time_user='',
             class_id=0,
             # created_date=None,
@@ -15,6 +16,7 @@ class Answer:
         self.question_id = question_id
         self.answer = answer
         self.user_id = user_id
+        self.user_name = user_name
         self.score = score
         self.answer_time_user = answer_time_user
         self.class_id = class_id
@@ -27,6 +29,7 @@ class Answer:
             "question_id": self.question_id,
             "answer": self.answer,
             "user_id": self.user_id,
+            "user_name": self.user_name,
             "score": self.score,
             "answer_time_user": str(self.answer_time_user),
             "class_id": self.class_id,
@@ -40,6 +43,7 @@ class Answer:
             "question_id": self.question_id,
             "answer": self.answer,
             "user_id": self.user_id,
+            "user_name": self.user_name,
             "score": self.score,
             "answer_time_user": str(self.answer_time_user),
             "class_id": self.class_id,
