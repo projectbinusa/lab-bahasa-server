@@ -107,7 +107,7 @@ def create_whiteboard_service(class_id, user_ids, json_object):
 
     return True
 
-    return results
+    # return results
 
 
 def delete_whiteboard_db_by_id(id=0):

@@ -205,6 +205,7 @@ class ChatByClassIdAndByGroupIdResource:
 
 class ChatByClassIdAndByReceiverIdResource:
     def on_get(self, req, resp, class_id: int, receiver_id: int):
+        print("class in resources => ", class_id)
         filters = generate_filters_resource(req=req, params_int=['id'], params_string=['content'])
         filters.append({'field': 'class_id', 'value': class_id})
         filters.append({'field': 'receiver_id', 'value': receiver_id})
