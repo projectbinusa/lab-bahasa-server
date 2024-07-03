@@ -30,8 +30,9 @@ class QuestionResource:
 
 class QuestionWithIdResource:
     def on_get(self, req, resp, response_competition_id: int, class_id: int):
-        resouce_response_api(resp=resp, data=services.find_question_by_class_id_db( question_id=int(response_competition_id),
+        resouce_response_api(resp=resp, data=services.find_question_db_by_class_id(response_competition_id=int(response_competition_id),
             class_id=int(class_id)))
+
 
     def on_put(self, req, resp, response_competition_id: int):
         body = req.media

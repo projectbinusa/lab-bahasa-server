@@ -8,7 +8,7 @@ def create_user_chat_by_class_id(class_id, json_object={}, to_model=False):
         new_user_chat = UserChatDB(
             class_id=class_id,
             user_id=json_object["user_id"],
-            user_name=json_object["user_name"],
+            user_chat_name=json_object["user_chat_name"],
         )
         commit()
         if to_model:
