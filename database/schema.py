@@ -943,6 +943,7 @@ class UserChatDB(db2.Entity):
     _table_ = "user_chat"
     id = PrimaryKey(int, auto=True)
     user_id = Optional(int, nullable=True)
+    user_chat_id = Optional(int, nullable=True)
     user_chat_name = Optional(str, nullable=True)
     class_id = Optional(int, nullable=True)
     created_date = Optional(datetime, nullable=True)
@@ -952,6 +953,7 @@ class UserChatDB(db2.Entity):
         item = UserChat()
         item.id = self.id
         item.user_id = self.user_id
+        item.user_chat_id = self.user_chat_id
         item.user_chat_name = self.user_chat_name
         item.class_id = self.class_id
         item.created_date = self.created_date

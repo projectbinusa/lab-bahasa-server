@@ -5,7 +5,8 @@ from entitas.chat import repositoriesDB
 from entitas.group.repositoriesDB import find_by_group_id_and_class_id
 from entitas.kelas_user.repositoriesDB import find_by_id
 from entitas.topic_chat.repositoriesDB import find_by_topic_chat_id_and_class_id
-from entitas.user.repositoriesDB import find_by_id as find_user_by_id, find_instructur_by_class_id
+from entitas.user.repositoriesDB import find_by_id as find_user_by_id, find_instructur_by_class_id, \
+    find_by_user_id_and_class_id
 from config.config import CHAT_FOLDER, DOMAIN_FILE_URL
 from entitas.topic_chat import services
 from entitas.user_chat.repositoriesDB import find_by_user_chat_id_and_class_id
@@ -127,10 +128,10 @@ def delete_chat_by_id(id=0, class_id=0, receiver_id=0):
     return repositoriesDB.delete_chat_by_id_and_by_class_id(id, class_id)
 
 
-def insert_message_service(class_id, json_object={}, gambar=None):
+def insert_message_service(class_id, receiver_id, json_object={}, gambar=None):
     try:
         kelas = find_by_id(id=class_id)
-        receiver = find_instructur_by_class_id(class_id=class_id)
+        receiver = find_by_user_id_and_class_id(id=receiver_id, class_id=class_id)
 
         if kelas is None:
             raise_error(msg="kelas not found")
@@ -244,12 +245,12 @@ def insert_message_group_service_by_receiver_id(class_id, receiver_id=0, json_ob
     print("receiverid di services >", receiver_id)
 
     # Find the class and group by their IDs
-    kelas = find_by_id(id=class_id)  # Ubah nama fungsi di sini
-    receiver = find_by_user_chat_id_and_class_id(id=receiver_id, class_id=class_id)  # Ubah nama fungsi di sini
+    # kelas = find_by_id(id=class_id)  # Ubah nama fungsi di sini
+    receiver = find_by_user_id_and_class_id(id=receiver_id, class_id=class_id)
 
     # Error handling if class or group is not found
-    if kelas is None:
-        raise_error(msg="kelas not found")
+    # if kelas is None:
+    #     raise_error(msg="kelas not found")
     if receiver is None:
         raise_error(msg="receiver not found")
 
@@ -289,12 +290,13 @@ def update_chat_by_receiver_id_and_class_id(class_id, receiver_id, gambar=None, 
 
 def get_chat_db_with_pagination_by_receiver_id_and_class_id(class_id=0, receiver_id=0, page=1, limit=9, filters=[],
                                                             to_model=False):
-    kelas = repositoriesDB.get_by_class_id(class_id=class_id)
-    user = find_by_user_chat_id_and_class_id(id=receiver_id, class_id=class_id)
-    if kelas is None:
-        raise_error(msg="class id not found")
+    print("class_id in service==>", class_id)
+    # kelas = (class_id=class_id)
+    user = find_by_user_id_and_class_id(id=receiver_id, class_id=class_id)
+    # if kelas is None:
+    #     raise_error(msg="class id not found")
     if user is None:
-        raise_error(msg="receiver_id id not found")
+        raise_error(msg="receiver_id or class_id not found")
     return repositoriesDB.get_all_with_pagination_by_class_id_and_receiver_id(
         class_id=class_id, receiver_id=receiver_id, page=page, limit=limit, filters=filters, order_by="-created_date",
         to_model=to_model
