@@ -84,6 +84,7 @@ def find_white_board_db_by_id_and_class_id(class_id=0, to_model=False):
 
 
 def create_whiteboard_service(class_id, user_ids, json_object):
+    print("json object ==> ", json_object)
     if not isinstance(user_ids, list):
         raise ValueError("user_ids must be a list")
 
@@ -98,7 +99,7 @@ def create_whiteboard_service(class_id, user_ids, json_object):
         if kelas_user is not None:
             repositoriesDB.update_delete_by_id(id=kelas_user.id, is_deleted=False)
         else:
-            user_id = user.id  # Ensure user_id is correctly set
+            user_id = user.id
 
         json_object['class_id'] = class_id
         json_object['user_id'] = user_id

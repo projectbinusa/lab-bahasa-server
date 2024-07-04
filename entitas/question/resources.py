@@ -33,6 +33,7 @@ class QuestionWithIdResource:
         resouce_response_api(resp=resp, data=services.find_question_db_by_class_id( response_competition_id=int(response_competition_id),
             class_id=int(class_id)))
 
+
     def on_put(self, req, resp, response_competition_id: int):
         body = req.media
         body["id"] = int(response_competition_id)

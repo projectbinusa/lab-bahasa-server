@@ -423,7 +423,7 @@ def create_profile_manage_student_list_service(class_id=0, json_object={}):
     json_object['client_id'] = client
 
     # Remove encryption before saving
-    json_object['password'] = json_object.get('password', '')  # Plain text password
+    json_object['password'] = json_object.get('password', '')
     json_object['password_prompt'] = json_object.get('password_prompt', '')  # Plain text password prompt
 
     create_profile_manage_student_list(class_id=class_id, json_object=json_object)

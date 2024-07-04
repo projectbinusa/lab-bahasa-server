@@ -2,6 +2,7 @@ import uuid
 
 from config.config import LOG_BOOK_FOLDER, DOMAIN_FILE_URL
 from entitas.kelas_user import repositoriesDB
+from entitas.kelas_user.repositoriesDB import import_kelas_from_xlsx
 from entitas.user.services import find_user_db_by_id
 from util.excel_util import import_from_excel, export_to_excel
 from util.other_util import raise_error
@@ -84,8 +85,11 @@ def export_kelas_user_to_excel(file_path):
     return file_path
 
 
-def import_kelas_user_from_excel(file_path):
-    data = import_from_excel(file_path)
-    for item in data:
-        repositoriesDB.insert(json_object=item)
-    return len(data)
+# def import_kelas_user_from_excel(file_path):
+#     data = import_from_excel(file_path)
+#     for item in data:
+#         repositoriesDB.insert(json_object=item)
+#     return len(data)
+
+def import_kelas_user_from_excel(file_path='kelas_list.xlsx'):
+    return import_kelas_from_xlsx(file_path=file_path)

@@ -3,6 +3,7 @@ import os
 from falcon import *
 
 from entitas.kelas_user import services
+from entitas.kelas_user.repositoriesDB import export_class
 from entitas.kelas_user.services import *
 from util.entitas_util import generate_filters_resource, resouce_response_api
 
@@ -68,34 +69,61 @@ class KelasUserNotActive:
 
 
 class KelasUserExportResource:
+    # def on_get(self, req, resp):
+    #     try:
+    #         file_path = 'kelas_user.csv'
+    #         export_kelas_user_to_excel(file_path)
+    #         resp.status = HTTP_200
+    #         resp.content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    #         resp.downloadable_as = file_path
+    #         with open(file_path, 'rb') as f:
+    #             resp.body = f.read()
+    #         os.remove(file_path)
+    #     except Exception as e:
+    #         resp.status = HTTP_500
+    #         resp.media = {'error': str(e)}
     def on_get(self, req, resp):
         try:
-            file_path = 'kelas_user.csv'
-            export_kelas_user_to_excel(file_path)
-            resp.status = HTTP_200
-            resp.content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-            resp.downloadable_as = file_path
-            with open(file_path, 'rb') as f:
-                resp.body = f.read()
-            os.remove(file_path)
+            success, error, file_path = export_class()
+
+            if success:
+                resp.content_type = 'application/octet-stream'
+                resp.downloadable_as = 'kelas_list.xlsx'
+                with open(file_path, 'rb') as f:
+                    resp.body = f.read()
+                os.remove(file_path)
+            else:
+                resouce_response_api(resp=resp, data={"error": error})
+
         except Exception as e:
-            resp.status = HTTP_500
-            resp.media = {'error': str(e)}
+            resouce_response_api(resp=resp, data={"error": str(e)})
 
 
 class KelasUserImportResource:
+    # def on_post(self, req, resp):
+    #     uploaded_file = req.get_param('file')
+    #     if uploaded_file.filename.endswith('.csv'):
+    #         file_path = "tmp/" + uploaded_file.filename
+    #         with open(file_path, 'wb') as f:
+    #             f.write(uploaded_file.file.read())
+    #         success, errors = services.import_kelas_user_from_excel(file_path)
+    #         if success:
+    #             resp.media = {"message": "Import successful"}
+    #         if errors:
+    #             resp.media = {"errors": errors}
+    #     else:
+    #         resp.media = {"error": "Only csv files are allowed for import"}
+
     def on_post(self, req, resp):
         uploaded_file = req.get_param('file')
-        if uploaded_file.filename.endswith('.csv'):
+        if uploaded_file.filename.endswith('.xlsx'):
             file_path = "tmp/" + uploaded_file.filename
             with open(file_path, 'wb') as f:
                 f.write(uploaded_file.file.read())
-            success, errors = services.import_kelas_user_from_excel(file_path)
+            success = services.import_kelas_user_from_excel(file_path)
             if success:
-                resp.media = {"message": "Import successful"}
-            if errors:
-                resp.media = {"errors": errors}
+                resp.media = {"message": "Import successful", "data": success}
+            else:
+                resp.media = {"error": "Failed to import data from XLSX"}
         else:
-            resp.media = {"error": "Only csv files are allowed for import"}
-
-
+            resp.media = {"error": "Only XLSX files are allowed for import"}
