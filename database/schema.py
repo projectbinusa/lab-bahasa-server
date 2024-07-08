@@ -13,6 +13,7 @@ from entitas.assignment_user.models import Assignment_User
 from entitas.certificate.models import Certificate
 from entitas.comment.models import Comment
 from entitas.instructur.models import Instructur
+from entitas.multiple_choice_questions.models import MultipleChoiceQuestions
 from entitas.notification.models import Notification
 from entitas.pathway.models import Pathway
 from entitas.pathway_user.models import Pathway_User
@@ -775,6 +776,8 @@ class QuestionDB(db2.Entity):
     user_id = Optional(int, nullable=True)
     user_name = Optional(str, nullable=True)
     type = Optional(str, nullable=True)
+    options = Required(Json)
+    correct_answer = Required(int)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
@@ -782,10 +785,14 @@ class QuestionDB(db2.Entity):
         item = Question()
         item.id = self.id
         item.name = self.name
+        item.user_id = self.user_id
+        item.user_name = self.user_name
         item.think_time = self.think_time
         item.answer_time = self.answer_time
         item.class_id = self.class_id
         item.type = self.type
+        item.options = self.options
+        item.correct_answer = self.correct_answer
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
@@ -1001,6 +1008,30 @@ class AnggotaTopicChatDB(db2.Entity):
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
+
+
+class MultipleChoiceQuestionsDB(db2.Entity):
+    _table_ = "multiple_choice_questions"
+    id = PrimaryKey(int, auto=True)
+    user_id = Optional(int, nullable=True)
+    user_name = Optional(str, nullable=True)
+    class_id = Optional(int, nullable=True)
+    chosen = Optional(int, nullable=True)
+    question_text = Required(str)
+    options = Required(Json)
+    correct_answer = Required(int)
+
+    def to_model(self):
+        return MultipleChoiceQuestions(
+            id=self.id,
+            user_id=self.user_id,
+            user_name=self.user_name,
+            chosen=self.chosen,
+            class_id=self.class_id,
+            question_text=self.question_text,
+            options=self.options,
+            correct_answer=self.correct_answer
+        )
 
 
 if db2.schema is None:

@@ -1,3 +1,5 @@
+from entitas.multiple_choice_questions.resources import MultipleChoiceQuestionsResources, \
+    MultipleChoiceQuestionsWithByIdResources
 from entitas.schedule.resources import *
 from entitas.schedule_user.resources import *
 from entitas.material.resources import *
@@ -79,3 +81,5 @@ def instructur_routes(api):
     api.add_route("/api/instructur/class_not_active/{class_id}", KelasUserNotActive())
     api.add_route('/api/instructur/class/export', KelasUserExportResource())
     api.add_route('/api/instructur/class/import', KelasUserImportResource())
+    api.add_route("/api/instructur/class/{class_id}/multiple_choice_questions", MultipleChoiceQuestionsResources())
+    api.add_route("/api/instructur/class/{class_id}/multiple_choice_questions/{multiple_questions}", MultipleChoiceQuestionsWithByIdResources())

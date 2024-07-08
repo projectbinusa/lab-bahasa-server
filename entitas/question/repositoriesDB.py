@@ -58,16 +58,9 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
 @db_session
 def insert(json_object={}, to_model=False):
     try:
-        # think_time_str = json_object["think_time"]
-        # think_time = datetime.strptime(think_time_str, '%H:%M:%S').time()
-        # think_time_delta = timedelta(hours=think_time.hour, minutes=think_time.minute, seconds=think_time.second)
-        #
-        # answer_time_str = json_object.get("answer_time", "00:00:00")  # Default to "00:00:00" if not provided
-        # answer_time = datetime.strptime(answer_time_str, '%H:%M:%S').time()
-        # answer_time_delta = timedelta(hours=answer_time.hour, minutes=answer_time.minute, seconds=answer_time.second)
-
         new_question = QuestionDB(
             name=json_object["name"],
+            questions=json_object["questions"],
             class_id=json_object["class_id"],
             user_id=json_object["user_id"],
             user_name=json_object["user_name"],
@@ -85,6 +78,65 @@ def insert(json_object={}, to_model=False):
     return
 
 
+@db_session
+def insert_multiple_choice_questions(questions_list=[], to_model=False):
+    try:
+        new_questions = []
+        for json_object in questions_list:
+            new_question = QuestionDB(
+                name=json_object["name"],
+                options=json_object["options"],
+                correct_answer=json_object["correct_answer"],
+                class_id=json_object["class_id"],
+                user_id=json_object["user_id"],
+                user_name=json_object["user_name"],
+                type=json_object["type"],
+                think_time=json_object["think_time"],
+                answer_time=json_object["answer_time"]
+            )
+            new_questions.append(new_question)
+        commit()
+        if to_model:
+            return [question.to_model() for question in new_questions]
+        else:
+            return [question.to_model().to_json() for question in new_questions]
+    except Exception as e:
+        print("error question insert: ", e)
+    return
+
+
+
+# @db_session
+# def insert_multiple_choice_questions(questions_list=[], class_id=0, user_id=0, user_name='', type='', think_time='',
+#                                      answer_time='', to_model=False):
+#     try:
+#         question_data = []
+#         for json_object in questions_list:
+#             new_question = QuestionDB(
+#                 name=json_object["name"],
+#                 options=json_object["options"],
+#                 correct_answer=json_object["correct_answer"],
+#                 class_id=class_id,
+#                 user_id=user_id,
+#                 user_name=user_name,
+#                 type=type,
+#                 think_time=think_time,
+#                 answer_time=answer_time
+#             )
+#             question_data.append({
+#                 "name": json_object["name"],
+#                 "options": json_object["options"],
+#                 "correct_answer": json_object["correct_answer"]
+#             })
+#             question_data.append(new_question)
+#         commit()
+#         if to_model:
+#             return [question.to_model() for question in question_data]
+#         else:
+#             return [question.to_model().to_json() for question in question_data]
+#     except Exception as e:
+#         print("error question insert: ", e)
+#     return
 
 @db_session
 def update(json_object=None, to_model=False):
