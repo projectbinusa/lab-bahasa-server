@@ -28,6 +28,38 @@ class QuestionResource:
         resouce_response_api(resp=resp, data=services.insert_question_db( user_name=req.context["user"]["name"], class_id=class_id, user_id=req.context["user"]["id"], json_object=body))
 
 
+class MultipleChoiceQuestions:
+    def on_post(self, req, resp, class_id: int):
+        print(class_id)
+        body = req.media
+        user_name = req.context["user"]["name"]
+        user_id = req.context["user"]["id"]
+
+        # Validasi payload
+        if not isinstance(body, dict) or 'questions' not in body or not isinstance(body['questions'], list):
+            resouce_response_api(resp=resp, data={'error': 'Invalid payload format'})
+            return
+
+        questions_data = body['questions']
+        type = body.get("type", "")
+        think_time = body.get("think_time", "")
+        answer_time = body.get("answer_time", "")
+
+        try:
+            result = services.insert_multiple_choice_questions_db(
+                user_name=user_name,
+                class_id=class_id,
+                user_id=user_id,
+                questions_data=questions_data,
+                type=type,
+                think_time=think_time,
+                answer_time=answer_time
+            )
+            resouce_response_api(resp=resp, data=result)
+        except Exception as e:
+            resouce_response_api(resp=resp, data={'error': str(e)})
+
+
 class QuestionWithIdResource:
     def on_get(self, req, resp, response_competition_id: int, class_id: int):
         resouce_response_api(resp=resp, data=services.find_question_db_by_class_id( response_competition_id=int(response_competition_id),

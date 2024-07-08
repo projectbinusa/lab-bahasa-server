@@ -11,6 +11,8 @@ class Question:
             class_id=0,
             user_id=0,
             user_name='',
+            options=None,
+            correct_answer=0,
             type='',
             created_date=None,
             updated_date=None
@@ -23,6 +25,8 @@ class Question:
         self.user_id = user_id
         self.user_name = user_name
         self.type = type
+        self.options = options or []
+        self.correct_answer = correct_answer
         self.created_date = created_date
         self.updated_date = updated_date
 
@@ -44,6 +48,8 @@ class Question:
             "user_id": self.user_id,
             "user_name": self.user_name,
             "type": self.type,
+            "options": self.options,
+            "correct_answer": self.correct_answer,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None
         }
@@ -58,6 +64,8 @@ class Question:
             "user_id": self.user_id,
             "user_name": self.user_name,
             "type": self.type,
+            "options": self.options,
+            "correct_answer": self.correct_answer,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None
         }
@@ -74,6 +82,8 @@ class Question:
             "user_id": self.user_id,
             "user_name": self.user_name,
             "type": self.type,
+            "options": self.options,
+            "correct_answer": self.correct_answer,
             "created_date": str(self.created_date) if self.created_date is not None else None,
             "updated_date": str(self.updated_date) if self.updated_date is not None else None
         }
