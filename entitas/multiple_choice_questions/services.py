@@ -4,14 +4,13 @@ from entitas.multiple_choice_questions import repositoriesDB
 from util.other_util import raise_error
 
 def get_services_db_with_pagination(page=1, limit=9, filters=[], to_model=False, class_id=0):
+    print("filters => ", filters)
     kelas = find_kelas_user_db_by_id(id=class_id, to_model=True)
     if kelas is None:
         raise_error(msg="kelas not found")
     return repositoriesDB.get_all_with_pagination(
         page=page, limit=limit, filters=filters, to_model=to_model
     )
-
-
 
 def find_services_db_by_id(class_id=0, id=0, to_model=False):
     kelas = find_kelas_user_db_by_id(id=class_id, to_model=True)

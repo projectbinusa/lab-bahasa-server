@@ -1,21 +1,27 @@
 from datetime import datetime
-
 import falcon
-
 from entitas.question import services
 from util.entitas_util import generate_filters_resource, resouce_response_api
 
 
 class QuestionResource:
     def on_get(self, req, resp, class_id: int):
-        filters = generate_filters_resource(req=req, params_int=['id'], params_string=['user_name'])
+        filters = generate_filters_resource(req=req, params_int=['id'])
         page = int(req.get_param("page", required=False, default=1))
         limit = int(req.get_param("limit", required=False, default=9))
         filters.append({'field': 'class_id', 'value': class_id})
-        data, pagination = services.get_question_db_with_pagination(
-           class_id=class_id, page=page, limit=limit, filters=filters
+        print(f"Filters: {filters}, Page: {page}, Limit: {limit}")
+        data, pagination = services.get_services_db_with_pagination(
+            page=page, class_id=class_id, limit=limit, filters=filters
         )
         resouce_response_api(resp=resp, data=data, pagination=pagination)
+
+    # def handle_request_response(response):
+    #     try:
+    #         return response.json()
+    #     except json.JSONDecodeError:
+    #         print("Response is not valid JSON")
+    #         return None
 
     # def on_post(self, req, resp):
     #     resouce_response_api(resp=resp, data=services.insert_question_db(json_object=req.media))
@@ -23,41 +29,42 @@ class QuestionResource:
     def on_post(self, req, resp, class_id: int):
         print(class_id)
         body = req.media
-        # body["class_id"] = int(class_id),
-        # body["user_name"] = req.context["user"]["name"],
-        resouce_response_api(resp=resp, data=services.insert_question_db( user_name=req.context["user"]["name"], class_id=class_id, user_id=req.context["user"]["id"], json_object=body))
+        multiple_questions = body.get("name", [])
 
+        if not isinstance(multiple_questions, list):
+            raise falcon.HTTPBadRequest(description="Field 'name' harus berupa list.")
 
-class MultipleChoiceQuestions:
-    def on_post(self, req, resp, class_id: int):
-        print(class_id)
-        body = req.media
-        user_name = req.context["user"]["name"]
-        user_id = req.context["user"]["id"]
-
-        # Validasi payload
-        if not isinstance(body, dict) or 'questions' not in body or not isinstance(body['questions'], list):
-            resouce_response_api(resp=resp, data={'error': 'Invalid payload format'})
-            return
-
-        questions_data = body['questions']
-        type = body.get("type", "")
-        think_time = body.get("think_time", "")
-        answer_time = body.get("answer_time", "")
-
-        try:
-            result = services.insert_multiple_choice_questions_db(
-                user_name=user_name,
+        resouce_response_api(
+            resp=resp,
+            data=services.insert_question_db(
+                user_name=req.context["user"]["name"],
                 class_id=class_id,
-                user_id=user_id,
-                questions_data=questions_data,
-                type=type,
-                think_time=think_time,
-                answer_time=answer_time
+                user_id=req.context["user"]["id"],
+                multiple_questions=multiple_questions,
+                json_object=body
             )
-            resouce_response_api(resp=resp, data=result)
-        except Exception as e:
-            resouce_response_api(resp=resp, data={'error': str(e)})
+        )
+
+
+# class MultipleChoiceQuestions:
+#     def on_post(self, req, resp, class_id: int):
+#         print(class_id)
+#         body = req.media
+#         multiple_questions = body.get("name", [])
+#
+#         if not isinstance(multiple_questions, list):
+#             raise falcon.HTTPBadRequest(description="Field 'name' harus berupa list.")
+#
+#         resouce_response_api(
+#             resp=resp,
+#             data=services.insert_multiple_choice_questions_db(
+#                 user_name=req.context["user"]["name"],
+#                 class_id=class_id,
+#                 user_id=req.context["user"]["id"],
+#                 multiple_questions=multiple_questions,
+#                 json_object=body
+#             )
+#         )
 
 
 class QuestionWithIdResource:

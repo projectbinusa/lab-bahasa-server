@@ -5,49 +5,49 @@ from pony.orm import *
 from database.schema import QuestionDB, AnswerDB
 
 
-@db_session
-def get_all(to_model=True):
-    result = []
-    try:
-        for item in select(s for s in QuestionDB):
-            if to_model:
-                result.append(item.to_model())
-            else:
-                result.append(item.to_json())
-    except Exception as e:
-        print("error Question getAll: ", e)
-    return result
-
+# @db_session
+# def get_all(to_model=True):
+#     result = []
+#     try:
+#         for item in select(s for s in QuestionDB):
+#             if to_model:
+#                 result.append(item.to_model())
+#             else:
+#                 result.append(item.to_json())
+#     except Exception as e:
+#         print("error Question getAll: ", e)
+#     return result
 
 @db_session
 def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
     result = []
+    print("result => ", result)
     total_record = 0
     try:
-        data_in_db = select(s for s in QuestionDB).order_by(desc(QuestionDB.id))
+        class_id = next((x["value"] for x in filters if x.get("field") == "class_id"), 0)
+        print(f"Class ID: {class_id}")
+        data_in_db = select(s for s in QuestionDB if s.class_id == class_id)
         for item in filters:
+            print(f"Applying filter: {item}")
             if item["field"] == "id":
-                data_in_db = data_in_db.filter(id=item["value"])
-            elif item["field"] == "user_name":
-                data_in_db = data_in_db.filter(lambda d: item["value"] in d.user_name)
+                data_in_db = data_in_db.filter(lambda d: item["value"] == d.id)
             elif item["field"] == "class_id":
                 data_in_db = data_in_db.filter(lambda d: item["value"] == d.class_id)
-            elif item["field"] == "user_id":
-                data_in_db = data_in_db.filter(lambda d: item["value"] == d.user_id)
-
         total_record = data_in_db.count()
+        print(f"Total Records: {total_record}")
+
         if limit > 0:
             data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
-        else:
-            data_in_db = data_in_db
+
         for item in data_in_db:
             if to_model:
                 result.append(item.to_model())
+                print("test =>", result.append(item.to_model()))
             else:
                 result.append(item.to_model().to_response())
-
+                print("testttttttttttttttttt ", item.to_model().to_response())
     except Exception as e:
-        print("error Question getAllWithPagination: ", e)
+        print("error ScheduleUser getAllWithPagination: ", e)
     return result, {
         "total": total_record,
         "page": page,
@@ -60,7 +60,6 @@ def insert(json_object={}, to_model=False):
     try:
         new_question = QuestionDB(
             name=json_object["name"],
-            questions=json_object["questions"],
             class_id=json_object["class_id"],
             user_id=json_object["user_id"],
             user_name=json_object["user_name"],
@@ -78,31 +77,31 @@ def insert(json_object={}, to_model=False):
     return
 
 
-@db_session
-def insert_multiple_choice_questions(questions_list=[], to_model=False):
-    try:
-        new_questions = []
-        for json_object in questions_list:
-            new_question = QuestionDB(
-                name=json_object["name"],
-                options=json_object["options"],
-                correct_answer=json_object["correct_answer"],
-                class_id=json_object["class_id"],
-                user_id=json_object["user_id"],
-                user_name=json_object["user_name"],
-                type=json_object["type"],
-                think_time=json_object["think_time"],
-                answer_time=json_object["answer_time"]
-            )
-            new_questions.append(new_question)
-        commit()
-        if to_model:
-            return [question.to_model() for question in new_questions]
-        else:
-            return [question.to_model().to_json() for question in new_questions]
-    except Exception as e:
-        print("error question insert: ", e)
-    return
+
+# @db_session
+# def insert_multiple_choice_questions(questions_list=[], to_model=False):
+#     try:
+#         new_questions = []
+#         for json_object in questions_list:
+#             new_question = QuestionDB(
+#                 name=json_object["name"],
+#                 correct_answer=json_object["correct_answer"],
+#                 class_id=json_object["class_id"],
+#                 user_id=json_object["user_id"],
+#                 user_name=json_object["user_name"],
+#                 type=json_object["type"],
+#                 think_time=json_object["think_time"],
+#                 answer_time=json_object["answer_time"]
+#             )
+#             new_questions.append(new_question)
+#         commit()
+#         if to_model:
+#             return [question.to_model() for question in new_questions]
+#         else:
+#             return [question.to_model().to_json() for question in new_questions]
+#     except Exception as e:
+#         print("error question insert: ", e)
+#     return
 
 
 

@@ -4,6 +4,7 @@ from select import select
 
 from database.schema import QuestionDB
 from entitas.kelas_user.repositoriesDB import find_kelas_user_db_by_id, find_by_id
+from entitas.multiple_choice_questions.repositoriesDB import find_by_id_multiple_choice_question_by_class_id
 from entitas.question import repositoriesDB
 from datetime import datetime, timedelta
 
@@ -12,41 +13,29 @@ from entitas.user.repositoriesDB import find_by_user_id_and_class_id
 from util.other_util import raise_error
 
 
-def insert_question_db(user_name='', class_id=0, user_id=0, json_object={}):
+def insert_question_db(user_name='', multiple_questions=[], class_id=0, user_id=0, json_object={}):
     print(user_id)
     print(class_id)
     user = find_by_user_id_and_class_id(id=user_id, class_id=class_id)
     kelas = find_by_id(id=class_id)
+
     if user is None:
         raise_error(msg="user not found")
     if kelas is None:
         raise_error(msg="kelas not found")
+
     json_object["user_id"] = user_id
     json_object["class_id"] = class_id
     json_object["user_name"] = user_name
+    json_object["name"] = multiple_questions
+
     return repositoriesDB.insert(json_object=json_object)
 
 
-def insert_multiple_choice_questions_db(user_name='', class_id=0, user_id=0, json_object={}):
-    print(user_id)
-    print(class_id)
-    user = find_by_user_id_and_class_id(id=user_id, class_id=class_id)
-    kelas = find_by_id(id=class_id)
-    if user is None:
-        raise_error(msg="user not found")
+def get_services_db_with_pagination(page=1, limit=9, filters=[], to_model=False, class_id=0):
+    kelas = find_kelas_user_db_by_id(id=class_id, to_model=True)
     if kelas is None:
         raise_error(msg="kelas not found")
-    json_object["user_id"] = user_id
-    json_object["class_id"] = class_id
-    json_object["user_name"] = user_name
-    return repositoriesDB.insert(json_object=json_object)
-
-
-
-def get_question_db_with_pagination(page=1, limit=9, filters=[], to_model=False, class_id=0):
-    kelas = find_question_by_class_id(class_id=class_id)
-    if kelas is None:
-        raise_error(msg="class_id not found")
     return repositoriesDB.get_all_with_pagination(
         page=page, limit=limit, filters=filters, to_model=to_model
     )

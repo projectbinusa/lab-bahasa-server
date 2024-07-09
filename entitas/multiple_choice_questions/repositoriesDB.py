@@ -17,9 +17,6 @@ def get_all_with_pagination(page=1, limit=9, filters=[], to_model=False):
                 data_in_db = data_in_db.filter(lambda d: item["value"] == d.class_id)
             elif item["field"] == "question_text":
                 data_in_db = data_in_db.filter(lambda d: item["value"] in d.question_text)
-            # elif item["field"] == "instructur_id":
-            #     data_in_db = data_in_db.filter(lambda d: d.class_id != item["value"])
-
         total_record = data_in_db.count()
         if limit > 0:
             data_in_db = data_in_db.page(pagenum=page, pagesize=limit)
