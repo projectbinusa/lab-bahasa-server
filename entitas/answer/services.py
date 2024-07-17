@@ -102,10 +102,11 @@ def check_answer(json_object, answer_time_user_str):
 
 import pytz
 
-def create_answer_service(json_object={}):
+def create_answer_service(json_object={}, answer_multiple_question=[]):
     class_id = json_object['class_id']
     user_id = json_object['user_id']
     question_id = json_object['question_id']
+    json_object["answer_multiple_question"] = answer_multiple_question
 
     # Zona waktu WIB (UTC+7)
     wib = pytz.timezone('Asia/Jakarta')

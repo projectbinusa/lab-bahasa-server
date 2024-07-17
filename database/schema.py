@@ -792,7 +792,8 @@ class MultipleChoiceQuestionsDB(db2.Entity):
 class QuestionDB(db2.Entity):
     _table_ = "question"
     id = PrimaryKey(int, auto=True)
-    name = Optional(int, nullable=True)
+    name = Optional(str, nullable=True)
+    multiple_questions_id = Required(Json)
     think_time = Optional(str, nullable=True)
     answer_time = Optional(str, nullable=True)
     class_id = Optional(int, nullable=True)
@@ -806,6 +807,7 @@ class QuestionDB(db2.Entity):
         return Question(
             id=self.id,
             name=self.name,
+            multiple_questions_id=self.multiple_questions_id,
             think_time=self.think_time,
             answer_time=self.answer_time,
             class_id=self.class_id,
@@ -878,6 +880,7 @@ class AnswerDB(db2.Entity):
     id = PrimaryKey(int, auto=True)
     question_id = Optional(int, nullable=True)
     answer = Optional(str, 100000, nullable=True)
+    answer_multiple_question = Required(Json)
     user_id = Optional(int, nullable=True)
     user_name = Optional(str, nullable=True)
     answer_time_user = Optional(str, nullable=True)
@@ -891,6 +894,7 @@ class AnswerDB(db2.Entity):
         item.id = self.id
         item.question_id = self.question_id
         item.answer = self.answer
+        item.answer_multiple_question = self.answer_multiple_question
         item.user_id = self.user_id
         item.user_name = self.user_name
         item.answer_time_user = self.answer_time_user

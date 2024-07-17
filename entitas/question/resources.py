@@ -26,66 +26,95 @@ class QuestionResource:
     # def on_post(self, req, resp):
     #     resouce_response_api(resp=resp, data=services.insert_question_db(json_object=req.media))
 
+    # def on_post(self, req, resp, class_id: int):
+    #     print(class_id)
+    #     body = req.media
+    #     multiple_questions = body.get("name", [])
+    #
+    #     if not isinstance(multiple_questions, list):
+    #         raise falcon.HTTPBadRequest(description="Field 'name' harus berupa list.")
+    #
+    #     resouce_response_api(
+    #         resp=resp,
+    #         data=services.insert(
+    #             user_name=req.context["user"]["name"],
+    #             class_id=class_id,
+    #             user_id=req.context["user"]["id"],
+    #             multiple_questions=multiple_questions,
+    #             json_object=body
+    #         )
+    #     )
+    #
     def on_post(self, req, resp, class_id: int):
         print(class_id)
         body = req.media
-        multiple_questions = body.get("name", [])
-
-        if not isinstance(multiple_questions, list):
-            raise falcon.HTTPBadRequest(description="Field 'name' harus berupa list.")
 
         resouce_response_api(
             resp=resp,
-            data=services.insert_question_db(
+            data=services.insert(
                 user_name=req.context["user"]["name"],
                 class_id=class_id,
                 user_id=req.context["user"]["id"],
-                multiple_questions=multiple_questions,
                 json_object=body
             )
         )
 
 
-# class MultipleChoiceQuestions:
-#     def on_post(self, req, resp, class_id: int):
-#         print(class_id)
-#         body = req.media
-#         multiple_questions = body.get("name", [])
-#
-#         if not isinstance(multiple_questions, list):
-#             raise falcon.HTTPBadRequest(description="Field 'name' harus berupa list.")
-#
-#         resouce_response_api(
-#             resp=resp,
-#             data=services.insert_multiple_choice_questions_db(
-#                 user_name=req.context["user"]["name"],
-#                 class_id=class_id,
-#                 user_id=req.context["user"]["id"],
-#                 multiple_questions=multiple_questions,
-#                 json_object=body
-#             )
-#         )
+class MultipleChoiceQuestions:
+    def on_post(self, req, resp, class_id: int):
+        print(class_id)
+        body = req.media
+        multiple_questions = body.get("multiple_questions_id", [])
+
+        if not isinstance(multiple_questions, list):
+            raise falcon.HTTPBadRequest(description="Field 'multiple_questions_id' harus berupa list.")
+
+        resouce_response_api(
+            resp=resp,
+            data=services.insert_multiple_questions_db(
+                user_name=req.context["user"]["name"],
+                class_id=class_id,
+                user_id=req.context["user"]["id"],
+                multiple_questions_id=multiple_questions,
+                json_object=body
+            )
+        )
 
 
 class QuestionWithIdResource:
     def on_get(self, req, resp, response_competition_id: int, class_id: int):
-        resouce_response_api(resp=resp, data=services.find_question_db_by_class_id( response_competition_id=int(response_competition_id),
+        resouce_response_api(resp=resp, data=services.find_question_db_by_class_id(
+            response_competition_id=int(response_competition_id),
             class_id=int(class_id)))
 
-    def on_put(self, req, resp, response_competition_id: int):
+    def on_put(self, req, resp, response_competition_id: int, class_id=0):
         body = req.media
-        body["id"] = int(response_competition_id)
-        resouce_response_api(resp=resp, data=services.update_question_db(json_object=body))
+        multiple_questions = body.get("multiple_questions_id", [])
+        print("id => ", response_competition_id)
 
-    def on_post(self, req, resp, class_id: int, response_competition_id: int):
-        body = req.media
-        body["id"] = int(response_competition_id)
-        body["updated_date"] = datetime.now()
-        resouce_response_api(resp=resp, data=services.update_question_db(json_object=body))
+        if not isinstance(multiple_questions, list):
+            raise falcon.HTTPBadRequest(description="Field 'multiple_questions_id' harus berupa list.")
 
-    def on_delete(self, req, resp, response_competition_id: int):
-        resouce_response_api(resp=resp, data=services.delete_question_by_id(id=int(response_competition_id)))
+        resouce_response_api(
+            resp=resp,
+            data=services.update_question_db(
+                user_name=req.context["user"]["name"],
+                class_id=class_id,
+                user_id=req.context["user"]["id"],
+                multiple_questions_id=multiple_questions,
+                id=response_competition_id,
+                json_object=body
+            )
+        )
 
+    # def on_post(self, req, resp, class_id: int, response_competition_id: int):
+    #     body = req.media
+    #     body["id"] = int(response_competition_id)
+    #     body["updated_date"] = datetime.now()
+    #     resouce_response_api(resp=resp, data=services.update_question_db(json_object=body))
+
+    def on_delete(self, req, resp, response_competition_id: int, class_id=0):
+        resouce_response_api(resp=resp, data=services.delete_question_by_id(id=int(response_competition_id), class_id=class_id, user_name=req.context['user']['name'], user_id=req.context['user']['id']))
 
 
 class StartCompetitionResource:
@@ -93,6 +122,7 @@ class StartCompetitionResource:
         json_object = req.media
         json_object["class_id"] = class_id
         resouce_response_api(resp=resp, data=services.start_competition(json_object=json_object))
+
 
 class QuestionByClassIdAndUserIdResource:
     def on_get(self, req, resp, class_id):
@@ -115,7 +145,6 @@ class QuestionByClassIdAndUserIdResource:
         #         raise falcon.HTTPBadRequest('Bad Request', 'All fields are required')
         #     competition = start_competition(class_id, question_type, think_time, answer_time)
         #     resp.media = {'competition': competition}
-
 
 # class FirstToAnswerResource:
 #     def on_post(self, req, resp, class_id):

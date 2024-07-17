@@ -2,7 +2,8 @@ class Question:
     def __init__(
             self,
             id=0,
-            name=None,
+            name='',
+            multiple_questions_id=None,
             think_time='',
             answer_time='',
             class_id=0,
@@ -13,7 +14,8 @@ class Question:
             updated_date=None
     ):
         self.id = id
-        self.name = name or []
+        self.name = name
+        self.multiple_questions_id = multiple_questions_id or []
         self.think_time = think_time
         self.answer_time = answer_time
         self.class_id = class_id
@@ -27,6 +29,7 @@ class Question:
         return {
             "id": self.id,
             "name": self.name,
+            "multiple_questions_id": self.multiple_questions_id,
             "think_time": self.think_time,
             "answer_time": self.answer_time,
             "class_id": self.class_id,
@@ -41,6 +44,7 @@ class Question:
         return {
             "id": self.id,
             "name": self.name,
+            "multiple_questions_id": self.multiple_questions_id,
             "class_id": self.class_id,
             "think_time": self.think_time,
             "answer_time": self.answer_time,
@@ -55,6 +59,7 @@ class Question:
         return {
             "id": self.id,
             "name": self.name,
+            "multiple_questions_id": self.multiple_questions_id,
             "class_id": self.class_id,
             "think_time": self.think_time,
             "answer_time": self.answer_time,

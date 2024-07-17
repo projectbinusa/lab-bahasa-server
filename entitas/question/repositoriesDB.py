@@ -78,30 +78,30 @@ def insert(json_object={}, to_model=False):
 
 
 
-# @db_session
-# def insert_multiple_choice_questions(questions_list=[], to_model=False):
-#     try:
-#         new_questions = []
-#         for json_object in questions_list:
-#             new_question = QuestionDB(
-#                 name=json_object["name"],
-#                 correct_answer=json_object["correct_answer"],
-#                 class_id=json_object["class_id"],
-#                 user_id=json_object["user_id"],
-#                 user_name=json_object["user_name"],
-#                 type=json_object["type"],
-#                 think_time=json_object["think_time"],
-#                 answer_time=json_object["answer_time"]
-#             )
-#             new_questions.append(new_question)
-#         commit()
-#         if to_model:
-#             return [question.to_model() for question in new_questions]
-#         else:
-#             return [question.to_model().to_json() for question in new_questions]
-#     except Exception as e:
-#         print("error question insert: ", e)
-#     return
+@db_session
+def insert_multiple_choice_questions(json_object={}, to_model=False):
+    try:
+        new_questions = []
+        # for json_object in questions_list:
+        new_question = QuestionDB(
+            name=json_object["name"],
+            multiple_questions_id=json_object["multiple_questions_id"],
+            class_id=json_object["class_id"],
+            user_id=json_object["user_id"],
+            user_name=json_object["user_name"],
+            type=json_object["type"],
+            think_time=json_object["think_time"],
+            answer_time=json_object["answer_time"]
+        )
+        new_questions.append(new_question)
+        commit()
+        if to_model:
+            return [question.to_model() for question in new_questions]
+        else:
+            return [question.to_model().to_json() for question in new_questions]
+    except Exception as e:
+        print("error question insert: ", e)
+    return
 
 
 
@@ -141,10 +141,13 @@ def insert(json_object={}, to_model=False):
 def update(json_object=None, to_model=False):
     try:
         updated_question = QuestionDB[json_object["id"]]
+        print("id .=>", json_object["id"])
         if "name" in json_object:
             updated_question.name = json_object["name"]
         if "think_time" in json_object:
             updated_question.think_time = json_object["think_time"]
+        if "multiple_questions_id" in json_object:
+            updated_question.multiple_questions_id = json_object["multiple_questions_id"]
         if "answer_time" in json_object:
             updated_question.answer_time = json_object["answer_time"]
         if "class_id" in json_object:
@@ -163,7 +166,7 @@ def update(json_object=None, to_model=False):
         else:
             return updated_question.to_model().to_response()
     except Exception as e:
-        print("error UserDB update_profile: " + str(e))
+        print("error Question update_profile: " + str(e))
         return
 
 

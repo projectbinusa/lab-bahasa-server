@@ -53,9 +53,9 @@ def update_service_db(json_object={}, user_id=0, class_id=0, user_name='', id=0)
         raise_error(msg="multiple choice question not found")
 
     json_object['id'] = id
-    json_object['user_id'] = user_id
+    json_object['user_id'] = int(user_id)
     json_object['user_name'] = user_name
-    json_object['class_id'] = class_id
+    json_object['class_id'] = int(class_id)
 
     return repositoriesDB.update_multiple_choice_question(user_id=user_id, class_id=class_id, user_name=user_name,
                                                           json_object=json_object)

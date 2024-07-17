@@ -13,7 +13,7 @@ from entitas.user.repositoriesDB import find_by_user_id_and_class_id
 from util.other_util import raise_error
 
 
-def insert_question_db(user_name='', multiple_questions=[], class_id=0, user_id=0, json_object={}):
+def insert_multiple_questions_db(user_name='', multiple_questions_id=[], class_id=0, user_id=0, json_object={}):
     print(user_id)
     print(class_id)
     user = find_by_user_id_and_class_id(id=user_id, class_id=class_id)
@@ -27,7 +27,25 @@ def insert_question_db(user_name='', multiple_questions=[], class_id=0, user_id=
     json_object["user_id"] = user_id
     json_object["class_id"] = class_id
     json_object["user_name"] = user_name
-    json_object["name"] = multiple_questions
+    json_object["multiple_questions_id"] = multiple_questions_id
+
+    return repositoriesDB.insert_multiple_choice_questions(json_object=json_object)
+
+
+def insert(user_name='', class_id=0, user_id=0, json_object={}):
+    print(user_id)
+    print(class_id)
+    user = find_by_user_id_and_class_id(id=user_id, class_id=class_id)
+    kelas = find_by_id(id=class_id)
+
+    if user is None:
+        raise_error(msg="user not found")
+    if kelas is None:
+        raise_error(msg="kelas not found")
+
+    json_object["user_id"] = user_id
+    json_object["class_id"] = class_id
+    json_object["user_name"] = user_name
 
     return repositoriesDB.insert(json_object=json_object)
 
@@ -41,11 +59,41 @@ def get_services_db_with_pagination(page=1, limit=9, filters=[], to_model=False,
     )
 
 
-def delete_question_by_id(id=0):
+def delete_question_by_id(id=0,  class_id=0, user_id=0, user_name=''):
+    print(user_id)
+    print(class_id)
+    response_competition = repositoriesDB.find_question_by_id(id=id)
+    user = find_by_user_id_and_class_id(id=user_id, class_id=class_id)
+    kelas = find_by_id(id=class_id)
+
+    if user is None:
+        raise_error(msg="user not found")
+    if response_competition is None:
+        raise_error(msg="question not found")
+    if kelas is None:
+        raise_error(msg="kelas not found")
     return repositoriesDB.delete_by_id(id)
 
 
-def update_question_db(json_object={}):
+def update_question_db(json_object={}, multiple_questions_id=0, class_id=0, user_id=0, user_name='', id=0):
+    print(user_id)
+    print(class_id)
+    response_competition = repositoriesDB.find_question_by_id(id=id)
+    user = find_by_user_id_and_class_id(id=user_id, class_id=class_id)
+    kelas = find_by_id(id=class_id)
+
+    if user is None:
+        raise_error(msg="user not found")
+    if response_competition is None:
+        raise_error(msg="question not found")
+    if kelas is None:
+        raise_error(msg="kelas not found")
+
+    json_object["user_id"] = user_id
+    json_object["id"] = id
+    json_object["class_id"] = class_id
+    json_object["user_name"] = user_name
+    json_object["multiple_questions_id"] = multiple_questions_id
     return repositoriesDB.update(json_object=json_object)
 
 

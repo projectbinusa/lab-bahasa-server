@@ -8,6 +8,7 @@ class Answer:
             user_id=0,
             user_name=0,
             answer_time_user='',
+            answer_multiple_question=None,
             class_id=0,
             created_date=None,
             updated_date=None
@@ -17,6 +18,7 @@ class Answer:
         self.answer = answer
         self.user_id = user_id
         self.user_name = user_name
+        self.answer_multiple_question = answer_multiple_question or []
         self.score = score
         self.answer_time_user = answer_time_user
         self.class_id = class_id
@@ -30,6 +32,7 @@ class Answer:
             "answer": self.answer,
             "user_id": self.user_id,
             "user_name": self.user_name,
+            "answer_multiple_question": self.answer_multiple_question,
             "score": self.score,
             "answer_time_user": str(self.answer_time_user),
             "class_id": self.class_id,
@@ -44,6 +47,7 @@ class Answer:
             "answer": self.answer,
             "user_id": self.user_id,
             "user_name": self.user_name,
+            "answer_multiple_question": self.answer_multiple_question,
             "score": self.score,
             "answer_time_user": str(self.answer_time_user),
             "class_id": self.class_id,
