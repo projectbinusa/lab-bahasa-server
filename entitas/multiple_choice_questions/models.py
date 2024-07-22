@@ -1,5 +1,8 @@
 class MultipleChoiceQuestions:
-    def __init__(self, id=0, user_id=0, user_name='', chosen=0, class_id=0, question_text="", options=None, correct_answer=0):
+    def __init__(
+            self, id=0, user_id=0, user_name='', chosen=0, class_id=0, question_text="", options=None,
+            correct_answer=0
+    ):
         self.id = id
         self.user_id = user_id
         self.user_name = user_name

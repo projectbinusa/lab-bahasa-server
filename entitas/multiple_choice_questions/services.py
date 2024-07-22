@@ -4,14 +4,13 @@ from entitas.multiple_choice_questions import repositoriesDB
 from util.other_util import raise_error
 
 def get_services_db_with_pagination(page=1, limit=9, filters=[], to_model=False, class_id=0):
+    print("filters => ", filters)
     kelas = find_kelas_user_db_by_id(id=class_id, to_model=True)
     if kelas is None:
         raise_error(msg="kelas not found")
     return repositoriesDB.get_all_with_pagination(
         page=page, limit=limit, filters=filters, to_model=to_model
     )
-
-
 
 def find_services_db_by_id(class_id=0, id=0, to_model=False):
     kelas = find_kelas_user_db_by_id(id=class_id, to_model=True)
@@ -54,9 +53,9 @@ def update_service_db(json_object={}, user_id=0, class_id=0, user_name='', id=0)
         raise_error(msg="multiple choice question not found")
 
     json_object['id'] = id
-    json_object['user_id'] = user_id
+    json_object['user_id'] = int(user_id)
     json_object['user_name'] = user_name
-    json_object['class_id'] = class_id
+    json_object['class_id'] = int(class_id)
 
     return repositoriesDB.update_multiple_choice_question(user_id=user_id, class_id=class_id, user_name=user_name,
                                                           json_object=json_object)

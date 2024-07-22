@@ -8,7 +8,7 @@ from entitas.pathway.resources import *
 from entitas.pathway_training.resources import *
 from entitas.pathway_user.resources import *
 from entitas.announcement.resources import *
-from entitas.question.resources import QuestionByClassIdAndUserIdResource, QuestionResource, MultipleChoiceQuestions
+from entitas.question.resources import QuestionByClassIdAndUserIdResource, QuestionResource
 from entitas.room_user.resources import *
 from entitas.schedule.resources import *
 from entitas.schedule_instructur.resources import *

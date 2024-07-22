@@ -18,6 +18,7 @@ class AnswerResource:
 
     def on_post(self, req, resp, class_id: int):
         question_id = req.media.get('question_id')
+        answer_multiple_question = req.media.get('answer_multiple_question', [])
         answer = req.media.get('answer')
 
         if question_id is None or answer is None:
@@ -29,11 +30,16 @@ class AnswerResource:
             "user_name": req.context['user']['name'],
             "class_id": class_id,
             "question_id": question_id,
+            "answer_multiple_question": answer_multiple_question,  # Pastikan ini diisi dari request
             "answer": answer
         }
-        # try:
-        result = services.create_answer_service(json_object=body)
-        resouce_response_api(resp=resp, data=result)
+
+        try:
+            result = services.create_answer_service(json_object=body, answer_multiple_question=answer_multiple_question)
+            resouce_response_api(resp=resp, data=result)
+        except Exception as e:
+            resouce_response_api(resp=resp, data={"error": str(e)})
+
         # except ValueError as e:
         #     resouce_response_api(resp=resp, data={"error": str(e)})
         # except Exception as e:

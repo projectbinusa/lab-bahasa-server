@@ -23,17 +23,17 @@ class MultipleChoiceQuestionsResources:
         )
 
 class MultipleChoiceQuestionsWithByIdResources:
-    def on_get(self, req, resp, multiple_questions: int, class_id):
-        resouce_response_api(resp=resp, data=services.find_services_db_by_id(class_id=class_id, id=multiple_questions))
+    def on_get(self, req, resp, multiple_questions_id: int, class_id):
+        resouce_response_api(resp=resp, data=services.find_services_db_by_id(class_id=class_id, id=multiple_questions_id))
 
-    def on_put(self, req, resp, class_id: int, multiple_questions: int):
+    def on_put(self, req, resp, class_id: int, multiple_questions_id: int):
         body = req.media
         print("user_id => ", req.context['user']['id'])
         resouce_response_api(
             resp=resp,
             data=services.update_service_db(json_object=body, user_id=req.context['user']['id'], class_id=class_id,
-                                            user_name=req.context['user']['name'], id=int(multiple_questions))
+                                            user_name=req.context['user']['name'], id=int(multiple_questions_id))
         )
 
-    def on_delete(self, req, resp, multiple_questions: int, class_id: int):
-        resouce_response_api(resp=resp, data=services.delete_services_by_id(id=int(multiple_questions), class_id=int(class_id)))
+    def on_delete(self, req, resp, multiple_questions_id: int, class_id: int):
+        resouce_response_api(resp=resp, data=services.delete_services_by_id(id=int(multiple_questions_id), class_id=int(class_id)))

@@ -135,6 +135,7 @@ def create_profile_answer(json_object={}, to_model=False):
             answer=json_object['answer'],
             user_id=json_object['user_id'],
             user_name=json_object['user_name'],
+            answer_multiple_question=json_object.get('answer_multiple_question', []),
             answer_time_user=json_object['answer_time_user'],
             class_id=json_object['class_id']
         )

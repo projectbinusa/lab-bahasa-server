@@ -1,3 +1,4 @@
+import json
 from datetime import date, datetime
 from pony.orm import *
 
@@ -765,37 +766,91 @@ class LoginLimitsDB(db2.Entity):
         item.updated_date = self.updated_date
         return item
 
+class MultipleChoiceQuestionsDB(db2.Entity):
+    _table_ = "multiple_choice_questions"
+    id = PrimaryKey(int, auto=True)
+    user_id = Optional(int, nullable=True)
+    user_name = Optional(str, nullable=True)
+    class_id = Optional(int, nullable=True)
+    chosen = Optional(int, nullable=True)
+    question_text = Required(str)
+    options = Required(Json)
+    correct_answer = Required(int)
+
+    def to_model(self):
+        return MultipleChoiceQuestions(
+            id=self.id,
+            user_id=self.user_id,
+            user_name=self.user_name,
+            chosen=self.chosen,
+            class_id=self.class_id,
+            question_text=self.question_text,
+            options=self.options,
+            correct_answer=self.correct_answer
+        )
 
 class QuestionDB(db2.Entity):
     _table_ = "question"
     id = PrimaryKey(int, auto=True)
     name = Optional(str, nullable=True)
+    multiple_questions_id = Required(Json)
     think_time = Optional(str, nullable=True)
     answer_time = Optional(str, nullable=True)
     class_id = Optional(int, nullable=True)
     user_id = Optional(int, nullable=True)
     user_name = Optional(str, nullable=True)
     type = Optional(str, nullable=True)
-    options = Required(Json)
-    correct_answer = Required(int)
     created_date = Optional(datetime, nullable=True)
     updated_date = Optional(datetime, nullable=True)
 
     def to_model(self):
-        item = Question()
-        item.id = self.id
-        item.name = self.name
-        item.user_id = self.user_id
-        item.user_name = self.user_name
-        item.think_time = self.think_time
-        item.answer_time = self.answer_time
-        item.class_id = self.class_id
-        item.type = self.type
-        item.options = self.options
-        item.correct_answer = self.correct_answer
-        item.created_date = self.created_date
-        item.updated_date = self.updated_date
-        return item
+        return Question(
+            id=self.id,
+            name=self.name,
+            multiple_questions_id=self.multiple_questions_id,
+            think_time=self.think_time,
+            answer_time=self.answer_time,
+            class_id=self.class_id,
+            user_id=self.user_id,
+            user_name=self.user_name,
+            type=self.type,
+            created_date=self.created_date,
+            updated_date=self.updated_date
+        )
+# class QuestionDB(db2.Entity):
+#     _table_ = "question"
+#     id = PrimaryKey(int, auto=True)
+#     name = Required(Json)
+#     think_time = Optional(str, nullable=True)
+#     answer_time = Optional(str, nullable=True)
+#     class_id = Optional(int, nullable=True)
+#     user_id = Optional(int, nullable=True)
+#     user_name = Optional(str, nullable=True)
+#     type = Optional(str, nullable=True)
+#     created_date = Optional(datetime, nullable=True)
+#     updated_date = Optional(datetime, nullable=True)
+#
+#     def to_model(self):
+#         item = Question()
+#         item.id = self.id
+#         item.user_id = self.user_id
+#         item.user_name = self.user_name
+#         item.think_time = self.think_time
+#         item.answer_time = self.answer_time
+#         item.class_id = self.class_id
+#         item.type = self.type
+#         item.created_date = self.created_date
+#         item.updated_date = self.updated_date
+#         try:
+#             if self.name:
+#                 item.name = json.loads(self.name)
+#             else:
+#                 item.name = []
+#         except (json.JSONDecodeError, TypeError) as e:
+#             print(f"Error decoding JSON for QuestionDB {self.id}: {e}")
+#             item.name = []
+#
+#         return item
 
 
 class WhiteboardDB(db2.Entity):
@@ -825,6 +880,7 @@ class AnswerDB(db2.Entity):
     id = PrimaryKey(int, auto=True)
     question_id = Optional(int, nullable=True)
     answer = Optional(str, 100000, nullable=True)
+    answer_multiple_question = Required(Json)
     user_id = Optional(int, nullable=True)
     user_name = Optional(str, nullable=True)
     answer_time_user = Optional(str, nullable=True)
@@ -838,6 +894,7 @@ class AnswerDB(db2.Entity):
         item.id = self.id
         item.question_id = self.question_id
         item.answer = self.answer
+        item.answer_multiple_question = self.answer_multiple_question
         item.user_id = self.user_id
         item.user_name = self.user_name
         item.answer_time_user = self.answer_time_user
@@ -1008,30 +1065,6 @@ class AnggotaTopicChatDB(db2.Entity):
         item.created_date = self.created_date
         item.updated_date = self.updated_date
         return item
-
-
-class MultipleChoiceQuestionsDB(db2.Entity):
-    _table_ = "multiple_choice_questions"
-    id = PrimaryKey(int, auto=True)
-    user_id = Optional(int, nullable=True)
-    user_name = Optional(str, nullable=True)
-    class_id = Optional(int, nullable=True)
-    chosen = Optional(int, nullable=True)
-    question_text = Required(str)
-    options = Required(Json)
-    correct_answer = Required(int)
-
-    def to_model(self):
-        return MultipleChoiceQuestions(
-            id=self.id,
-            user_id=self.user_id,
-            user_name=self.user_name,
-            chosen=self.chosen,
-            class_id=self.class_id,
-            question_text=self.question_text,
-            options=self.options,
-            correct_answer=self.correct_answer
-        )
 
 
 if db2.schema is None:

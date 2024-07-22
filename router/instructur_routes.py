@@ -82,4 +82,6 @@ def instructur_routes(api):
     api.add_route('/api/instructur/class/export', KelasUserExportResource())
     api.add_route('/api/instructur/class/import', KelasUserImportResource())
     api.add_route("/api/instructur/class/{class_id}/multiple_choice_questions", MultipleChoiceQuestionsResources())
-    api.add_route("/api/instructur/class/{class_id}/multiple_choice_questions/{multiple_questions}", MultipleChoiceQuestionsWithByIdResources())
+    api.add_route("/api/instructur/class/{class_id}/response_competition_multiple_questions", MultipleChoiceQuestions())
+    # api.add_route("/api/instructur/class/{class_id}/multiple_question", MultipleChoiceQuestions())
+    api.add_route("/api/instructur/class/{class_id}/multiple_choice_questions/{multiple_questions_id}", MultipleChoiceQuestionsWithByIdResources())

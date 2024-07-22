@@ -8,20 +8,22 @@ class Answer:
             user_id=0,
             user_name=0,
             answer_time_user='',
+            answer_multiple_question=None,
             class_id=0,
-            # created_date=None,
-            # updated_date=None
+            created_date=None,
+            updated_date=None
     ):
         self.id = id
         self.question_id = question_id
         self.answer = answer
         self.user_id = user_id
         self.user_name = user_name
+        self.answer_multiple_question = answer_multiple_question or []
         self.score = score
         self.answer_time_user = answer_time_user
         self.class_id = class_id
-        # self.created_date = created_date
-        # self.updated_date = updated_date
+        self.created_date = created_date
+        self.updated_date = updated_date
 
     def to_json(self):
         return {
@@ -30,11 +32,12 @@ class Answer:
             "answer": self.answer,
             "user_id": self.user_id,
             "user_name": self.user_name,
+            "answer_multiple_question": self.answer_multiple_question,
             "score": self.score,
             "answer_time_user": str(self.answer_time_user),
             "class_id": self.class_id,
-            # "created_date": str(self.created_date) if self.created_date is not None else None,
-            # "updated_date": str(self.updated_date) if self.updated_date is not None else None
+            "created_date": str(self.created_date) if self.created_date is not None else None,
+            "updated_date": str(self.updated_date) if self.updated_date is not None else None
         }
 
     def to_response(self):
@@ -44,9 +47,10 @@ class Answer:
             "answer": self.answer,
             "user_id": self.user_id,
             "user_name": self.user_name,
+            "answer_multiple_question": self.answer_multiple_question,
             "score": self.score,
             "answer_time_user": str(self.answer_time_user),
             "class_id": self.class_id,
-            # "created_date": str(self.created_date) if self.created_date is not None else None,
-            # "updated_date": str(self.updated_date) if self.updated_date is not None else None
+            "created_date": str(self.created_date) if self.created_date is not None else None,
+            "updated_date": str(self.updated_date) if self.updated_date is not None else None
         }
