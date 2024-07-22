@@ -2,8 +2,11 @@
 import csv
 import uuid
 
+import pandas as pd
+from openpyxl.workbook import Workbook
 from pony.orm import *
 from database.schema import KelasUserDB
+from openpyxl.styles import Alignment, Font, PatternFill
 
 
 @db_session
@@ -222,3 +225,74 @@ def find_kelas_user_db_by_id(id=0, to_model=False):
     if to_model:
         return result
     return result.to_response()
+
+
+@db_session
+def export_class():
+    try:
+        # Filter data based on class_id and role student
+        users = select(u for u in KelasUserDB).order_by(desc(KelasUserDB.id))[:]
+
+        # Create workbook and worksheet
+        wb = Workbook()
+        ws = wb.active
+        ws.title = 'Kelas List'
+
+        # Header row formatting
+        header = ["#", "Gambar", "Nama Server", "Nama Kelas", "Deskripsi", "Aktif"]
+        ws.append(header)
+        for cell in ws[1]:
+            cell.font = Font(bold=True)
+            cell.fill = PatternFill(start_color="C0C0C0", end_color="C0C0C0", fill_type="solid")
+            cell.alignment = Alignment(horizontal="center", vertical="center")
+
+        # Data rows
+        for index, user in enumerate(users, start=1):
+            row = [
+                index,
+                user.file,
+                user.user_name,
+                user.name,
+                user.description,
+                user.is_active,
+            ]
+            ws.append(row)
+
+        # Save workbook
+        file_path = 'tmp/kelas_list.xlsx'
+        wb.save(file_path)
+
+        return True, None, file_path  # Return success and file path
+
+    except Exception as e:
+        return False, str(e), None  # Return error message
+
+
+@db_session
+def import_kelas_from_xlsx(file_path='kelas_list.xlsx', to_model=False):
+    try:
+        df = pd.read_excel(file_path)
+        imported_users = []
+        for index, row in df.iterrows():
+            user = KelasUserDB(
+                file=str(row['Gambar']),
+                user_name=str(row['Nama Server']),
+                name=str(row['Nama Kelas']),
+                description=str(row['Deskripsi']),
+                is_active=int(row['Aktif']),
+            )
+            imported_users.append(user)
+        commit()
+
+        if to_model:
+            return [user.to_model() for user in imported_users]
+        else:
+            return [user.to_model().to_response() for user in imported_users]
+
+    except UnicodeDecodeError as e:
+        print(f"UnicodeDecodeError: {e}")
+        return None
+
+    except Exception as e:
+        print(f"Error importing from XLSX: {e}")
+        return None

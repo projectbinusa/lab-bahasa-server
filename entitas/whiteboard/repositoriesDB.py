@@ -172,7 +172,7 @@ def create_profile_manage_student_list(user_id, json_object=None, to_model=False
     try:
         # Create new user with the generated class_id
         new_user = WhiteboardDB(
-            username=json_object['username'],
+            # username=json_object['username'],
             user_id=user_id,
             class_id=json_object['class_id'],
         )

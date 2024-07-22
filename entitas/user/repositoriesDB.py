@@ -1,5 +1,5 @@
 import csv
-from datetime import datetime
+from datetime import datetime, timedelta
 import errno
 import json
 import uuid
@@ -885,7 +885,7 @@ def create_password_reset_token(email):
         return None
     code = str(random.randint(100000, 999999))
     user.reset_code = code
-    user.code_expiry = datetime.datetime.now() + datetime.timedelta(minutes=15)  # Konsistensi dengan pesan email
+    user.code_expiry = datetime.now() + timedelta(minutes=15)
     commit()
     return code
 
@@ -895,7 +895,7 @@ def verify_password_reset_token(email, code):
     user = UserDB.get(email=email, reset_code=code)
     if user:
         print("token", user.code_expiry)
-    if user and user.code_expiry > datetime.datetime.now():
+    if user and user.code_expiry > datetime.now():
         return user
     return None
 
@@ -1001,6 +1001,7 @@ def export_management_name_list(class_id: int):
 def import_users_from_xlsx(file_path='management_name_list.xlsx', to_model=False):
     try:
         df = pd.read_excel(file_path)
+        imported_users = []
         for index, row in df.iterrows():
             user = UserDB(
                 client_id=generate_new_client_id(),
@@ -1015,9 +1016,9 @@ def import_users_from_xlsx(file_path='management_name_list.xlsx', to_model=False
             commit()
 
             if to_model:
-                return user.to_model()
+                return [user.to_model() for user in imported_users]
             else:
-                return user.to_model().to_response()
+                return [user.to_model().to_response() for user in imported_users]
 
     except UnicodeDecodeError as e:
         print(f"UnicodeDecodeError: {e}")

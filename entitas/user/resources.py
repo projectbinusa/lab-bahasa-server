@@ -335,6 +335,13 @@ class ManagementListResource:
             class_id=class_id, page=page, limit=limit, filters=filters)
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 
+    def on_post(self, req, resp, class_id=int):
+        print("class in resources => ", class_id)
+        resouce_response_api(resp=resp,
+                             data=services.create_profile_manage_student_list_service(class_id=class_id,
+                                                                                  json_object=req.media))
+
+
 
 class UserAllResources:
     # auth = {

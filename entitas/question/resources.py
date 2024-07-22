@@ -16,35 +16,6 @@ class QuestionResource:
         )
         resouce_response_api(resp=resp, data=data, pagination=pagination)
 
-    # def handle_request_response(response):
-    #     try:
-    #         return response.json()
-    #     except json.JSONDecodeError:
-    #         print("Response is not valid JSON")
-    #         return None
-
-    # def on_post(self, req, resp):
-    #     resouce_response_api(resp=resp, data=services.insert_question_db(json_object=req.media))
-
-    # def on_post(self, req, resp, class_id: int):
-    #     print(class_id)
-    #     body = req.media
-    #     multiple_questions = body.get("name", [])
-    #
-    #     if not isinstance(multiple_questions, list):
-    #         raise falcon.HTTPBadRequest(description="Field 'name' harus berupa list.")
-    #
-    #     resouce_response_api(
-    #         resp=resp,
-    #         data=services.insert(
-    #             user_name=req.context["user"]["name"],
-    #             class_id=class_id,
-    #             user_id=req.context["user"]["id"],
-    #             multiple_questions=multiple_questions,
-    #             json_object=body
-    #         )
-    #     )
-    #
     def on_post(self, req, resp, class_id: int):
         print(class_id)
         body = req.media
